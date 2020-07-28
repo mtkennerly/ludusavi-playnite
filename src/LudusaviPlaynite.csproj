@@ -15,13 +15,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="extension.yaml">
+    <None Include="../extension.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="icon.png">
+    <None Include="../icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

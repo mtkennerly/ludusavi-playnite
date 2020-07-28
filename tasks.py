@@ -11,9 +11,9 @@ REPO = Path(os.path.dirname(__file__))
 @task
 def build(ctx, debug=False):
     if debug:
-        ctx.run("dotnet build")
+        ctx.run("dotnet build src")
     else:
-        ctx.run("dotnet build -c Release")
+        ctx.run("dotnet build src -c Release")
 
 
 @task
@@ -25,10 +25,10 @@ def deploy(ctx, target="~/AppData/Local/Playnite/Extensions"):
     print(f"Creating: {target}")
     target.mkdir()
 
-    for file in glob(str(REPO / "bin/Release/net462/*")):
+    for file in glob(str(REPO / "src/bin/Release/net462/*")):
         shutil.copy(file, target)
 
 
 @task
 def style(ctx):
-    ctx.run("dotnet format")
+    ctx.run("dotnet format src")
