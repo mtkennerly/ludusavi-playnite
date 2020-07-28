@@ -5,7 +5,7 @@ back up your save data using [Ludusavi](https://github.com/mtkennerly/ludusavi).
 ## Features
 * Known save locations for more than 7,000 games.
 * On-demand backup and restore for all saves.
-* Prompt to back up a single game when you finish playing it.
+* Automatically back up a game when you finish playing it.
 
 ## Screenshots
 ### Prompt after exiting a game

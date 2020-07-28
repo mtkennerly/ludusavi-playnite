@@ -15,14 +15,13 @@ namespace LudusaviPlaynite
     public class LudusaviPlaynite : Plugin
     {
         private static readonly ILogger logger = LogManager.GetLogger();
-
         private LudusaviPlayniteSettings settings { get; set; }
-
         public override Guid Id { get; } = Guid.Parse("72e2de43-d859-44d8-914e-4277741c8208");
 
-        private bool PendingOperation { get; set; }
-        private bool PlayedSomething { get; set; }
-        private Game LastGamePlayed { get; set; }
+        private Translator translator = new Translator();
+        private bool pendingOperation { get; set; }
+        private bool playedSomething { get; set; }
+        private Game lastGamePlayed { get; set; }
 
         public LudusaviPlaynite(IPlayniteAPI api) : base(api)
         {
@@ -34,63 +33,63 @@ namespace LudusaviPlaynite
             return new List<ExtensionFunction>
             {
                 new ExtensionFunction(
-                    "Ludusavi: Launch",
+                    translator.Launch_Label(),
                     () =>
                     {
                         LaunchLudusavi();
                     }
                 ),
                 new ExtensionFunction(
-                    "Ludusavi: Back up save data for last game played",
+                    translator.BackUpOneGame_Label(),
                     async () =>
                     {
                         if (!CanPerformOperationOnLastGamePlayed())
                         {
                             return;
                         }
-                        if (UserConsents(String.Format("Back up save data for {0}?", LastGamePlayed.Name)))
+                        if (UserConsents(translator.BackUpOneGame_Confirm(lastGamePlayed)))
                         {
-                            await Task.Run(() => BackUpOneGame(LastGamePlayed));
+                            await Task.Run(() => BackUpOneGame(lastGamePlayed));
                         }
                     }
                 ),
                 new ExtensionFunction(
-                    "Ludusavi: Back up save data for all games",
+                    translator.BackUpAllGames_Label(),
                     async () =>
                     {
                         if (!CanPerformOperation())
                         {
                             return;
                         }
-                        if (UserConsents("Back up save data for all games that Ludusavi can find?"))
+                        if (UserConsents(translator.BackUpAllGames_Confirm()))
                         {
                             await Task.Run(() => BackUpAllGames());
                         }
                     }
                 ),
                 new ExtensionFunction(
-                    "Ludusavi: Restore save data for last game played",
+                    translator.RestoreOneGame_Label(),
                     async () =>
                     {
                         if (!CanPerformOperationOnLastGamePlayed())
                         {
                             return;
                         }
-                        if (UserConsents(String.Format("Restore save data for {0}?", LastGamePlayed.Name)))
+                        if (UserConsents(translator.RestoreOneGame_Confirm(lastGamePlayed)))
                         {
-                            await Task.Run(() => RestoreOneGame(LastGamePlayed));
+                            await Task.Run(() => RestoreOneGame(lastGamePlayed));
                         }
                     }
                 ),
                 new ExtensionFunction(
-                    "Ludusavi: Restore save data for all games",
+                    translator.RestoreAllGames_Label(),
                     async () =>
                     {
                         if (!CanPerformOperation())
                         {
                             return;
                         }
-                        if (UserConsents("Restore save data for all games that Ludusavi can find?"))
+                        if (UserConsents(translator.RestoreAllGames_Confirm()))
                         {
                             await Task.Run(() => RestoreAllGames());
                         }
@@ -101,12 +100,12 @@ namespace LudusaviPlaynite
 
         public override void OnGameStopped(Game game, long elapsedSeconds)
         {
-            PlayedSomething = true;
-            LastGamePlayed = game;
+            playedSomething = true;
+            lastGamePlayed = game;
 
             if (settings.DoBackupOnGameStopped)
             {
-                if (!settings.AskBackupOnGameStopped || UserConsents(String.Format("Back up save data for {0}?", game.Name)))
+                if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game)))
                 {
                     BackUpOneGame(game);
                 }
@@ -123,7 +122,7 @@ namespace LudusaviPlaynite
             return new LudusaviPlayniteSettingsView();
         }
 
-        private (int, String) RunCommand(String command, String args)
+        private (int, string) RunCommand(string command, string args)
         {
             var p = new Process();
             p.StartInfo.UseShellExecute = false;
@@ -140,7 +139,7 @@ namespace LudusaviPlaynite
             return (p.ExitCode, stdout);
         }
 
-        private (int, String) InvokeLudusavi(String args)
+        private (int, string) InvokeLudusavi(string args)
         {
             return RunCommand(settings.ExecutablePath.Trim(), args);
         }
@@ -155,9 +154,9 @@ namespace LudusaviPlaynite
 
         private bool CanPerformOperation()
         {
-            if (PendingOperation)
+            if (pendingOperation)
             {
-                PlayniteApi.Dialogs.ShowMessage("Ludusavi is still working on a previous request. Please try again when it's done.");
+                PlayniteApi.Dialogs.ShowMessage(translator.OperationStillPending());
                 return false;
             }
             return true;
@@ -165,15 +164,15 @@ namespace LudusaviPlaynite
 
         private bool CanPerformOperationOnLastGamePlayed()
         {
-            if (!PlayedSomething)
+            if (!playedSomething)
             {
-                PlayniteApi.Dialogs.ShowMessage("You haven't played anything yet in this session.");
+                PlayniteApi.Dialogs.ShowMessage(translator.NoGamePlayedYet());
                 return false;
             }
             return CanPerformOperation();
         }
 
-        private bool UserConsents(String message)
+        private bool UserConsents(string message)
         {
             var choice = PlayniteApi.Dialogs.ShowMessage(message, "", System.Windows.MessageBoxButton.YesNo);
             return choice == MessageBoxResult.Yes;
@@ -181,36 +180,40 @@ namespace LudusaviPlaynite
 
         private void BackUpOneGame(Game game)
         {
-            PendingOperation = true;
-            var (code, stdout) = InvokeLudusavi(String.Format("backup --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+            pendingOperation = true;
+            var (code, stdout) = InvokeLudusavi(string.Format("backup --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+            var result = new OperationResult { Game = game };
+
             if (code == 0)
             {
                 PlayniteApi.Notifications.Add(
-                    String.Format("ludusavi-backup-success-for-{0}", game.Name),
-                    String.Format("Backed up saves for {0}", game.Name),
+                    string.Format("ludusavi-backup-success-for-{0}", game.Name),
+                    translator.BackUpOneGame_Success(result),
                     NotificationType.Info
                 );
             }
             else
             {
                 PlayniteApi.Notifications.Add(
-                    String.Format("ludusavi-backup-failure-for-{0}", game.Name),
-                    String.Format("Unable to back up saves for {0}", game.Name),
+                    string.Format("ludusavi-backup-failure-for-{0}", game.Name),
+                    translator.BackUpOneGame_Failure(result),
                     NotificationType.Error
                 );
             }
-            PendingOperation = false;
+            pendingOperation = false;
         }
 
         private void BackUpAllGames()
         {
-            PendingOperation = true;
-            var (code, stdout) = InvokeLudusavi(String.Format("backup --force --path \"{0}\"", settings.BackupPath));
+            pendingOperation = true;
+            var (code, stdout) = InvokeLudusavi(string.Format("backup --force --path \"{0}\"", settings.BackupPath));
+            var result = new OperationResult { };
+
             if (code == 0)
             {
                 PlayniteApi.Notifications.Add(
                     "ludusavi-backup-success-all",
-                    "Backed up saves for all games",
+                    translator.BackUpAllGames_Success(result),
                     NotificationType.Info
                 );
             }
@@ -218,45 +221,49 @@ namespace LudusaviPlaynite
             {
                 PlayniteApi.Notifications.Add(
                     "ludusavi-backup-failure-all",
-                    "Unable to back up saves for some games",
+                    translator.BackUpAllGames_Failure(result),
                     NotificationType.Error
                 );
             }
-            PendingOperation = false;
+            pendingOperation = false;
         }
 
         private void RestoreOneGame(Game game)
         {
-            PendingOperation = true;
-            var (code, stdout) = InvokeLudusavi(String.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+            pendingOperation = true;
+            var (code, stdout) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+            var result = new OperationResult { Game = game };
+
             if (code == 0)
             {
                 PlayniteApi.Notifications.Add(
-                    String.Format("ludusavi-restore-success", game.Name),
-                    String.Format("Restored saves for {0}", game.Name),
+                    string.Format("ludusavi-restore-success", game.Name),
+                    translator.RestoreOneGame_Success(result),
                     NotificationType.Info
                 );
             }
             else
             {
                 PlayniteApi.Notifications.Add(
-                    String.Format("ludusavi-restore-failure", game.Name),
-                    String.Format("Unable to back up saves for {0}", game.Name),
+                    string.Format("ludusavi-restore-failure", game.Name),
+                    translator.RestoreOneGame_Failure(result),
                     NotificationType.Error
                 );
             }
-            PendingOperation = false;
+            pendingOperation = false;
         }
 
         private void RestoreAllGames()
         {
-            PendingOperation = true;
-            var (code, stdout) = InvokeLudusavi(String.Format("restore --force --path \"{0}\"", settings.BackupPath));
+            pendingOperation = true;
+            var (code, stdout) = InvokeLudusavi(string.Format("restore --force --path \"{0}\"", settings.BackupPath));
+            var result = new OperationResult { };
+
             if (code == 0)
             {
                 PlayniteApi.Notifications.Add(
                     "ludusavi-restore-success-all",
-                    "Restored saves for all games",
+                    translator.RestoreAllGames_Success(result),
                     NotificationType.Info
                 );
             }
@@ -264,11 +271,11 @@ namespace LudusaviPlaynite
             {
                 PlayniteApi.Notifications.Add(
                     "ludusavi-restore-failure-all",
-                    "Unable to restore saves for some games",
+                    translator.RestoreAllGames_Failure(result),
                     NotificationType.Error
                 );
             }
-            PendingOperation = false;
+            pendingOperation = false;
         }
     }
 }

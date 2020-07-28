@@ -7,17 +7,17 @@
              d:DesignHeight="400" d:DesignWidth="600">
     <StackPanel>
         <StackPanel Margin="10">
-            <TextBlock Text="Name or full path of the Ludusavi executable" />
+            <TextBlock Text="{Binding ExecutablePath_Label}" />
             <TextBox Text="{Binding ExecutablePath}" />
         </StackPanel>
 
         <StackPanel Margin="10">
-            <TextBlock Text="Full path to directory for storing backups" />
+            <TextBlock Text="{Binding BackupPath_Label}" />
             <TextBox Text="{Binding BackupPath}" />
         </StackPanel>
 
-        <CheckBox Margin="10" IsChecked="{Binding DoBackupOnGameStopped}">Back up save data for a game when you exit it</CheckBox>
+        <CheckBox Margin="10" IsChecked="{Binding DoBackupOnGameStopped}" Content="{Binding DoBackupOnGameStopped_Label}" />
 
-        <CheckBox Margin="10" IsChecked="{Binding AskBackupOnGameStopped}">...but ask first before doing the backup</CheckBox>
+        <CheckBox Margin="10" IsChecked="{Binding AskBackupOnGameStopped}" Content="{Binding AskBackupOnGameStopped_Label}" />
     </StackPanel>
 </UserControl>

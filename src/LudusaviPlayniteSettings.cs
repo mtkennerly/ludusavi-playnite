@@ -13,12 +13,20 @@ namespace LudusaviPlaynite
         private readonly LudusaviPlaynite plugin;
 
         public string ExecutablePath { get; set; } = "ludusavi";
+        [JsonIgnore]
+        public string ExecutablePath_Label { get; set; } = new Translator().ExecutablePath_Label();
 
         public string BackupPath { get; set; } = "~/ludusavi-playnite";
+        [JsonIgnore]
+        public string BackupPath_Label { get; set; } = new Translator().BackupPath_Label();
 
         public bool DoBackupOnGameStopped { get; set; } = true;
+        [JsonIgnore]
+        public string DoBackupOnGameStopped_Label { get; set; } = new Translator().DoBackupOnGameStopped_Label();
 
         public bool AskBackupOnGameStopped { get; set; } = true;
+        [JsonIgnore]
+        public string AskBackupOnGameStopped_Label { get; set; } = new Translator().AskBackupOnGameStopped_Label();
 
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.
