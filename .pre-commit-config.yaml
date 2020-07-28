@@ -1,0 +1,19 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+        exclude: ^tests/(backup|root)
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.7
+    hooks:
+      - id: forbid-tabs
+  - repo: local
+    hooks:
+      - id: format
+        name: format
+        language: system
+        entry: dotnet format
+        types: [c#]
+        pass_filenames: false

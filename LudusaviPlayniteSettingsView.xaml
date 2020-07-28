@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="LudusaviPlaynite.LudusaviPlayniteSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="600">
+    <StackPanel>
+        <StackPanel Margin="10">
+            <TextBlock Text="Name or full path of the Ludusavi executable" />
+            <TextBox Text="{Binding ExecutablePath}" />
+        </StackPanel>
+
+        <StackPanel Margin="10">
+            <TextBlock Text="Full path to directory for storing backups" />
+            <TextBox Text="{Binding BackupPath}" />
+        </StackPanel>
+
+        <CheckBox Margin="10" IsChecked="{Binding DoBackupOnGameStopped}">Back up save data for a game when you exit it</CheckBox>
+
+        <CheckBox Margin="10" IsChecked="{Binding AskBackupOnGameStopped}">...but ask first before doing the backup</CheckBox>
+    </StackPanel>
+</UserControl>
