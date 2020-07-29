@@ -16,27 +16,11 @@ namespace LudusaviPlaynite
 
         public string Mib(int bytes)
         {
-            var mib = MibUnlabelled(bytes);
-            if (mib == "0.00")
-            {
-                switch (language)
-                {
-                    default:
-                        mib = string.Format("~ {0}", mib);
-                        break;
-                }
-            }
-
             switch (language)
             {
                 default:
-                    return string.Format("{0} MiB", mib);
+                    return string.Format("{0} MiB", Math.Round(bytes / 1024.0 / 1024.0, 2).ToString());
             }
-        }
-
-        public string MibUnlabelled(int bytes)
-        {
-            return Math.Round(bytes / 1024.0 / 1024.0, 2).ToString();
         }
 
         public string Launch_Label()
