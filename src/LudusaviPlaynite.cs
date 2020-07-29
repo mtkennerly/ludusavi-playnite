@@ -1,4 +1,5 @@
-﻿using Playnite.SDK;
+﻿using Newtonsoft.Json;
+using Playnite.SDK;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using System;
@@ -139,9 +140,10 @@ namespace LudusaviPlaynite
             return (p.ExitCode, stdout);
         }
 
-        private (int, string) InvokeLudusavi(string args)
+        private (int, ApiResponse) InvokeLudusavi(string args)
         {
-            return RunCommand(settings.ExecutablePath.Trim(), args);
+            var (code, stdout) = RunCommand(settings.ExecutablePath.Trim(), args + " --api");
+            return (code, JsonConvert.DeserializeObject<ApiResponse>(stdout));
         }
 
         private void LaunchLudusavi()
@@ -181,21 +183,36 @@ namespace LudusaviPlaynite
         private void BackUpOneGame(Game game)
         {
             pendingOperation = true;
-            var (code, stdout) = InvokeLudusavi(string.Format("backup --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
-            var result = new OperationResult { Game = game };
+            var (code, response) = InvokeLudusavi(string.Format("backup --merge --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+            if (response.Errors.UnknownGames != null && game.Source.Name == "Steam")
+            {
+                (code, response) = InvokeLudusavi(string.Format("backup --merge --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
+            }
+            var result = new OperationResult { Game = game, Response = response };
 
             if (code == 0)
             {
-                PlayniteApi.Notifications.Add(
-                    string.Format("ludusavi-backup-success-for-{0}", game.Name),
-                    translator.BackUpOneGame_Success(result),
-                    NotificationType.Info
-                );
+                if (response.Overall.TotalGames > 0)
+                {
+                    PlayniteApi.Notifications.Add(
+                        Guid.NewGuid().ToString(),
+                        translator.BackUpOneGame_Success(result),
+                        NotificationType.Info
+                    );
+                }
+                else
+                {
+                    PlayniteApi.Notifications.Add(
+                        Guid.NewGuid().ToString(),
+                        translator.BackUpOneGame_Empty(result),
+                        NotificationType.Error
+                    );
+                }
             }
             else
             {
                 PlayniteApi.Notifications.Add(
-                    string.Format("ludusavi-backup-failure-for-{0}", game.Name),
+                    Guid.NewGuid().ToString(),
                     translator.BackUpOneGame_Failure(result),
                     NotificationType.Error
                 );
@@ -206,13 +223,13 @@ namespace LudusaviPlaynite
         private void BackUpAllGames()
         {
             pendingOperation = true;
-            var (code, stdout) = InvokeLudusavi(string.Format("backup --force --path \"{0}\"", settings.BackupPath));
-            var result = new OperationResult { };
+            var (code, response) = InvokeLudusavi(string.Format("backup --merge --path \"{0}\"", settings.BackupPath));
+            var result = new OperationResult { Response = response };
 
             if (code == 0)
             {
                 PlayniteApi.Notifications.Add(
-                    "ludusavi-backup-success-all",
+                    Guid.NewGuid().ToString(),
                     translator.BackUpAllGames_Success(result),
                     NotificationType.Info
                 );
@@ -220,7 +237,7 @@ namespace LudusaviPlaynite
             else
             {
                 PlayniteApi.Notifications.Add(
-                    "ludusavi-backup-failure-all",
+                    Guid.NewGuid().ToString(),
                     translator.BackUpAllGames_Failure(result),
                     NotificationType.Error
                 );
@@ -231,24 +248,39 @@ namespace LudusaviPlaynite
         private void RestoreOneGame(Game game)
         {
             pendingOperation = true;
-            var (code, stdout) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
-            var result = new OperationResult { Game = game };
+            var (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+            if (response.Errors.UnknownGames != null && game.Source.Name == "Steam")
+            {
+                (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
+            }
+            var result = new OperationResult { Game = game, Response = response };
 
             if (code == 0)
             {
                 PlayniteApi.Notifications.Add(
-                    string.Format("ludusavi-restore-success", game.Name),
+                    Guid.NewGuid().ToString(),
                     translator.RestoreOneGame_Success(result),
                     NotificationType.Info
                 );
             }
             else
             {
-                PlayniteApi.Notifications.Add(
-                    string.Format("ludusavi-restore-failure", game.Name),
-                    translator.RestoreOneGame_Failure(result),
-                    NotificationType.Error
-                );
+                if (response.Errors.UnknownGames != null)
+                {
+                    PlayniteApi.Notifications.Add(
+                        Guid.NewGuid().ToString(),
+                        translator.RestoreOneGame_Empty(result),
+                        NotificationType.Error
+                    );
+                }
+                else
+                {
+                    PlayniteApi.Notifications.Add(
+                        Guid.NewGuid().ToString(),
+                        translator.RestoreOneGame_Failure(result),
+                        NotificationType.Error
+                    );
+                }
             }
             pendingOperation = false;
         }
@@ -256,13 +288,13 @@ namespace LudusaviPlaynite
         private void RestoreAllGames()
         {
             pendingOperation = true;
-            var (code, stdout) = InvokeLudusavi(string.Format("restore --force --path \"{0}\"", settings.BackupPath));
-            var result = new OperationResult { };
+            var (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\"", settings.BackupPath));
+            var result = new OperationResult { Response = response };
 
             if (code == 0)
             {
                 PlayniteApi.Notifications.Add(
-                    "ludusavi-restore-success-all",
+                    Guid.NewGuid().ToString(),
                     translator.RestoreAllGames_Success(result),
                     NotificationType.Info
                 );
@@ -270,7 +302,7 @@ namespace LudusaviPlaynite
             else
             {
                 PlayniteApi.Notifications.Add(
-                    "ludusavi-restore-failure-all",
+                    Guid.NewGuid().ToString(),
                     translator.RestoreAllGames_Failure(result),
                     NotificationType.Error
                 );

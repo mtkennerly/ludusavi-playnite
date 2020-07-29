@@ -1,17 +1,8 @@
 using Playnite.SDK.Models;
+using System;
 
 namespace LudusaviPlaynite
 {
-    public enum Language
-    {
-        English,
-    }
-
-    public struct OperationResult
-    {
-        public Game Game;
-    }
-
     public class Translator
     {
         private Language language;
@@ -19,7 +10,33 @@ namespace LudusaviPlaynite
         public Translator(Language language = Language.English)
         {
             // TODO: Get active language from Playnite API?
+            // https://github.com/JosefNemec/Playnite/issues/1937
             this.language = language;
+        }
+
+        public string Mib(int bytes)
+        {
+            var mib = MibUnlabelled(bytes);
+            if (mib == "0.00")
+            {
+                switch (language)
+                {
+                    default:
+                        mib = string.Format("~ {0}", mib);
+                        break;
+                }
+            }
+
+            switch (language)
+            {
+                default:
+                    return string.Format("{0} MiB", mib);
+            }
+        }
+
+        public string MibUnlabelled(int bytes)
+        {
+            return Math.Round(bytes / 1024.0 / 1024.0, 2).ToString();
         }
 
         public string Launch_Label()
@@ -126,7 +143,23 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return string.Format("Backed up saves for {0}", result.Game.Name);
+                    return string.Format(
+                        "Backed up saves for {0} ({1})",
+                        result.Game.Name,
+                        Mib(result.Response.Overall.ProcessedBytes)
+                    );
+            }
+        }
+
+        public string BackUpOneGame_Empty(OperationResult result)
+        {
+            switch (language)
+            {
+                default:
+                    return string.Format(
+                        "No save data found to back up for {0}",
+                        result.Game.Name
+                    );
             }
         }
 
@@ -135,7 +168,12 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return string.Format("Unable to back up saves for {0}", result.Game.Name);
+                    return string.Format(
+                        "Backed up saves for {0} ({1} of {2}), but some saves failed",
+                        result.Game.Name,
+                        Mib(result.Response.Overall.ProcessedBytes),
+                        Mib(result.Response.Overall.TotalBytes)
+                    );
             }
         }
 
@@ -144,7 +182,11 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Backed up saves for all games";
+                    return string.Format(
+                        "Backed up saves for {0} games ({1})",
+                        result.Response.Overall.ProcessedGames,
+                        Mib(result.Response.Overall.ProcessedBytes)
+                    );
             }
         }
 
@@ -153,7 +195,13 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Unable to back up saves for some games";
+                    return string.Format(
+                        "Backed up saves for {0} of {1} games ({2} of {3}), but some failed",
+                        result.Response.Overall.ProcessedGames,
+                        result.Response.Overall.TotalGames,
+                        Mib(result.Response.Overall.ProcessedBytes),
+                        Mib(result.Response.Overall.TotalBytes)
+                    );
             }
         }
 
@@ -162,7 +210,23 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return string.Format("Restored saves for {0}", result.Game.Name);
+                    return string.Format(
+                        "Restored saves for {0} ({1})",
+                        result.Game.Name,
+                        Mib(result.Response.Overall.ProcessedBytes)
+                    );
+            }
+        }
+
+        public string RestoreOneGame_Empty(OperationResult result)
+        {
+            switch (language)
+            {
+                default:
+                    return string.Format(
+                        "No save data found to restore for {0}",
+                        result.Game.Name
+                    );
             }
         }
 
@@ -171,7 +235,12 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return string.Format("Unable to back up saves for {0}", result.Game.Name);
+                    return string.Format(
+                        "Restored saves for {0} ({1} of {2}), but some saves failed",
+                        result.Game.Name,
+                        Mib(result.Response.Overall.ProcessedBytes),
+                        Mib(result.Response.Overall.TotalBytes)
+                    );
             }
         }
 
@@ -180,7 +249,11 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Restored saves for all games";
+                    return string.Format(
+                        "Restored saves for {0} games ({1})",
+                        result.Response.Overall.ProcessedGames,
+                        Mib(result.Response.Overall.ProcessedBytes)
+                    );
             }
         }
 
@@ -189,7 +262,13 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Unable to restore saves for some games";
+                    return string.Format(
+                        "Restored saves for {0} of {1} games ({2} of {3}), but some failed",
+                        result.Response.Overall.ProcessedGames,
+                        result.Response.Overall.TotalGames,
+                        Mib(result.Response.Overall.ProcessedBytes),
+                        Mib(result.Response.Overall.TotalBytes)
+                    );
             }
         }
 

@@ -14,6 +14,9 @@ back up your save data using [Ludusavi](https://github.com/mtkennerly/ludusavi).
 ### Menu actions
 > ![Screenshot of menu actions](docs/actions.png)
 
+### Notifications
+> ![Screenshot of notifications](docs/notifications.png)
+
 ### Settings
 > ![Screenshot of settings](docs/settings.png)
 
