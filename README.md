@@ -53,6 +53,11 @@ library sources, so you'll need to configure Ludusavi's roots separately.
 * The backup and restore operations run in the background after you start them.
   You'll get a notification in Playnite when they finish. If you try to start
   another operation before the first one finishes, you'll have to wait.
+* When processing a single game, the plugin will first ask Ludusavi to look it
+  up by name. Sometimes, that can fail since Playnite and Ludusavi don't always
+  use the same names, so if Ludusavi doesn't recognize it, and if the game is
+  from Steam, then the plugin will ask again with the game's Steam ID.
+  If that fails too, then you'll get a notification that no data was found.
 * For backups, the plugin always sets Ludusavi's `--merge` flag. This way,
   if you back up saves for one game, it will not interfere with any backups
   you may have for another game.
