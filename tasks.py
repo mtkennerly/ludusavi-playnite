@@ -15,11 +15,8 @@ def get_version():
 
 
 @task
-def build(ctx, debug=False):
-    if debug:
-        ctx.run("dotnet build src")
-    else:
-        ctx.run("dotnet build src -c Release")
+def build(ctx):
+    ctx.run("dotnet build src -c Release")
 
 
 @task

@@ -30,6 +30,12 @@ There are two ways to install it:
   * Extract it into a subfolder of the Playnite extensions directory
     (e.g., `C:/Users/<YOUR_NAME>/AppData/Local/Playnite/Extensions/Ludusavi`)
 
+### Configuration
+The plugin provides some of its own configuration (see the screenshots below),
+but you'll also need to open Ludusavi to configure it as needed. For example,
+at this time, the plugin is not able to tell Ludusavi about your Playnite
+library sources, so you'll need to configure Ludusavi's roots separately.
+
 ## Screenshots
 ### Prompt after exiting a game
 > ![Screenshot of prompt after exiting a game](docs/prompt.png)

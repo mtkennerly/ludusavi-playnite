@@ -18,8 +18,7 @@ pre-commit install
 
 ### Commands
 * Build:
-  * Release: `invoke build`
-  * Debug: `invoke build --debug`
+  * `invoke build`
 * Auto-format code:
   * `invoke style`
 * Pack for release (creates `dist` folder with `*.zip` and `*.pext`):
