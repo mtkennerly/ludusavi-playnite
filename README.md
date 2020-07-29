@@ -7,6 +7,29 @@ back up your save data using [Ludusavi](https://github.com/mtkennerly/ludusavi).
 * On-demand backup and restore for all saves.
 * Automatically back up a game when you finish playing it.
 
+## Setup
+### Ludusavi
+Refer to the [Ludusavi project](https://github.com/mtkennerly/ludusavi)
+for instructions on how to install Ludusavi itself. You'll need Ludusavi
+version 0.6.0 or newer.
+
+By default, the plugin will look for the Ludusavi executable in your `PATH`
+environment variable, but you can also configure the plugin with the full
+path to the executable.
+
+### Plugin
+You can download the plugin from the
+[releases page](https://github.com/mtkennerly/ludusavi-playnite/releases).
+There are two ways to install it:
+
+* Using the `*.pext` file:
+  * Download `ludusavi-playnite-v*.pext`
+  * Drag and drop the file into Playnite
+* Using the `*.zip` file:
+  * Download `ludusavi-playnite-v*.zip`
+  * Extract it into a subfolder of the Playnite extensions directory
+    (e.g., `C:/Users/<YOUR_NAME>/AppData/Local/Playnite/Extensions/Ludusavi`)
+
 ## Screenshots
 ### Prompt after exiting a game
 > ![Screenshot of prompt after exiting a game](docs/prompt.png)
