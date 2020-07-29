@@ -49,5 +49,16 @@ library sources, so you'll need to configure Ludusavi's roots separately.
 ### Settings
 > ![Screenshot of settings](docs/settings.png)
 
+## Other notes
+* The backup and restore operations run in the background after you start them.
+  You'll get a notification in Playnite when they finish. If you try to start
+  another operation before the first one finishes, you'll have to wait.
+* For backups, the plugin always sets Ludusavi's `--merge` flag. This way,
+  if you back up saves for one game, it will not interfere with any backups
+  you may have for another game.
+* Only one set of save backups is kept for each game. If you decide that
+  you'd like to archive a particular set of backups, simply copy them to an
+  external drive or cloud storage.
+
 ## Development
 Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md).
