@@ -32,7 +32,7 @@ namespace LudusaviPlaynite
             }
         }
 
-        public string BackUpOneGame_Label()
+        public string BackUpLastGame_Label()
         {
             switch (language)
             {
@@ -68,7 +68,7 @@ namespace LudusaviPlaynite
             }
         }
 
-        public string RestoreOneGame_Label()
+        public string RestoreLastGame_Label()
         {
             switch (language)
             {
@@ -119,6 +119,15 @@ namespace LudusaviPlaynite
             {
                 default:
                     return "You haven't played anything yet in this session.";
+            }
+        }
+
+        public string UnableToRunLudusavi()
+        {
+            switch (language)
+            {
+                default:
+                    return "Unable to run Ludusavi.";
             }
         }
 
