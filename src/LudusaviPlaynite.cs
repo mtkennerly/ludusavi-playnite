@@ -198,10 +198,10 @@ namespace LudusaviPlaynite
         private void BackUpOneGame(Game game)
         {
             pendingOperation = true;
-            var (code, response) = InvokeLudusavi(string.Format("backup --merge --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+            var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
             if (response?.Errors.UnknownGames != null && game.Source.Name == "Steam")
             {
-                (code, response) = InvokeLudusavi(string.Format("backup --merge --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
+                (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
             }
 
             if (response == null)
@@ -246,7 +246,7 @@ namespace LudusaviPlaynite
         private void BackUpAllGames()
         {
             pendingOperation = true;
-            var (code, response) = InvokeLudusavi(string.Format("backup --merge --path \"{0}\"", settings.BackupPath));
+            var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\"", settings.BackupPath));
 
             if (response == null)
             {
