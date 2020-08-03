@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using ByteSizeLib;
+using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -125,12 +127,47 @@ namespace LudusaviPlaynite
 
         private void NotifyInfo(string message)
         {
-            PlayniteApi.Notifications.Add(Guid.NewGuid().ToString(), message, NotificationType.Info);
+            NotifyInfo(message, () => { });
+        }
+
+        private void NotifyInfo(string message, Action action)
+        {
+            PlayniteApi.Notifications.Add(new NotificationMessage(Guid.NewGuid().ToString(), message, NotificationType.Info, action));
         }
 
         private void NotifyError(string message)
         {
-            PlayniteApi.Notifications.Add(Guid.NewGuid().ToString(), message, NotificationType.Error);
+            NotifyError(message, () => { });
+        }
+
+        private void NotifyError(string message, Action action)
+        {
+            PlayniteApi.Notifications.Add(new NotificationMessage(Guid.NewGuid().ToString(), message, NotificationType.Error, action));
+        }
+
+        private void ShowFullResults(ApiResponse response)
+        {
+            var tempFile = Path.GetTempPath() + Guid.NewGuid().ToString() + ".html";
+            using (StreamWriter sw = File.CreateText(tempFile))
+            {
+                sw.WriteLine("<html><head><style>body { background-color: black; color: white; font-family: sans-serif; }</style></head><body><ul>");
+                foreach (var game in response.Games)
+                {
+                    sw.WriteLine(string.Format("<li>{0}</li>", translator.FullListGameLineItem(game.Key, game.Value)));
+                }
+                sw.WriteLine("</ul></body></html>");
+            }
+
+            var webview = PlayniteApi.WebViews.CreateView(640, 480);
+            webview.Navigate(tempFile);
+            webview.OpenDialog();
+
+            try
+            {
+                File.Delete(tempFile);
+            }
+            catch
+            { }
         }
 
         private (int, string) RunCommand(string command, string args)
@@ -302,11 +339,11 @@ namespace LudusaviPlaynite
 
                 if (code == 0)
                 {
-                    NotifyInfo(translator.BackUpAllGames_Success(result));
+                    NotifyInfo(translator.BackUpAllGames_Success(result), () => ShowFullResults(result.Response));
                 }
                 else
                 {
-                    NotifyError(translator.BackUpAllGames_Failure(result));
+                    NotifyError(translator.BackUpAllGames_Failure(result), () => ShowFullResults(result.Response));
                 }
             }
             pendingOperation = false;
@@ -369,11 +406,11 @@ namespace LudusaviPlaynite
 
                 if (code == 0)
                 {
-                    NotifyInfo(translator.RestoreAllGames_Success(result));
+                    NotifyInfo(translator.RestoreAllGames_Success(result), () => ShowFullResults(result.Response));
                 }
                 else
                 {
-                    NotifyError(translator.RestoreAllGames_Failure(result));
+                    NotifyError(translator.RestoreAllGames_Failure(result), () => ShowFullResults(result.Response));
                 }
             }
 

@@ -1,5 +1,6 @@
 using ByteSizeLib;
 using System;
+using System.Linq;
 
 namespace LudusaviPlaynite
 {
@@ -203,7 +204,7 @@ namespace LudusaviPlaynite
             {
                 default:
                     return string.Format(
-                        "Backed up saves for {0} games ({1})",
+                        "Backed up saves for {0} games ({1}); click for full list",
                         result.Response.Overall.ProcessedGames,
                         AdjustedSize(result.Response.Overall.ProcessedBytes)
                     );
@@ -216,7 +217,7 @@ namespace LudusaviPlaynite
             {
                 default:
                     return string.Format(
-                        "Backed up saves for {0} of {1} games ({2} of {3}), but some failed",
+                        "Backed up saves for {0} of {1} games ({2} of {3}), but some failed; click for full list",
                         result.Response.Overall.ProcessedGames,
                         result.Response.Overall.TotalGames,
                         AdjustedSize(result.Response.Overall.ProcessedBytes),
@@ -270,7 +271,7 @@ namespace LudusaviPlaynite
             {
                 default:
                     return string.Format(
-                        "Restored saves for {0} games ({1})",
+                        "Restored saves for {0} games ({1}); click for full list",
                         result.Response.Overall.ProcessedGames,
                         AdjustedSize(result.Response.Overall.ProcessedBytes)
                     );
@@ -283,12 +284,53 @@ namespace LudusaviPlaynite
             {
                 default:
                     return string.Format(
-                        "Restored saves for {0} of {1} games ({2} of {3}), but some failed",
+                        "Restored saves for {0} of {1} games ({2} of {3}), but some failed; click for full list",
                         result.Response.Overall.ProcessedGames,
                         result.Response.Overall.TotalGames,
                         AdjustedSize(result.Response.Overall.ProcessedBytes),
                         AdjustedSize(result.Response.Overall.TotalBytes)
                     );
+            }
+        }
+
+        public string FullListGameLineItem_Failed()
+        {
+            switch (language)
+            {
+                default:
+                    return "FAILED";
+            }
+        }
+
+        public string FullListGameLineItem_Ignored()
+        {
+            switch (language)
+            {
+                default:
+                    return "IGNORED";
+            }
+        }
+
+        public string FullListGameLineItem(string name, ApiGame game)
+        {
+            var size = AdjustedSize(game.Files.Sum(x => x.Value.Bytes));
+            var failed = game.Files.Any(x => x.Value.Failed) || game.Registry.Any(x => x.Value.Failed);
+
+            switch (language)
+            {
+                default:
+                    if (failed)
+                    {
+                        return string.Format("[{0}] {1} ({2})", FullListGameLineItem_Failed(), name, size);
+                    }
+                    else if (game.Decision == "Ignored")
+                    {
+                        return string.Format("[{0}] {1} ({2})", FullListGameLineItem_Ignored(), name, size);
+                    }
+                    else
+                    {
+                        return string.Format("{0} ({1})", name, size);
+                    }
             }
         }
 
