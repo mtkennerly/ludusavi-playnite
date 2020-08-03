@@ -317,5 +317,14 @@ namespace LudusaviPlaynite
                     return "Look up non-PC games by adding this suffix to their names:";
             }
         }
+
+        public string RetryNonPcGamesWithoutSuffix_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "If not found with the suffix, then try again without it";
+            }
+        }
     }
 }

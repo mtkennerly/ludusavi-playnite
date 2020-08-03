@@ -38,6 +38,10 @@ namespace LudusaviPlaynite
 
         public string SuffixForNonPcGameNames { get; set; } = " (<platform>)";
 
+        public bool RetryNonPcGamesWithoutSuffix { get; set; } = false;
+        [JsonIgnore]
+        public string RetryNonPcGamesWithoutSuffix_Label { get; set; } = new Translator().RetryNonPcGamesWithoutSuffix_Label();
+
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.
         [JsonIgnore]
@@ -70,6 +74,7 @@ namespace LudusaviPlaynite
                 OnlyBackupOnGameStoppedIfPc = savedSettings.OnlyBackupOnGameStoppedIfPc;
                 AddSuffixForNonPcGameNames = savedSettings.AddSuffixForNonPcGameNames;
                 SuffixForNonPcGameNames = savedSettings.SuffixForNonPcGameNames;
+                RetryNonPcGamesWithoutSuffix = savedSettings.RetryNonPcGamesWithoutSuffix;
             }
         }
 

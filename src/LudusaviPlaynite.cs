@@ -218,7 +218,7 @@ namespace LudusaviPlaynite
 
         string GetGameName(Game game)
         {
-            if (IsOnPc(game) && settings.AddSuffixForNonPcGameNames)
+            if (!IsOnPc(game) && settings.AddSuffixForNonPcGameNames)
             {
                 return string.Format("{0}{1}", game.Name, settings.SuffixForNonPcGameNames.Replace("<platform>", game.Platform?.Name));
             }
@@ -248,6 +248,10 @@ namespace LudusaviPlaynite
             {
                 (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
             }
+            if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
+            {
+                (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+            }
 
             if (response == null)
             {
@@ -258,7 +262,14 @@ namespace LudusaviPlaynite
                 var result = new OperationResult { Game = game, Name = name, Response = (ApiResponse)response };
                 if (code == 0)
                 {
-                    NotifyInfo(translator.BackUpOneGame_Success(result));
+                    if (response?.Overall.TotalGames > 0)
+                    {
+                        NotifyInfo(translator.BackUpOneGame_Success(result));
+                    }
+                    else
+                    {
+                        NotifyError(translator.BackUpOneGame_Empty(result));
+                    }
                 }
                 else
                 {
@@ -310,6 +321,10 @@ namespace LudusaviPlaynite
             if (response?.Errors.UnknownGames != null && IsOnSteam(game))
             {
                 (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
+            }
+            if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
+            {
+                (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
             }
 
             if (response == null)
