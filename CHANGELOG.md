@@ -11,6 +11,7 @@
     so that you can benefit from the latest updates without opening Ludusavi itself.
     If the update doesn't work (such as when your Internet is down), the plugin
     will still operate as normal.
+  * File size units are now adjusted based on the size, rather than always using MiB.
 
 ## v0.1.0 (2020-07-29)
 

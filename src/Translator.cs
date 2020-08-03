@@ -1,3 +1,4 @@
+using ByteSizeLib;
 using System;
 
 namespace LudusaviPlaynite
@@ -13,12 +14,12 @@ namespace LudusaviPlaynite
             this.language = language;
         }
 
-        public string Mib(int bytes)
+        public string AdjustedSize(int bytes)
         {
             switch (language)
             {
                 default:
-                    return string.Format("{0} MiB", Math.Round(bytes / 1024.0 / 1024.0, 2).ToString());
+                    return ByteSize.FromBytes(bytes).ToBinaryString();
             }
         }
 
@@ -138,7 +139,7 @@ namespace LudusaviPlaynite
                     return string.Format(
                         "Backed up saves for {0} ({1})",
                         result.Name,
-                        Mib(result.Response.Overall.ProcessedBytes)
+                        AdjustedSize(result.Response.Overall.ProcessedBytes)
                     );
             }
         }
@@ -163,8 +164,8 @@ namespace LudusaviPlaynite
                     return string.Format(
                         "Backed up saves for {0} ({1} of {2}), but some saves failed",
                         result.Name,
-                        Mib(result.Response.Overall.ProcessedBytes),
-                        Mib(result.Response.Overall.TotalBytes)
+                        AdjustedSize(result.Response.Overall.ProcessedBytes),
+                        AdjustedSize(result.Response.Overall.TotalBytes)
                     );
             }
         }
@@ -177,7 +178,7 @@ namespace LudusaviPlaynite
                     return string.Format(
                         "Backed up saves for {0} games ({1})",
                         result.Response.Overall.ProcessedGames,
-                        Mib(result.Response.Overall.ProcessedBytes)
+                        AdjustedSize(result.Response.Overall.ProcessedBytes)
                     );
             }
         }
@@ -191,8 +192,8 @@ namespace LudusaviPlaynite
                         "Backed up saves for {0} of {1} games ({2} of {3}), but some failed",
                         result.Response.Overall.ProcessedGames,
                         result.Response.Overall.TotalGames,
-                        Mib(result.Response.Overall.ProcessedBytes),
-                        Mib(result.Response.Overall.TotalBytes)
+                        AdjustedSize(result.Response.Overall.ProcessedBytes),
+                        AdjustedSize(result.Response.Overall.TotalBytes)
                     );
             }
         }
@@ -205,7 +206,7 @@ namespace LudusaviPlaynite
                     return string.Format(
                         "Restored saves for {0} ({1})",
                         result.Name,
-                        Mib(result.Response.Overall.ProcessedBytes)
+                        AdjustedSize(result.Response.Overall.ProcessedBytes)
                     );
             }
         }
@@ -230,8 +231,8 @@ namespace LudusaviPlaynite
                     return string.Format(
                         "Restored saves for {0} ({1} of {2}), but some saves failed",
                         result.Name,
-                        Mib(result.Response.Overall.ProcessedBytes),
-                        Mib(result.Response.Overall.TotalBytes)
+                        AdjustedSize(result.Response.Overall.ProcessedBytes),
+                        AdjustedSize(result.Response.Overall.TotalBytes)
                     );
             }
         }
@@ -244,7 +245,7 @@ namespace LudusaviPlaynite
                     return string.Format(
                         "Restored saves for {0} games ({1})",
                         result.Response.Overall.ProcessedGames,
-                        Mib(result.Response.Overall.ProcessedBytes)
+                        AdjustedSize(result.Response.Overall.ProcessedBytes)
                     );
             }
         }
@@ -258,8 +259,8 @@ namespace LudusaviPlaynite
                         "Restored saves for {0} of {1} games ({2} of {3}), but some failed",
                         result.Response.Overall.ProcessedGames,
                         result.Response.Overall.TotalGames,
-                        Mib(result.Response.Overall.ProcessedBytes),
-                        Mib(result.Response.Overall.TotalBytes)
+                        AdjustedSize(result.Response.Overall.ProcessedBytes),
+                        AdjustedSize(result.Response.Overall.TotalBytes)
                     );
             }
         }

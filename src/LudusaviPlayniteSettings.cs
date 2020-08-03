@@ -42,11 +42,6 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string RetryNonPcGamesWithoutSuffix_Label { get; set; } = new Translator().RetryNonPcGamesWithoutSuffix_Label();
 
-        // Playnite serializes settings object to a JSON object and saves it as text file.
-        // If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.
-        [JsonIgnore]
-        public bool OptionThatWontBeSaved { get; set; } = false;
-
         // Parameterless constructor must exist if you want to use LoadPluginSettings method.
         public LudusaviPlayniteSettings()
         {
