@@ -1,4 +1,4 @@
-## Unreleased
+## v0.2.0 (2020-08-03)
 
 [Ludusavi v0.7.0 or newer](https://github.com/mtkennerly/ludusavi/releases) is now required.
 
@@ -15,7 +15,8 @@
   * When doing backups, the plugin now asks Ludusavi to try updating its manifest
     so that you can benefit from the latest updates without opening Ludusavi itself.
     If the update doesn't work (such as when your Internet is down), the plugin
-    will still operate as normal.
+    will still operate as normal; a connection is only required for the very first
+    download of the manifest.
   * File size units are now adjusted based on the size, rather than always using MiB.
   * The default backup directory now writes out the user folder in full rather
     than using the `~` placeholder (although that is still supported).
