@@ -48,7 +48,7 @@ namespace LudusaviPlaynite
                         {
                             return;
                         }
-                        if (UserConsents(translator.BackUpOneGame_Confirm(lastGamePlayed)))
+                        if (UserConsents(translator.BackUpOneGame_Confirm(GetGameName(lastGamePlayed))))
                         {
                             await Task.Run(() => BackUpOneGame(lastGamePlayed));
                         }
@@ -76,7 +76,7 @@ namespace LudusaviPlaynite
                         {
                             return;
                         }
-                        if (UserConsents(translator.RestoreOneGame_Confirm(lastGamePlayed)))
+                        if (UserConsents(translator.RestoreOneGame_Confirm(GetGameName(lastGamePlayed))))
                         {
                             await Task.Run(() => RestoreOneGame(lastGamePlayed));
                         }
@@ -104,9 +104,9 @@ namespace LudusaviPlaynite
             playedSomething = true;
             lastGamePlayed = game;
 
-            if (settings.DoBackupOnGameStopped)
+            if (settings.DoBackupOnGameStopped && (game.Platform?.Name == "PC" || !settings.OnlyBackupOnGameStoppedIfPc))
             {
-                if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game)))
+                if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(GetGameName(game))))
                 {
                     BackUpOneGame(game);
                 }
@@ -195,11 +195,25 @@ namespace LudusaviPlaynite
             return choice == MessageBoxResult.Yes;
         }
 
+        string GetGameName(Game game)
+        {
+            if (game.Platform?.Name != "PC" && settings.AddSuffixForNonPcGameNames)
+            {
+                return string.Format("{0}{1}", game.Name, settings.SuffixForNonPcGameNames.Replace("<platform>", game.Platform?.Name));
+            }
+            else
+            {
+                return game.Name;
+            }
+        }
+
         private void BackUpOneGame(Game game)
         {
             pendingOperation = true;
-            var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
-            if (response?.Errors.UnknownGames != null && game.Source.Name == "Steam")
+            var name = GetGameName(game);
+
+            var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, name));
+            if (response?.Errors.UnknownGames != null && game.Source?.Name == "Steam")
             {
                 (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
             }
@@ -210,18 +224,18 @@ namespace LudusaviPlaynite
             }
             else
             {
-                var result = new OperationResult { Game = game, Response = (ApiResponse)response };
+                var result = new OperationResult { Game = game, Name = name, Response = (ApiResponse)response };
                 if (code == 0)
                 {
-                    if (response?.Overall.TotalGames > 0)
-                    {
-                        PlayniteApi.Notifications.Add(
-                            Guid.NewGuid().ToString(),
-                            translator.BackUpOneGame_Success(result),
-                            NotificationType.Info
-                        );
-                    }
-                    else
+                    PlayniteApi.Notifications.Add(
+                        Guid.NewGuid().ToString(),
+                        translator.BackUpOneGame_Success(result),
+                        NotificationType.Info
+                    );
+                }
+                else
+                {
+                    if (response?.Errors.UnknownGames != null)
                     {
                         PlayniteApi.Notifications.Add(
                             Guid.NewGuid().ToString(),
@@ -229,14 +243,14 @@ namespace LudusaviPlaynite
                             NotificationType.Error
                         );
                     }
-                }
-                else
-                {
-                    PlayniteApi.Notifications.Add(
-                        Guid.NewGuid().ToString(),
-                        translator.BackUpOneGame_Failure(result),
-                        NotificationType.Error
-                    );
+                    else
+                    {
+                        PlayniteApi.Notifications.Add(
+                            Guid.NewGuid().ToString(),
+                            translator.BackUpOneGame_Failure(result),
+                            NotificationType.Error
+                        );
+                    }
                 }
             }
 
@@ -279,8 +293,10 @@ namespace LudusaviPlaynite
         private void RestoreOneGame(Game game)
         {
             pendingOperation = true;
-            var (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
-            if (response?.Errors.UnknownGames != null && game.Source.Name == "Steam")
+            var name = GetGameName(game);
+
+            var (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, name));
+            if (response?.Errors.UnknownGames != null && game.Source?.Name == "Steam")
             {
                 (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
             }
@@ -291,8 +307,7 @@ namespace LudusaviPlaynite
             }
             else
             {
-                var result = new OperationResult { Game = game, Response = (ApiResponse)response };
-
+                var result = new OperationResult { Game = game, Name = name, Response = (ApiResponse)response };
                 if (code == 0)
                 {
                     PlayniteApi.Notifications.Add(

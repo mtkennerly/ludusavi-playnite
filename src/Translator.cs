@@ -1,4 +1,3 @@
-using Playnite.SDK.Models;
 using System;
 
 namespace LudusaviPlaynite
@@ -41,12 +40,12 @@ namespace LudusaviPlaynite
             }
         }
 
-        public string BackUpOneGame_Confirm(Game game)
+        public string BackUpOneGame_Confirm(string gameName)
         {
             switch (language)
             {
                 default:
-                    return string.Format("Back up save data for {0}?", game.Name);
+                    return string.Format("Back up save data for {0}?", gameName);
             }
         }
 
@@ -77,12 +76,12 @@ namespace LudusaviPlaynite
             }
         }
 
-        public string RestoreOneGame_Confirm(Game game)
+        public string RestoreOneGame_Confirm(string gameName)
         {
             switch (language)
             {
                 default:
-                    return string.Format("Restore save data for {0}?", game.Name);
+                    return string.Format("Restore save data for {0}?", gameName);
             }
         }
 
@@ -138,7 +137,7 @@ namespace LudusaviPlaynite
                 default:
                     return string.Format(
                         "Backed up saves for {0} ({1})",
-                        result.Game.Name,
+                        result.Name,
                         Mib(result.Response.Overall.ProcessedBytes)
                     );
             }
@@ -151,7 +150,7 @@ namespace LudusaviPlaynite
                 default:
                     return string.Format(
                         "No save data found to back up for {0}",
-                        result.Game.Name
+                        result.Name
                     );
             }
         }
@@ -163,7 +162,7 @@ namespace LudusaviPlaynite
                 default:
                     return string.Format(
                         "Backed up saves for {0} ({1} of {2}), but some saves failed",
-                        result.Game.Name,
+                        result.Name,
                         Mib(result.Response.Overall.ProcessedBytes),
                         Mib(result.Response.Overall.TotalBytes)
                     );
@@ -205,7 +204,7 @@ namespace LudusaviPlaynite
                 default:
                     return string.Format(
                         "Restored saves for {0} ({1})",
-                        result.Game.Name,
+                        result.Name,
                         Mib(result.Response.Overall.ProcessedBytes)
                     );
             }
@@ -218,7 +217,7 @@ namespace LudusaviPlaynite
                 default:
                     return string.Format(
                         "No save data found to restore for {0}",
-                        result.Game.Name
+                        result.Name
                     );
             }
         }
@@ -230,7 +229,7 @@ namespace LudusaviPlaynite
                 default:
                     return string.Format(
                         "Restored saves for {0} ({1} of {2}), but some saves failed",
-                        result.Game.Name,
+                        result.Name,
                         Mib(result.Response.Overall.ProcessedBytes),
                         Mib(result.Response.Overall.TotalBytes)
                     );
@@ -270,7 +269,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Name or full path of the Ludusavi executable";
+                    return "Name or full path of the Ludusavi executable:";
             }
         }
 
@@ -279,7 +278,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Full path to directory for storing backups";
+                    return "Full path to directory for storing backups:";
             }
         }
 
@@ -297,7 +296,25 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "...but ask first before doing the backup";
+                    return "Ask first instead of doing it automatically";
+            }
+        }
+
+        public string OnlyBackupOnGameStoppedIfPc_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Only do this for PC games";
+            }
+        }
+
+        public string AddSuffixForNonPcGameNames_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Look up non-PC games by adding this suffix to their names:";
             }
         }
     }

@@ -64,6 +64,18 @@ library sources, so you'll need to configure Ludusavi's roots separately.
 * Only one set of save backups is kept for each game. If you decide that
   you'd like to archive a particular set of backups, simply copy them to an
   external drive or cloud storage.
+<!--
+* Although Ludusavi only knows about PC games by default, you can add custom
+  entries in Ludusavi for non-PC games if you'd like. The plugin provides a
+  setting to either look up those custom entries by the game's name on its own
+  or with a suffix, in case you need multiple custom entries for the same game
+  name on different platforms.
+
+  Within the suffix, you can write `<platform>` and it will be replaced by
+  the actual platform name. For example, if you enable the default suffix and
+  you'd like a custom entry for `Some Game` on Nintendo 64, then in Ludusavi
+  you would create a custom entry called `Some Game (Nintendo 64)`.
+-->
 
 ## Development
 Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md).

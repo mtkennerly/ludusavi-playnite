@@ -28,6 +28,16 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string AskBackupOnGameStopped_Label { get; set; } = new Translator().AskBackupOnGameStopped_Label();
 
+        public bool OnlyBackupOnGameStoppedIfPc { get; set; } = true;
+        [JsonIgnore]
+        public string OnlyBackupOnGameStoppedIfPc_Label { get; set; } = new Translator().OnlyBackupOnGameStoppedIfPc_Label();
+
+        public bool AddSuffixForNonPcGameNames { get; set; } = false;
+        [JsonIgnore]
+        public string AddSuffixForNonPcGameNames_Label { get; set; } = new Translator().AddSuffixForNonPcGameNames_Label();
+
+        public string SuffixForNonPcGameNames { get; set; } = " (<platform>)";
+
         // Playnite serializes settings object to a JSON object and saves it as text file.
         // If you want to exclude some property from being saved then use `JsonIgnore` ignore attribute.
         [JsonIgnore]
@@ -57,6 +67,9 @@ namespace LudusaviPlaynite
                 BackupPath = savedSettings.BackupPath;
                 DoBackupOnGameStopped = savedSettings.DoBackupOnGameStopped;
                 AskBackupOnGameStopped = savedSettings.AskBackupOnGameStopped;
+                OnlyBackupOnGameStoppedIfPc = savedSettings.OnlyBackupOnGameStoppedIfPc;
+                AddSuffixForNonPcGameNames = savedSettings.AddSuffixForNonPcGameNames;
+                SuffixForNonPcGameNames = savedSettings.SuffixForNonPcGameNames;
             }
         }
 
