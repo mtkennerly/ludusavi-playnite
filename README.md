@@ -7,6 +7,11 @@ back up your save data using [Ludusavi](https://github.com/mtkennerly/ludusavi).
 * On-demand backup and restore for all saves.
 * Automatically back up a game when you finish playing it.
 
+The [info on what to back up](https://github.com/mtkennerly/ludusavi-manifest)
+is ultimately sourced from [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home),
+so please contribute any new or fixed data back to the wiki itself, and your
+improvements will be incorporated into Ludusavi's data as well.
+
 ## Setup
 ### Ludusavi
 Refer to the [Ludusavi project](https://github.com/mtkennerly/ludusavi)
