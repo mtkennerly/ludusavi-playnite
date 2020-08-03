@@ -16,7 +16,7 @@ namespace LudusaviPlaynite
     public class LudusaviPlaynite : Plugin
     {
         private static readonly ILogger logger = LogManager.GetLogger();
-        private LudusaviPlayniteSettings settings { get; set; }
+        public LudusaviPlayniteSettings settings { get; set; }
         public override Guid Id { get; } = Guid.Parse("72e2de43-d859-44d8-914e-4277741c8208");
 
         private Translator translator = new Translator();
@@ -120,7 +120,7 @@ namespace LudusaviPlaynite
 
         public override UserControl GetSettingsView(bool firstRunSettings)
         {
-            return new LudusaviPlayniteSettingsView();
+            return new LudusaviPlayniteSettingsView(this, this.translator);
         }
 
         private void NotifyInfo(string message)

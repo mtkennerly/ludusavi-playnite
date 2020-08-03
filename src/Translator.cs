@@ -23,6 +23,33 @@ namespace LudusaviPlaynite
             }
         }
 
+        public string SelectFileExecutableFilter()
+        {
+            switch (language)
+            {
+                default:
+                    return "Executable|*.exe";
+            }
+        }
+
+        public string BrowseButton()
+        {
+            switch (language)
+            {
+                default:
+                    return "Browse";
+            }
+        }
+
+        public string OpenButton()
+        {
+            switch (language)
+            {
+                default:
+                    return "Open";
+            }
+        }
+
         public string Launch_Label()
         {
             switch (language)

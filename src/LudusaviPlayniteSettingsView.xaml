@@ -9,11 +9,18 @@
         <StackPanel Margin="15">
             <TextBlock Text="{Binding ExecutablePath_Label}" />
             <TextBox Margin="0,2,0,0" Text="{Binding ExecutablePath}" />
+            <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                <Button Content="{Binding BrowseButton_Label}" Click="OnBrowseExecutablePath" />
+            </StackPanel>
         </StackPanel>
 
         <StackPanel Margin="15">
             <TextBlock Text="{Binding BackupPath_Label}" />
             <TextBox Margin="0,2,0,0" Text="{Binding BackupPath}" />
+            <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                <Button Content="{Binding BrowseButton_Label}" Click="OnBrowseBackupPath" />
+                <Button Margin="10,0,0,0" Content="{Binding OpenButton_Label}" Click="OnOpenBackupPath" />
+            </StackPanel>
         </StackPanel>
 
         <StackPanel Margin="15">

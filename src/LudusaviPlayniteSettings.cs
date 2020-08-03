@@ -5,18 +5,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using System.IO;
 
 namespace LudusaviPlaynite
 {
-    public class LudusaviPlayniteSettings : ISettings
+    public class LudusaviPlayniteSettings : ISettings, INotifyPropertyChanged
     {
         private readonly LudusaviPlaynite plugin;
 
-        public string ExecutablePath { get; set; } = "ludusavi";
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        [JsonIgnore]
+        public string BrowseButton_Label { get; set; } = new Translator().BrowseButton();
+        [JsonIgnore]
+        public string OpenButton_Label { get; set; } = new Translator().OpenButton();
+
+        private string executablePath = "ludusavi";
+        public string ExecutablePath { get { return executablePath; } set { executablePath = value; NotifyPropertyChanged("ExecutablePath"); } }
         [JsonIgnore]
         public string ExecutablePath_Label { get; set; } = new Translator().ExecutablePath_Label();
 
-        public string BackupPath { get; set; } = "~/ludusavi-playnite";
+        private string backupPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "ludusavi-playnite");
+        public string BackupPath { get { return backupPath; } set { backupPath = value; NotifyPropertyChanged("BackupPath"); } }
         [JsonIgnore]
         public string BackupPath_Label { get; set; } = new Translator().BackupPath_Label();
 
