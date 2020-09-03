@@ -11,3 +11,6 @@ Links:
     Url: https://github.com/mtkennerly/ludusavi
   - Name: Manifest homepage
     Url: https://github.com/mtkennerly/ludusavi-manifest
+UpdaterConfig:
+  GitHubUser: mtkennerly
+  GitHubRepo: ludusavi-playnite

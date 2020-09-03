@@ -1,3 +1,8 @@
+## Unreleased
+
+* Added:
+  * Support for [erri120's extension update notifier](https://github.com/erri120/Playnite.Extensions#extensions-updater).
+
 ## v0.2.0 (2020-08-03)
 
 [Ludusavi v0.7.0 or newer](https://github.com/mtkennerly/ludusavi/releases) is now required.
