@@ -3,7 +3,7 @@ This repository contains a [Playnite](https://playnite.link) plugin to
 back up your save data using [Ludusavi](https://github.com/mtkennerly/ludusavi).
 
 ## Features
-* Known save locations for more than 7,000 games.
+* Known save locations for more than 8,000 games.
 * On-demand backup and restore for all saves.
 * Automatically back up a game when you finish playing it.
 
@@ -40,6 +40,10 @@ The plugin provides some of its own configuration (see the screenshots below),
 but you'll also need to open Ludusavi to configure it as needed. For example,
 at this time, the plugin is not able to tell Ludusavi about your Playnite
 library sources, so you'll need to configure Ludusavi's roots separately.
+
+If there are games that you never want to back up after playing, you can tag
+them as `ludusavi-skip` to disable the post-game prompt. However, they will
+still be included if you do a full backup of all games from the menu.
 
 ## Screenshots
 ### Prompt after exiting a game

@@ -106,7 +106,7 @@ namespace LudusaviPlaynite
             playedSomething = true;
             lastGamePlayed = game;
 
-            if (settings.DoBackupOnGameStopped && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc))
+            if (settings.DoBackupOnGameStopped && !ShouldSkipGame(game) && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc))
             {
                 if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(GetGameName(game))))
                 {
@@ -251,6 +251,11 @@ namespace LudusaviPlaynite
         {
             var choice = PlayniteApi.Dialogs.ShowMessage(message, "", System.Windows.MessageBoxButton.YesNo);
             return choice == MessageBoxResult.Yes;
+        }
+
+        private bool ShouldSkipGame(Game game)
+        {
+            return game.Tags.Any(x => x.Name == "ludusavi-skip");
         }
 
         string GetGameName(Game game)
