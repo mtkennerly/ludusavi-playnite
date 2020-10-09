@@ -1,4 +1,4 @@
-## Unreleased
+## v0.3.0 (2020-10-08)
 
 * Added:
   * Support for [erri120's extension update notifier](https://github.com/erri120/Playnite.Extensions#extensions-updater).
