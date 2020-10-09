@@ -396,5 +396,14 @@ namespace LudusaviPlaynite
                     return "If not found with the suffix, then try again without it";
             }
         }
+
+        public string IgnoreBenignNotifications_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Only show notifications on failure";
+            }
+        }
     }
 }

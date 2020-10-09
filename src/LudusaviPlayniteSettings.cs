@@ -60,6 +60,10 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string RetryNonPcGamesWithoutSuffix_Label { get; set; } = new Translator().RetryNonPcGamesWithoutSuffix_Label();
 
+        public bool IgnoreBenignNotifications { get; set; } = false;
+        [JsonIgnore]
+        public string IgnoreBenignNotifications_Label { get; set; } = new Translator().IgnoreBenignNotifications_Label();
+
         // Parameterless constructor must exist if you want to use LoadPluginSettings method.
         public LudusaviPlayniteSettings()
         {
@@ -88,6 +92,7 @@ namespace LudusaviPlaynite
                 AddSuffixForNonPcGameNames = savedSettings.AddSuffixForNonPcGameNames;
                 SuffixForNonPcGameNames = savedSettings.SuffixForNonPcGameNames;
                 RetryNonPcGamesWithoutSuffix = savedSettings.RetryNonPcGamesWithoutSuffix;
+                IgnoreBenignNotifications = savedSettings.IgnoreBenignNotifications;
             }
         }
 

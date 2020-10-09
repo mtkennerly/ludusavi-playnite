@@ -3,6 +3,7 @@
 * Added:
   * Support for [erri120's extension update notifier](https://github.com/erri120/Playnite.Extensions#extensions-updater).
   * Ability to ignore specific games by tagging them as `ludusavi-skip`.
+  * Option to only show notifications on failure.
 
 ## v0.2.0 (2020-08-03)
 

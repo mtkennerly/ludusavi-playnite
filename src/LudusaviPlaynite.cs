@@ -132,6 +132,10 @@ namespace LudusaviPlaynite
 
         private void NotifyInfo(string message, Action action)
         {
+            if (settings.IgnoreBenignNotifications)
+            {
+                return;
+            }
             PlayniteApi.Notifications.Add(new NotificationMessage(Guid.NewGuid().ToString(), message, NotificationType.Info, action));
         }
 
@@ -255,7 +259,7 @@ namespace LudusaviPlaynite
 
         private bool ShouldSkipGame(Game game)
         {
-            return game.Tags.Any(x => x.Name == "ludusavi-skip");
+            return game.Tags != null && game.Tags.Any(x => x.Name == "ludusavi-skip");
         }
 
         string GetGameName(Game game)

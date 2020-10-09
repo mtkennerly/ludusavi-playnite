@@ -34,5 +34,9 @@
             <TextBox Margin="25,2,0,0" Text="{Binding SuffixForNonPcGameNames}" />
             <CheckBox Margin="0,2,0,0" IsChecked="{Binding RetryNonPcGamesWithoutSuffix}" Content="{Binding RetryNonPcGamesWithoutSuffix_Label}" />
         </StackPanel>
+
+        <StackPanel Margin="15">
+            <CheckBox IsChecked="{Binding IgnoreBenignNotifications}" Content="{Binding IgnoreBenignNotifications_Label}" />
+        </StackPanel>
     </StackPanel>
 </UserControl>
