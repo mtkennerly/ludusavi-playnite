@@ -1,5 +1,5 @@
 # Ludusavi for Playnite
-This repository contains a [Playnite](https://playnite.link) plugin to
+This repository contains a [Playnite 8+](https://playnite.link) plugin to
 back up your save data using [Ludusavi](https://github.com/mtkennerly/ludusavi).
 
 ## Features
