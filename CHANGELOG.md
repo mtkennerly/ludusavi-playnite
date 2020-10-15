@@ -1,3 +1,13 @@
+## Unreleased
+
+* Added:
+  * Game-specific context menu entry to back up or restore the selected games.
+* Changed:
+  * Updated for Playnite 8 and dropped support for Playnite 7.
+  * Main menu items are now grouped under `Extensions` > `Ludusavi`.
+    Previously, they were directly inside of `Extensions` and just had
+    a "Ludusavi:" prefix on each label.
+
 ## v0.3.0 (2020-10-08)
 
 * Added:

@@ -31,21 +31,23 @@ namespace LudusaviPlaynite
             settings = new LudusaviPlayniteSettings(this);
         }
 
-        public override IEnumerable<ExtensionFunction> GetFunctions()
+        public override List<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs menuArgs)
         {
-            return new List<ExtensionFunction>
+            return new List<MainMenuItem>
             {
-                new ExtensionFunction(
-                    translator.Launch_Label(),
-                    () =>
-                    {
+                new MainMenuItem
+                {
+                    Description = translator.Launch_Label(),
+                    MenuSection = "@" + translator.Ludusavi(),
+                    Action = args => {
                         LaunchLudusavi();
                     }
-                ),
-                new ExtensionFunction(
-                    translator.BackUpLastGame_Label(),
-                    async () =>
-                    {
+                },
+                new MainMenuItem
+                {
+                    Description = translator.BackUpLastGame_Label(),
+                    MenuSection = "@" + translator.Ludusavi(),
+                    Action = async args => {
                         if (!CanPerformOperationOnLastGamePlayed())
                         {
                             return;
@@ -55,11 +57,12 @@ namespace LudusaviPlaynite
                             await Task.Run(() => BackUpOneGame(lastGamePlayed));
                         }
                     }
-                ),
-                new ExtensionFunction(
-                    translator.BackUpAllGames_Label(),
-                    async () =>
-                    {
+                },
+                new MainMenuItem
+                {
+                    Description = translator.BackUpAllGames_Label(),
+                    MenuSection = "@" + translator.Ludusavi(),
+                    Action = async args => {
                         if (!CanPerformOperation())
                         {
                             return;
@@ -69,11 +72,12 @@ namespace LudusaviPlaynite
                             await Task.Run(() => BackUpAllGames());
                         }
                     }
-                ),
-                new ExtensionFunction(
-                    translator.RestoreLastGame_Label(),
-                    async () =>
-                    {
+                },
+                new MainMenuItem
+                {
+                    Description = translator.RestoreLastGame_Label(),
+                    MenuSection = "@" + translator.Ludusavi(),
+                    Action = async args => {
                         if (!CanPerformOperationOnLastGamePlayed())
                         {
                             return;
@@ -83,11 +87,12 @@ namespace LudusaviPlaynite
                             await Task.Run(() => RestoreOneGame(lastGamePlayed));
                         }
                     }
-                ),
-                new ExtensionFunction(
-                    translator.RestoreAllGames_Label(),
-                    async () =>
-                    {
+                },
+                new MainMenuItem
+                {
+                    Description = translator.RestoreAllGames_Label(),
+                    MenuSection = "@" + translator.Ludusavi(),
+                    Action = async args => {
                         if (!CanPerformOperation())
                         {
                             return;
@@ -97,7 +102,46 @@ namespace LudusaviPlaynite
                             await Task.Run(() => RestoreAllGames());
                         }
                     }
-                ),
+                },
+            };
+        }
+
+        public override List<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs menuArgs)
+        {
+            return new List<GameMenuItem>
+            {
+                new GameMenuItem
+                {
+                    Description = translator.BackUpSelectedGames_Label(),
+                    MenuSection = translator.Ludusavi(),
+                    Action = async args => {
+                        if (UserConsents(translator.BackUpSelectedGames_Confirm(args.Games)))
+                        {
+                            foreach (var game in args.Games)
+                            {
+                                {
+                                    await Task.Run(() => BackUpOneGame(game));
+                                }
+                            }
+                        }
+                    }
+                },
+                new GameMenuItem
+                {
+                    Description = translator.RestoreSelectedGames_Label(),
+                    MenuSection = translator.Ludusavi(),
+                    Action = async args => {
+                        if (UserConsents(translator.RestoreSelectedGames_Confirm(args.Games)))
+                        {
+                            foreach (var game in args.Games)
+                            {
+                                {
+                                    await Task.Run(() => RestoreOneGame(game));
+                                }
+                            }
+                        }
+                    }
+                }
             };
         }
 

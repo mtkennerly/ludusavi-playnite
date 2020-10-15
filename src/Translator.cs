@@ -1,5 +1,7 @@
 using ByteSizeLib;
+using Playnite.SDK.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LudusaviPlaynite
@@ -13,6 +15,15 @@ namespace LudusaviPlaynite
             // TODO: Get active language from Playnite API?
             // https://github.com/JosefNemec/Playnite/issues/1937
             this.language = language;
+        }
+
+        public string Ludusavi()
+        {
+            switch (language)
+            {
+                default:
+                    return "Ludusavi";
+            }
         }
 
         public string AdjustedSize(int bytes)
@@ -56,7 +67,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Ludusavi: Launch";
+                    return "Launch";
             }
         }
 
@@ -65,7 +76,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Ludusavi: Back up save data for last game played";
+                    return "Back up save data for last game played";
             }
         }
 
@@ -83,7 +94,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Ludusavi: Back up save data for all games";
+                    return "Back up save data for all games";
             }
         }
 
@@ -96,12 +107,42 @@ namespace LudusaviPlaynite
             }
         }
 
+        public string BackUpSelectedGames_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Back up save data for selected games";
+            }
+        }
+
+        public string BackUpSelectedGames_Confirm(List<Game> games)
+        {
+            var count = games.Count();
+            if (count == 1)
+            {
+                return BackUpOneGame_Confirm(games[0].Name);
+            }
+
+            var names = "";
+            if (count < 50)
+            {
+                names = "\n\n" + String.Join(" | ", games.Select(x => x.Name));
+            }
+
+            switch (language)
+            {
+                default:
+                    return string.Format("Back up save data for {0} selected games?{1}", count, names);
+            }
+        }
+
         public string RestoreLastGame_Label()
         {
             switch (language)
             {
                 default:
-                    return "Ludusavi: Restore save data for last game played";
+                    return "Restore save data for last game played";
             }
         }
 
@@ -119,7 +160,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Ludusavi: Restore save data for all games";
+                    return "Restore save data for all games";
             }
         }
 
@@ -129,6 +170,36 @@ namespace LudusaviPlaynite
             {
                 default:
                     return "Restore save data for all games that Ludusavi can find?";
+            }
+        }
+
+        public string RestoreSelectedGames_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Restore save data for selected games";
+            }
+        }
+
+        public string RestoreSelectedGames_Confirm(List<Game> games)
+        {
+            var count = games.Count();
+            if (count == 1)
+            {
+                return RestoreOneGame_Confirm(games[0].Name);
+            }
+
+            var names = "";
+            if (count < 50)
+            {
+                names = "\n\n" + String.Join(" | ", games.Select(x => x.Name));
+            }
+
+            switch (language)
+            {
+                default:
+                    return string.Format("Restore save data for {0} selected games?{1}", count, names);
             }
         }
 
