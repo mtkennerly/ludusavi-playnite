@@ -10,10 +10,8 @@ namespace LudusaviPlaynite
     {
         private Language language;
 
-        public Translator(Language language = Language.English)
+        public Translator(Language language)
         {
-            // TODO: Get active language from Playnite API?
-            // https://github.com/JosefNemec/Playnite/issues/1937
             this.language = language;
         }
 

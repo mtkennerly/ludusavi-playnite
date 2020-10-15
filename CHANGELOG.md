@@ -2,6 +2,8 @@
 
 * Added:
   * Game-specific context menu entry to back up or restore the selected games.
+  * Detection for Playnite's active language. Although the plugin does not yet
+    have any translations, this will enable translations in the future.
 * Changed:
   * Updated for Playnite 8 and dropped support for Playnite 7.
   * Main menu items are now grouped under `Extensions` > `Ludusavi`.

@@ -21,14 +21,25 @@ namespace LudusaviPlaynite
         public LudusaviPlayniteSettings settings { get; set; }
         public override Guid Id { get; } = Guid.Parse("72e2de43-d859-44d8-914e-4277741c8208");
 
-        private Translator translator = new Translator();
+        private Translator translator;
         private bool pendingOperation { get; set; }
         private bool playedSomething { get; set; }
         private Game lastGamePlayed { get; set; }
 
         public LudusaviPlaynite(IPlayniteAPI api) : base(api)
         {
-            settings = new LudusaviPlayniteSettings(this);
+            translator = new Translator(DetermineLanguage());
+            settings = new LudusaviPlayniteSettings(this, translator);
+        }
+
+        private Language DetermineLanguage()
+        {
+            switch (PlayniteApi.ApplicationSettings.Language)
+            {
+                case "en_US":
+                default:
+                    return Language.English;
+            }
         }
 
         public override List<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs menuArgs)
