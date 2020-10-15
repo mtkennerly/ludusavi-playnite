@@ -31,7 +31,7 @@ def pack(ctx, toolbox="~/AppData/Local/Playnite/Toolbox.exe"):
     toolbox = Path(toolbox).expanduser()
     ctx.run('"{}" pack "{}" dist'.format(toolbox, target))
     for file in glob(str(REPO / "dist/*.pext")):
-        if "raw_" in file:
+        if "_" in file:
             shutil.move(file, str(REPO / "dist/ludusavi-playnite-v{}.pext".format(get_version())))
 
     shutil.make_archive(str(REPO / "dist/ludusavi-playnite-v{}".format(get_version())), "zip", str(target))

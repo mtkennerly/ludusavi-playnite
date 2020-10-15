@@ -49,8 +49,11 @@ still be included if you do a full backup of all games from the menu.
 ### Prompt after exiting a game
 > ![Screenshot of prompt after exiting a game](docs/prompt.png)
 
-### Menu actions
-> ![Screenshot of menu actions](docs/actions.png)
+### Main menu actions
+> ![Screenshot of main menu actions](docs/actions.png)
+
+### Game menu actions
+> ![Screenshot of game menu actions](docs/actions-per-game.png)
 
 ### Notifications
 > ![Screenshot of notifications](docs/notifications.png)
@@ -67,6 +70,9 @@ still be included if you do a full backup of all games from the menu.
   use the same names, so if Ludusavi doesn't recognize it, and if the game is
   from Steam, then the plugin will ask again with the game's Steam ID.
   If that fails too, then you'll get a notification that no data was found.
+
+  This also applies to the "selected games" context menu option.
+  However, it does not apply to the "all games" main menu option.
 * For backups, the plugin always sets Ludusavi's `--merge` flag. This way,
   if you back up saves for one game, it will not interfere with any backups
   you may have for another game.

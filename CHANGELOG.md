@@ -1,4 +1,4 @@
-## Unreleased
+## v0.4.0 (2020-10-14)
 
 * Added:
   * Game-specific context menu entry to back up or restore the selected games.
