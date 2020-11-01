@@ -1,4 +1,4 @@
-## Unreleased
+## v0.5.0 (2020-11-01)
 
 * Added:
   * Support for per-platform custom entries.
