@@ -78,19 +78,22 @@ namespace LudusaviPlaynite
             }
         }
 
-        public string BackUpOneGame_Confirm(string gameName, bool needsCustomEntry)
+        string GetCustomNoteForSingleGame(bool needsCustomEntry)
         {
-            var customNote = "";
             if (needsCustomEntry)
             {
                 switch (language)
                 {
                     default:
-                        customNote = " This requires a matching custom entry in Ludusavi.";
-                        break;
+                        return " This requires a matching custom entry in Ludusavi.";
                 }
             }
+            return "";
+        }
 
+        public string BackUpOneGame_Confirm(string gameName, bool needsCustomEntry)
+        {
+            var customNote = GetCustomNoteForSingleGame(needsCustomEntry);
             switch (language)
             {
                 default:
@@ -125,24 +128,44 @@ namespace LudusaviPlaynite
             }
         }
 
-        public string BackUpSelectedGames_Confirm(List<Game> games)
+        string GetSelectionFormattedNames(List<(string, bool)> games)
+        {
+            if (games.Count() < 50)
+            {
+                return "\n\n" + String.Join(" | ", games.Select(x => x.Item1));
+            }
+            return "";
+        }
+
+        string GetSelectionCustomNote(List<(string, bool)> games)
+        {
+            if (games.Any(x => x.Item2))
+            {
+                switch (language)
+                {
+                    default:
+                        return " Some games require a matching custom entry in Ludusavi.";
+                }
+            }
+            return "";
+        }
+
+        // games: (name, requiresCustomEntry)
+        public string BackUpSelectedGames_Confirm(List<(string, bool)> games)
         {
             var count = games.Count();
             if (count == 1)
             {
-                return BackUpOneGame_Confirm(games[0].Name, false);
+                return BackUpOneGame_Confirm(games[0].Item1, games[0].Item2);
             }
 
-            var names = "";
-            if (count < 50)
-            {
-                names = "\n\n" + String.Join(" | ", games.Select(x => x.Name));
-            }
+            var formattedNames = GetSelectionFormattedNames(games);
+            var customNote = GetSelectionCustomNote(games);
 
             switch (language)
             {
                 default:
-                    return string.Format("Back up save data for {0} selected games?{1}", count, names);
+                    return string.Format("Back up save data for {0} selected games?{1}{2}", count, customNote, formattedNames);
             }
         }
 
@@ -155,12 +178,13 @@ namespace LudusaviPlaynite
             }
         }
 
-        public string RestoreOneGame_Confirm(string gameName)
+        public string RestoreOneGame_Confirm(string gameName, bool needsCustomEntry)
         {
+            var customNote = GetCustomNoteForSingleGame(needsCustomEntry);
             switch (language)
             {
                 default:
-                    return string.Format("Restore save data for {0}?", gameName);
+                    return string.Format("Restore save data for {0}?{1}", gameName, customNote);
             }
         }
 
@@ -191,24 +215,22 @@ namespace LudusaviPlaynite
             }
         }
 
-        public string RestoreSelectedGames_Confirm(List<Game> games)
+        // games: (name, requiresCustomEntry)
+        public string RestoreSelectedGames_Confirm(List<(string, bool)> games)
         {
             var count = games.Count();
             if (count == 1)
             {
-                return RestoreOneGame_Confirm(games[0].Name);
+                return RestoreOneGame_Confirm(games[0].Item1, games[0].Item2);
             }
 
-            var names = "";
-            if (count < 50)
-            {
-                names = "\n\n" + String.Join(" | ", games.Select(x => x.Name));
-            }
+            var formattedNames = GetSelectionFormattedNames(games);
+            var customNote = GetSelectionCustomNote(games);
 
             switch (language)
             {
                 default:
-                    return string.Format("Restore save data for {0} selected games?{1}", count, names);
+                    return string.Format("Restore save data for {0} selected games?{1}{2}", count, customNote, formattedNames);
             }
         }
 

@@ -93,7 +93,7 @@ namespace LudusaviPlaynite
                         {
                             return;
                         }
-                        if (UserConsents(translator.RestoreOneGame_Confirm(GetGameName(lastGamePlayed))))
+                        if (UserConsents(translator.RestoreOneGame_Confirm(GetGameName(lastGamePlayed), RequiresCustomEntry(lastGamePlayed))))
                         {
                             await Task.Run(() => RestoreOneGame(lastGamePlayed));
                         }
@@ -126,7 +126,7 @@ namespace LudusaviPlaynite
                     Description = translator.BackUpSelectedGames_Label(),
                     MenuSection = translator.Ludusavi(),
                     Action = async args => {
-                        if (UserConsents(translator.BackUpSelectedGames_Confirm(args.Games)))
+                        if (UserConsents(translator.BackUpSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
                         {
                             foreach (var game in args.Games)
                             {
@@ -142,7 +142,7 @@ namespace LudusaviPlaynite
                     Description = translator.RestoreSelectedGames_Label(),
                     MenuSection = translator.Ludusavi(),
                     Action = async args => {
-                        if (UserConsents(translator.RestoreSelectedGames_Confirm(args.Games)))
+                        if (UserConsents(translator.RestoreSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
                         {
                             foreach (var game in args.Games)
                             {

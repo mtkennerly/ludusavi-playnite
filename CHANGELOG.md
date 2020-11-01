@@ -2,8 +2,11 @@
 
 * Added:
   * Support for per-platform custom entries.
-  * A note in the backup popup about needing custom entries for non-PC games.
+  * A note in the confirmation popups about needing custom entries for non-PC games.
   * Vertical scrollbar in settings when the window is too small.
+* Fixed:
+  * The confirmation popup when selecting multiple games now indicates the
+    platform suffix (if any) that will be used when looking up each game.
 
 ## v0.4.0 (2020-10-14)
 
