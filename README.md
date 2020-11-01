@@ -89,6 +89,10 @@ still be included if you do a full backup of all games from the menu.
   the actual platform name. For example, if you enable the default suffix and
   you'd like a custom entry for `Some Game` on Nintendo 64, then in Ludusavi
   you would create a custom entry called `Some Game (Nintendo 64)`.
+* If you want a single custom entry for all games on a particular non-PC platform
+  (such as when all of the saves for that platform are in a single memory card file),
+  you can enable the "back up save data by platform name" setting. You will just need
+  to create a custom entry in Ludusavi with the same name as the platform.
 
 ## Development
 Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md).
