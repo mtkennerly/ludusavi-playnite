@@ -1,3 +1,10 @@
+## Unreleased
+
+* Added:
+  * Support for per-platform custom entries.
+  * A note in the backup popup about needing custom entries for non-PC games.
+  * Vertical scrollbar in settings when the window is too small.
+
 ## v0.4.0 (2020-10-14)
 
 * Added:

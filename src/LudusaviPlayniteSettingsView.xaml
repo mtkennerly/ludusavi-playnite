@@ -5,38 +5,45 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="600">
-    <StackPanel>
-        <StackPanel Margin="15">
-            <TextBlock Text="{Binding ExecutablePath_Label}" />
-            <TextBox Margin="0,2,0,0" Text="{Binding ExecutablePath}" />
-            <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
-                <Button Content="{Binding BrowseButton_Label}" Click="OnBrowseExecutablePath" />
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <StackPanel Margin="15">
+                <TextBlock Text="{Binding ExecutablePath_Label}" />
+                <TextBox Margin="0,2,0,0" Text="{Binding ExecutablePath}" />
+                <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                    <Button Content="{Binding BrowseButton_Label}" Click="OnBrowseExecutablePath" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Margin="15">
+                <TextBlock Text="{Binding BackupPath_Label}" />
+                <TextBox Margin="0,2,0,0" Text="{Binding BackupPath}" />
+                <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                    <Button Content="{Binding BrowseButton_Label}" Click="OnBrowseBackupPath" />
+                    <Button Margin="10,0,0,0" Content="{Binding OpenButton_Label}" Click="OnOpenBackupPath" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Margin="15">
+                <CheckBox IsChecked="{Binding DoBackupOnGameStopped}" Content="{Binding DoBackupOnGameStopped_Label}" />
+                <CheckBox Margin="25,2,0,0" IsChecked="{Binding AskBackupOnGameStopped}" Content="{Binding AskBackupOnGameStopped_Label}" />
+                <CheckBox Margin="25,2,0,0" IsChecked="{Binding OnlyBackupOnGameStoppedIfPc}" Content="{Binding OnlyBackupOnGameStoppedIfPc_Label}" />
+            </StackPanel>
+
+            <StackPanel Margin="15">
+                <CheckBox IsChecked="{Binding AddSuffixForNonPcGameNames}" Content="{Binding AddSuffixForNonPcGameNames_Label}" />
+                <TextBox Margin="25,2,0,0" Text="{Binding SuffixForNonPcGameNames}" />
+                <CheckBox Margin="0,2,0,0" IsChecked="{Binding RetryNonPcGamesWithoutSuffix}" Content="{Binding RetryNonPcGamesWithoutSuffix_Label}" />
+            </StackPanel>
+
+            <StackPanel Margin="15">
+                <CheckBox IsChecked="{Binding DoPlatformBackupOnNonPcGameStopped}" Content="{Binding DoPlatformBackupOnNonPcGameStopped_Label}" />
+                <CheckBox Margin="25,2,0,0" IsChecked="{Binding AskPlatformBackupOnNonPcGameStopped}" Content="{Binding AskPlatformBackupOnNonPcGameStopped_Label}" />
+            </StackPanel>
+
+            <StackPanel Margin="15">
+                <CheckBox IsChecked="{Binding IgnoreBenignNotifications}" Content="{Binding IgnoreBenignNotifications_Label}" />
             </StackPanel>
         </StackPanel>
-
-        <StackPanel Margin="15">
-            <TextBlock Text="{Binding BackupPath_Label}" />
-            <TextBox Margin="0,2,0,0" Text="{Binding BackupPath}" />
-            <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
-                <Button Content="{Binding BrowseButton_Label}" Click="OnBrowseBackupPath" />
-                <Button Margin="10,0,0,0" Content="{Binding OpenButton_Label}" Click="OnOpenBackupPath" />
-            </StackPanel>
-        </StackPanel>
-
-        <StackPanel Margin="15">
-            <CheckBox IsChecked="{Binding DoBackupOnGameStopped}" Content="{Binding DoBackupOnGameStopped_Label}" />
-            <CheckBox Margin="25,2,0,0" IsChecked="{Binding AskBackupOnGameStopped}" Content="{Binding AskBackupOnGameStopped_Label}" />
-            <CheckBox Margin="25,2,0,0" IsChecked="{Binding OnlyBackupOnGameStoppedIfPc}" Content="{Binding OnlyBackupOnGameStoppedIfPc_Label}" />
-        </StackPanel>
-
-        <StackPanel Margin="15">
-            <CheckBox IsChecked="{Binding AddSuffixForNonPcGameNames}" Content="{Binding AddSuffixForNonPcGameNames_Label}" />
-            <TextBox Margin="25,2,0,0" Text="{Binding SuffixForNonPcGameNames}" />
-            <CheckBox Margin="0,2,0,0" IsChecked="{Binding RetryNonPcGamesWithoutSuffix}" Content="{Binding RetryNonPcGamesWithoutSuffix_Label}" />
-        </StackPanel>
-
-        <StackPanel Margin="15">
-            <CheckBox IsChecked="{Binding IgnoreBenignNotifications}" Content="{Binding IgnoreBenignNotifications_Label}" />
-        </StackPanel>
-    </StackPanel>
+    </ScrollViewer>
 </UserControl>

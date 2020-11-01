@@ -11,9 +11,13 @@ namespace LudusaviPlaynite
 
     public struct OperationResult
     {
-        public Game Game;
         public string Name;
         public ApiResponse Response;
+    }
+
+    public struct BackupCriteria
+    {
+        public bool ByPlatform;
     }
 
     public struct ApiErrors

@@ -78,12 +78,23 @@ namespace LudusaviPlaynite
             }
         }
 
-        public string BackUpOneGame_Confirm(string gameName)
+        public string BackUpOneGame_Confirm(string gameName, bool needsCustomEntry)
         {
+            var customNote = "";
+            if (needsCustomEntry)
+            {
+                switch (language)
+                {
+                    default:
+                        customNote = " This requires a matching custom entry in Ludusavi.";
+                        break;
+                }
+            }
+
             switch (language)
             {
                 default:
-                    return string.Format("Back up save data for {0}?", gameName);
+                    return string.Format("Back up save data for {0}?{1}", gameName, customNote);
             }
         }
 
@@ -119,7 +130,7 @@ namespace LudusaviPlaynite
             var count = games.Count();
             if (count == 1)
             {
-                return BackUpOneGame_Confirm(games[0].Name);
+                return BackUpOneGame_Confirm(games[0].Name, false);
             }
 
             var names = "";
@@ -453,7 +464,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Look up non-PC games by adding this suffix to their names:";
+                    return "Look up non-PC games by adding this suffix to their names (requires custom entry):";
             }
         }
 
@@ -463,6 +474,24 @@ namespace LudusaviPlaynite
             {
                 default:
                     return "If not found with the suffix, then try again without it";
+            }
+        }
+
+        public string DoPlatformBackupOnNonPcGameStopped_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Back up save data by platform name after playing non-PC games (requires custom entry)";
+            }
+        }
+
+        public string AskPlatformBackupOnNonPcGameStopped_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Ask first instead of doing it automatically";
             }
         }
 

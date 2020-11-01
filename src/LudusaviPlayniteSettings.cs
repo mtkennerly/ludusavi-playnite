@@ -60,6 +60,14 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string RetryNonPcGamesWithoutSuffix_Label { get; set; }
 
+        public bool DoPlatformBackupOnNonPcGameStopped { get; set; } = false;
+        [JsonIgnore]
+        public string DoPlatformBackupOnNonPcGameStopped_Label { get; set; }
+
+        public bool AskPlatformBackupOnNonPcGameStopped { get; set; } = true;
+        [JsonIgnore]
+        public string AskPlatformBackupOnNonPcGameStopped_Label { get; set; }
+
         public bool IgnoreBenignNotifications { get; set; } = false;
         [JsonIgnore]
         public string IgnoreBenignNotifications_Label { get; set; }
@@ -80,6 +88,8 @@ namespace LudusaviPlaynite
             OnlyBackupOnGameStoppedIfPc_Label = translator.OnlyBackupOnGameStoppedIfPc_Label();
             AddSuffixForNonPcGameNames_Label = translator.AddSuffixForNonPcGameNames_Label();
             RetryNonPcGamesWithoutSuffix_Label = translator.RetryNonPcGamesWithoutSuffix_Label();
+            DoPlatformBackupOnNonPcGameStopped_Label = translator.DoPlatformBackupOnNonPcGameStopped_Label();
+            AskPlatformBackupOnNonPcGameStopped_Label = translator.AskPlatformBackupOnNonPcGameStopped_Label();
             IgnoreBenignNotifications_Label = translator.IgnoreBenignNotifications_Label();
 
             // Injecting your plugin instance is required for Save/Load method because Playnite saves data to a location based on what plugin requested the operation.
@@ -103,6 +113,8 @@ namespace LudusaviPlaynite
                 AddSuffixForNonPcGameNames = savedSettings.AddSuffixForNonPcGameNames;
                 SuffixForNonPcGameNames = savedSettings.SuffixForNonPcGameNames;
                 RetryNonPcGamesWithoutSuffix = savedSettings.RetryNonPcGamesWithoutSuffix;
+                DoPlatformBackupOnNonPcGameStopped = savedSettings.DoPlatformBackupOnNonPcGameStopped;
+                AskPlatformBackupOnNonPcGameStopped = savedSettings.AskPlatformBackupOnNonPcGameStopped;
                 IgnoreBenignNotifications = savedSettings.IgnoreBenignNotifications;
             }
         }

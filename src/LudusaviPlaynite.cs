@@ -63,7 +63,7 @@ namespace LudusaviPlaynite
                         {
                             return;
                         }
-                        if (UserConsents(translator.BackUpOneGame_Confirm(GetGameName(lastGamePlayed))))
+                        if (UserConsents(translator.BackUpOneGame_Confirm(GetGameName(lastGamePlayed), RequiresCustomEntry(lastGamePlayed))))
                         {
                             await Task.Run(() => BackUpOneGame(lastGamePlayed));
                         }
@@ -163,9 +163,17 @@ namespace LudusaviPlaynite
 
             if (settings.DoBackupOnGameStopped && !ShouldSkipGame(game) && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc))
             {
-                if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(GetGameName(game))))
+                if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game))))
                 {
                     BackUpOneGame(game);
+                }
+            }
+
+            if (settings.DoPlatformBackupOnNonPcGameStopped && !ShouldSkipGame(game) && !IsOnPc(game))
+            {
+                if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game.Platform.Name, true)))
+                {
+                    BackUpOneGame(game, new BackupCriteria { ByPlatform = true });
                 }
             }
         }
@@ -339,19 +347,32 @@ namespace LudusaviPlaynite
             return game.Platform?.Name == "PC";
         }
 
+        bool RequiresCustomEntry(Game game)
+        {
+            return !IsOnPc(game);
+        }
+
         private void BackUpOneGame(Game game)
         {
+            this.BackUpOneGame(game, new BackupCriteria { ByPlatform = false });
+        }
+
+        private void BackUpOneGame(Game game, BackupCriteria criteria)
+        {
             pendingOperation = true;
-            var name = GetGameName(game);
+            var name = criteria.ByPlatform ? game.Platform.Name : GetGameName(game);
 
             var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, name));
-            if (response?.Errors.UnknownGames != null && IsOnSteam(game))
+            if (!criteria.ByPlatform)
             {
-                (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
-            }
-            if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
-            {
-                (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+                if (response?.Errors.UnknownGames != null && IsOnSteam(game))
+                {
+                    (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
+                }
+                if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
+                {
+                    (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+                }
             }
 
             if (response == null)
@@ -360,7 +381,7 @@ namespace LudusaviPlaynite
             }
             else
             {
-                var result = new OperationResult { Game = game, Name = name, Response = (ApiResponse)response };
+                var result = new OperationResult { Name = name, Response = (ApiResponse)response };
                 if (code == 0)
                 {
                     if (response?.Overall.TotalGames > 0)
@@ -434,7 +455,7 @@ namespace LudusaviPlaynite
             }
             else
             {
-                var result = new OperationResult { Game = game, Name = name, Response = (ApiResponse)response };
+                var result = new OperationResult { Name = name, Response = (ApiResponse)response };
                 if (code == 0)
                 {
                     NotifyInfo(translator.RestoreOneGame_Success(result));
