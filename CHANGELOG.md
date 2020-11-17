@@ -1,4 +1,4 @@
-## Unreleased
+## v0.5.1 (2020-11-16)
 
 * Fixed:
   * Unresponsiveness when backing up after playing a game if its total backup
