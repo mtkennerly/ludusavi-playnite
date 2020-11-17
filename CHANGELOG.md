@@ -1,3 +1,12 @@
+## Unreleased
+
+* Fixed:
+  * Unresponsiveness when backing up after playing a game if its total backup
+    size was very large (multiple GiB). The backup would still complete, but
+    Playnite would lock up until it finished.
+  * Error message in any backup/restore when the total file size was very large.
+    The backup/restore itself still worked, but it could not be reported properly.
+
 ## v0.5.0 (2020-11-01)
 
 * Added:

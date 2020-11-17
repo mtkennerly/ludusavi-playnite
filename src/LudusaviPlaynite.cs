@@ -165,7 +165,7 @@ namespace LudusaviPlaynite
             {
                 if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game))))
                 {
-                    BackUpOneGame(game);
+                    Task.Run(() => BackUpOneGame(game));
                 }
             }
 
@@ -173,7 +173,7 @@ namespace LudusaviPlaynite
             {
                 if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game.Platform.Name, true)))
                 {
-                    BackUpOneGame(game, new BackupCriteria { ByPlatform = true });
+                    Task.Run(() => BackUpOneGame(game, new BackupCriteria { ByPlatform = true }));
                 }
             }
         }

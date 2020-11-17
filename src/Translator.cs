@@ -24,7 +24,7 @@ namespace LudusaviPlaynite
             }
         }
 
-        public string AdjustedSize(int bytes)
+        public string AdjustedSize(ulong bytes)
         {
             switch (language)
             {
@@ -415,7 +415,7 @@ namespace LudusaviPlaynite
 
         public string FullListGameLineItem(string name, ApiGame game)
         {
-            var size = AdjustedSize(game.Files.Sum(x => x.Value.Bytes));
+            var size = AdjustedSize(Convert.ToUInt64(game.Files.Sum(x => Convert.ToDecimal(x.Value.Bytes))));
             var failed = game.Files.Any(x => x.Value.Failed) || game.Registry.Any(x => x.Value.Failed);
 
             switch (language)

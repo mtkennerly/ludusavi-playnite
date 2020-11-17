@@ -33,11 +33,11 @@ namespace LudusaviPlaynite
         [JsonProperty("totalGames")]
         public int TotalGames;
         [JsonProperty("totalBytes")]
-        public int TotalBytes;
+        public ulong TotalBytes;
         [JsonProperty("processedGames")]
         public int ProcessedGames;
         [JsonProperty("processedBytes")]
-        public int ProcessedBytes;
+        public ulong ProcessedBytes;
     }
 
     public struct ApiFile
@@ -45,7 +45,7 @@ namespace LudusaviPlaynite
         [JsonProperty("failed")]
         public bool Failed;
         [JsonProperty("bytes")]
-        public int Bytes;
+        public ulong Bytes;
         [JsonProperty("originalPath")]
         public string OriginalPath;
     }
