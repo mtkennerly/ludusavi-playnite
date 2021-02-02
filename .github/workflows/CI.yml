@@ -6,8 +6,7 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
-    - uses: microsoft/setup-msbuild@v1.0.2
     - name: Restore packages
-      run: msbuild src/LudusaviPlaynite.csproj /t:restore
+      run: dotnet restore src
     - name: Build
-      run: msbuild src/LudusaviPlaynite.csproj /t:build
+      run: dotnet build src
