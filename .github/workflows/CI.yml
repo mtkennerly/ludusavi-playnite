@@ -1,0 +1,12 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  Build:
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+    - name: Restore packages
+      run: dotnet restore src
+    - name: Build
+      run: dotnet build src
