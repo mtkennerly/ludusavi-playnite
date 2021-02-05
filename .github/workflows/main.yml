@@ -1,0 +1,37 @@
+on:
+  - push
+  - pull_request
+
+name: Main
+
+jobs:
+  pre-commit:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - run: |
+          pip install pre-commit
+          dotnet tool install -g dotnet-format
+          pre-commit run --all-files --show-diff-on-failure
+
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          pip install invoke pyyaml
+          invoke build
+
+          mkdir tmp
+          curl -O https://playnite.link/update/stable/8.11/Playnite811.zip
+          unzip Playnite811.zip -d tmp/playnite
+          invoke pack --toolbox ./tmp/playnite/Toolbox.exe
+      - uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: |
+            dist/*.pext
+            dist/*.zip
