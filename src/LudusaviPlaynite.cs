@@ -165,20 +165,21 @@ namespace LudusaviPlaynite
         {
             playedSomething = true;
             lastGamePlayed = arg.Game;
+            Game game = arg.Game;
 
-            if (settings.DoBackupOnGameStopped && !ShouldSkipGame(arg.Game) && (IsOnPc(arg.Game) || !settings.OnlyBackupOnGameStoppedIfPc))
+            if (settings.DoBackupOnGameStopped && !ShouldSkipGame(game) && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc))
             {
-                if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(GetGameName(arg.Game), RequiresCustomEntry(arg.Game))))
+                if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game))))
                 {
-                    Task.Run(() => BackUpOneGame(arg.Game));
+                    Task.Run(() => BackUpOneGame(game));
                 }
             }
 
-            if (settings.DoPlatformBackupOnNonPcGameStopped && !ShouldSkipGame(arg.Game) && !IsOnPc(arg.Game))
+            if (settings.DoPlatformBackupOnNonPcGameStopped && !ShouldSkipGame(game) && !IsOnPc(game))
             {
-                if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.BackUpOneGame_Confirm(arg.Game.Platforms[0].Name, true)))
+                if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game.Platforms[0].Name, true)))
                 {
-                    Task.Run(() => BackUpOneGame(arg.Game, new BackupCriteria { ByPlatform = true }));
+                    Task.Run(() => BackUpOneGame(game, new BackupCriteria { ByPlatform = true }));
                 }
             }
         }
@@ -347,12 +348,12 @@ namespace LudusaviPlaynite
 
         bool IsOnSteam(Game game)
         {
-            return game.Source.Name == "Steam";
+            return game.Source?.Name == "Steam";
         }
 
         bool IsOnPc(Game game)
         {
-            return game.Platforms[0].ToString() == "PC (Windows)";
+            return game.Platforms[0]?.SpecificationId == "pc_windows";
         }
 
         bool RequiresCustomEntry(Game game)
