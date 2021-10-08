@@ -1,3 +1,9 @@
+## v0.6.0 (2021-10-08)
+
+* Changed:
+  * Updated for Playnite 9 and dropped support for earlier Playnite versions.
+    ([Contributed by sharkusmanch](https://github.com/mtkennerly/ludusavi-playnite/pull/19))
+
 ## v0.5.1 (2020-11-16)
 
 * Fixed:

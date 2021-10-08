@@ -328,17 +328,16 @@ namespace LudusaviPlaynite
 
         private bool ShouldSkipGame(Game game)
         {
-            return game.Tags != null
-                && game.Tags.Any(x => x.Name == "ludusavi-skip")
-                && game.Platforms.Count > 1;
+            return (game.Tags != null
+                && game.Tags.Any(x => x.Name == "ludusavi-skip"))
+                || game.Platforms.Count > 1;
         }
 
         string GetGameName(Game game)
         {
             if (!IsOnPc(game) && settings.AddSuffixForNonPcGameNames)
             {
-                string platformName = game.Platforms[0]?.Name;
-                return string.Format("{0}{1}", game.Name, settings.SuffixForNonPcGameNames.Replace("<platform>", platformName));
+                return string.Format("{0}{1}", game.Name, settings.SuffixForNonPcGameNames.Replace("<platform>", game.Platforms[0]?.Name));
             }
             else
             {
