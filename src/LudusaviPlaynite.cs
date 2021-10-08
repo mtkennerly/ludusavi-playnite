@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
+using Playnite.SDK.Events;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,7 +16,7 @@ using System.Windows.Controls;
 
 namespace LudusaviPlaynite
 {
-    public class LudusaviPlaynite : Plugin
+    public class LudusaviPlaynite : GenericPlugin
     {
         private static readonly ILogger logger = LogManager.GetLogger();
         public LudusaviPlayniteSettings settings { get; set; }
@@ -30,6 +31,10 @@ namespace LudusaviPlaynite
         {
             translator = new Translator(DetermineLanguage());
             settings = new LudusaviPlayniteSettings(this, translator);
+            Properties = new GenericPluginProperties
+            {
+                HasSettings = true
+            };
         }
 
         private Language DetermineLanguage()
@@ -42,7 +47,7 @@ namespace LudusaviPlaynite
             }
         }
 
-        public override List<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs menuArgs)
+        public override IEnumerable<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs menuArgs)
         {
             return new List<MainMenuItem>
             {
@@ -117,7 +122,7 @@ namespace LudusaviPlaynite
             };
         }
 
-        public override List<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs menuArgs)
+        public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs menuArgs)
         {
             return new List<GameMenuItem>
             {
@@ -156,10 +161,11 @@ namespace LudusaviPlaynite
             };
         }
 
-        public override void OnGameStopped(Game game, long elapsedSeconds)
+        public override void OnGameStopped(OnGameStoppedEventArgs arg)
         {
             playedSomething = true;
-            lastGamePlayed = game;
+            lastGamePlayed = arg.Game;
+            Game game = arg.Game;
 
             if (settings.DoBackupOnGameStopped && !ShouldSkipGame(game) && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc))
             {
@@ -171,7 +177,7 @@ namespace LudusaviPlaynite
 
             if (settings.DoPlatformBackupOnNonPcGameStopped && !ShouldSkipGame(game) && !IsOnPc(game))
             {
-                if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game.Platform.Name, true)))
+                if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game.Platforms[0]?.Name, true)))
                 {
                     Task.Run(() => BackUpOneGame(game, new BackupCriteria { ByPlatform = true }));
                 }
@@ -322,14 +328,17 @@ namespace LudusaviPlaynite
 
         private bool ShouldSkipGame(Game game)
         {
-            return game.Tags != null && game.Tags.Any(x => x.Name == "ludusavi-skip");
+            return game.Tags != null
+                && game.Tags.Any(x => x.Name == "ludusavi-skip")
+                && game.Platforms.Count > 1;
         }
 
         string GetGameName(Game game)
         {
             if (!IsOnPc(game) && settings.AddSuffixForNonPcGameNames)
             {
-                return string.Format("{0}{1}", game.Name, settings.SuffixForNonPcGameNames.Replace("<platform>", game.Platform?.Name));
+                string platformName = game.Platforms[0]?.Name;
+                return string.Format("{0}{1}", game.Name, settings.SuffixForNonPcGameNames.Replace("<platform>", platformName));
             }
             else
             {
@@ -344,7 +353,7 @@ namespace LudusaviPlaynite
 
         bool IsOnPc(Game game)
         {
-            return game.Platform?.Name == "PC";
+            return game.Platforms[0]?.SpecificationId == "pc_windows";
         }
 
         bool RequiresCustomEntry(Game game)
@@ -360,7 +369,7 @@ namespace LudusaviPlaynite
         private void BackUpOneGame(Game game, BackupCriteria criteria)
         {
             pendingOperation = true;
-            var name = criteria.ByPlatform ? game.Platform.Name : GetGameName(game);
+            var name = criteria.ByPlatform ? game.Platforms[0]?.Name : GetGameName(game);
 
             var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, name));
             if (!criteria.ByPlatform)
