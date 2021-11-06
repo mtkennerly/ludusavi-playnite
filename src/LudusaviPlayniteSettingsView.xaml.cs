@@ -29,9 +29,9 @@ namespace LudusaviPlaynite
 
         public LudusaviPlayniteSettingsView(LudusaviPlaynite plugin, Translator translator)
         {
-            InitializeComponent();
             this.plugin = plugin;
             this.translator = translator;
+            InitializeComponent();
         }
 
         private string NormalizePath(string path)
@@ -60,6 +60,46 @@ namespace LudusaviPlaynite
         public void OnOpenBackupPath(object sender, RoutedEventArgs e)
         {
             Process.Start(NormalizePath(plugin.settings.BackupPath));
+        }
+
+        private void ThreeCopies_Checked(object sender, RoutedEventArgs e)
+        {
+            plugin.settings.AskNumberOfBackupCopies = 3;
+        }
+        private void FiveCopies_Checked(object sender, RoutedEventArgs e)
+        {
+            this.
+            plugin.settings.AskNumberOfBackupCopies = 5;
+        }
+        private void TenCopies_Checked(object sender, RoutedEventArgs e)
+        {
+            plugin.settings.AskNumberOfBackupCopies = 10;
+        }
+        private void FiveMinutes_Checked(object sender, RoutedEventArgs e)
+        {
+            plugin.settings.AskBackupMinuteInterval = 5;
+        }
+        private void FifteenMinutes_Checked(object sender, RoutedEventArgs e)
+        {
+            plugin.settings.AskBackupMinuteInterval = 15;
+        }
+        private void ThirtyMinutes_Checked(object sender, RoutedEventArgs e)
+        {
+            plugin.settings.AskBackupMinuteInterval = 30;
+        }
+
+        private void CreateMultipleBackups_Click(object sender, RoutedEventArgs e)
+        {
+            if ((bool)CheckBox_CreateMultipleBackups.IsChecked)
+            {
+                Panel_BackupCopies.IsEnabled = true;
+                Panel_BackupInterval.IsEnabled = true;
+            }
+            else
+            {
+                Panel_BackupCopies.IsEnabled = false;
+                Panel_BackupInterval.IsEnabled = false;
+            }
         }
     }
 }

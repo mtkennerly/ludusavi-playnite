@@ -31,6 +31,30 @@
             </StackPanel>
 
             <StackPanel Margin="15">
+                <CheckBox x:Name="CheckBox_CreateMultipleBackups"
+                          IsChecked="{Binding AskCreateMultipleBackups}"
+                          Content="{Binding AskCreateMultipleBackups_Label}"
+                          Click="CreateMultipleBackups_Click"/>
+            </StackPanel>
+
+            <StackPanel x:Name="Panel_BackupCopies" Orientation="Horizontal" IsEnabled="{Binding AskCreateMultipleBackups}">
+                <Label Margin="35,2,0,0" Content="{Binding AskNumberOfBackupCopies_Label}"/>
+                <RadioButton Margin="5,2,0,0"
+                             GroupName="BackupCopies" Content="3" Checked="ThreeCopies_Checked"/>
+                <RadioButton Margin="5,2,0,0"
+                             GroupName="BackupCopies" Content="5" Checked="FiveCopies_Checked"/>
+                <RadioButton Margin="5,2,0,0"
+                             GroupName="BackupCopies" Content="10" Checked="TenCopies_Checked"/>
+            </StackPanel>
+
+            <StackPanel x:Name="Panel_BackupInterval" Orientation="Horizontal" IsEnabled="{Binding AskCreateMultipleBackups}">
+                <Label Margin="35,2,0,0" Content="{Binding AskBackupMinuteInterval_Label}"/>
+                <RadioButton Margin="5,2,0,0" GroupName="BackupInterval" Content="5" Checked="FiveMinutes_Checked"/>
+                <RadioButton Margin="5,2,0,0" GroupName="BackupInterval" Content="15" Checked="FifteenMinutes_Checked"/>
+                <RadioButton Margin="5,2,0,0" GroupName="BackupInterval" Content="30" Checked="ThirtyMinutes_Checked"/>
+            </StackPanel>
+
+            <StackPanel Margin="15">
                 <CheckBox IsChecked="{Binding AddSuffixForNonPcGameNames}" Content="{Binding AddSuffixForNonPcGameNames_Label}" />
                 <TextBox Margin="25,2,0,0" Text="{Binding SuffixForNonPcGameNames}" />
                 <CheckBox Margin="0,2,0,0" IsChecked="{Binding RetryNonPcGamesWithoutSuffix}" Content="{Binding RetryNonPcGamesWithoutSuffix_Label}" />

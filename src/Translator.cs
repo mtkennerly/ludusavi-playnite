@@ -472,6 +472,33 @@ namespace LudusaviPlaynite
             }
         }
 
+        public string AskCreateMultipleBackups_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Create multiple backups while the game is running";
+            }
+        }
+
+        public string AskNumberOfBackupCopies_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Number of copies to keep:";
+            }
+        }
+
+        public string AskBackupMinuteInterval_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Backup interval in minutes:";
+            }
+        }
+
         public string OnlyBackupOnGameStoppedIfPc_Label()
         {
             switch (language)

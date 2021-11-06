@@ -161,6 +161,11 @@ namespace LudusaviPlaynite
             };
         }
 
+        public override void OnGameStarted(OnGameStartedEventArgs args)
+        {
+            base.OnGameStarted(args);
+        }
+
         public override void OnGameStopped(OnGameStoppedEventArgs arg)
         {
             playedSomething = true;

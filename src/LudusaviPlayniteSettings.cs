@@ -46,6 +46,18 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string AskBackupOnGameStopped_Label { get; set; }
 
+        public bool AskCreateMultipleBackups { get; set; } = true;
+        [JsonIgnore]
+        public string AskCreateMultipleBackups_Label { get; set; }
+
+        public int AskNumberOfBackupCopies { get; set; } = 3;
+        [JsonIgnore]
+        public string AskNumberOfBackupCopies_Label { get; set; }
+
+        public int AskBackupMinuteInterval { get; set; } = 30;
+        [JsonIgnore]
+        public string AskBackupMinuteInterval_Label { get; set; }
+
         public bool OnlyBackupOnGameStoppedIfPc { get; set; } = true;
         [JsonIgnore]
         public string OnlyBackupOnGameStoppedIfPc_Label { get; set; }
@@ -72,7 +84,6 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string IgnoreBenignNotifications_Label { get; set; }
 
-        // Parameterless constructor must exist if you want to use LoadPluginSettings method.
         public LudusaviPlayniteSettings()
         {
         }
@@ -85,6 +96,9 @@ namespace LudusaviPlaynite
             BackupPath_Label = translator.BackupPath_Label();
             DoBackupOnGameStopped_Label = translator.DoBackupOnGameStopped_Label();
             AskBackupOnGameStopped_Label = translator.AskBackupOnGameStopped_Label();
+            AskCreateMultipleBackups_Label = translator.AskCreateMultipleBackups_Label();
+            AskNumberOfBackupCopies_Label = translator.AskNumberOfBackupCopies_Label();
+            AskBackupMinuteInterval_Label = translator.AskBackupMinuteInterval_Label();
             OnlyBackupOnGameStoppedIfPc_Label = translator.OnlyBackupOnGameStoppedIfPc_Label();
             AddSuffixForNonPcGameNames_Label = translator.AddSuffixForNonPcGameNames_Label();
             RetryNonPcGamesWithoutSuffix_Label = translator.RetryNonPcGamesWithoutSuffix_Label();
@@ -109,6 +123,9 @@ namespace LudusaviPlaynite
                 BackupPath = savedSettings.BackupPath;
                 DoBackupOnGameStopped = savedSettings.DoBackupOnGameStopped;
                 AskBackupOnGameStopped = savedSettings.AskBackupOnGameStopped;
+                AskCreateMultipleBackups = savedSettings.AskCreateMultipleBackups;
+                AskNumberOfBackupCopies = savedSettings.AskNumberOfBackupCopies;
+                AskBackupMinuteInterval = savedSettings.AskBackupMinuteInterval;
                 OnlyBackupOnGameStoppedIfPc = savedSettings.OnlyBackupOnGameStoppedIfPc;
                 AddSuffixForNonPcGameNames = savedSettings.AddSuffixForNonPcGameNames;
                 SuffixForNonPcGameNames = savedSettings.SuffixForNonPcGameNames;
