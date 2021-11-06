@@ -1,23 +1,8 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Playnite.SDK;
-using Playnite.SDK.Plugins;
-using Playnite.SDK.Models;
 
 namespace LudusaviPlaynite
 {
@@ -32,6 +17,7 @@ namespace LudusaviPlaynite
             this.plugin = plugin;
             this.translator = translator;
             InitializeComponent();
+            DataContext = plugin.settings;
         }
 
         private string NormalizePath(string path)
@@ -60,32 +46,6 @@ namespace LudusaviPlaynite
         public void OnOpenBackupPath(object sender, RoutedEventArgs e)
         {
             Process.Start(NormalizePath(plugin.settings.BackupPath));
-        }
-
-        private void ThreeCopies_Checked(object sender, RoutedEventArgs e)
-        {
-            plugin.settings.AskNumberOfBackupCopies = 3;
-        }
-        private void FiveCopies_Checked(object sender, RoutedEventArgs e)
-        {
-            this.
-            plugin.settings.AskNumberOfBackupCopies = 5;
-        }
-        private void TenCopies_Checked(object sender, RoutedEventArgs e)
-        {
-            plugin.settings.AskNumberOfBackupCopies = 10;
-        }
-        private void FiveMinutes_Checked(object sender, RoutedEventArgs e)
-        {
-            plugin.settings.AskBackupMinuteInterval = 5;
-        }
-        private void FifteenMinutes_Checked(object sender, RoutedEventArgs e)
-        {
-            plugin.settings.AskBackupMinuteInterval = 15;
-        }
-        private void ThirtyMinutes_Checked(object sender, RoutedEventArgs e)
-        {
-            plugin.settings.AskBackupMinuteInterval = 30;
         }
 
         private void CreateMultipleBackups_Click(object sender, RoutedEventArgs e)

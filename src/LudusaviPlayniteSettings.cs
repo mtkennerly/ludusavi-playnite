@@ -2,9 +2,6 @@ using Newtonsoft.Json;
 using Playnite.SDK;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using System.IO;
 
@@ -22,6 +19,94 @@ namespace LudusaviPlaynite
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        #region MultipleBackupRadioButtonsProperties
+
+        //copies
+        private bool threeCopies;
+        private bool fiveCopies;
+        private bool tenCopies;
+
+        //interval
+        private bool fiveMinutes;
+        private bool fifteenMinutes;
+        private bool thirtyMinutes;
+
+        public bool ThreeCopies
+        {
+            // workaround so the correct radio button is clicked in the UI during initial render
+            get => AskNumberOfBackupCopies == 3;
+            set
+            {
+                // set the integer value only when the radio button is clicked
+                threeCopies = value;
+
+                if (threeCopies) AskNumberOfBackupCopies = 3;
+                NotifyPropertyChanged(nameof(ThreeCopies));
+            }
+        }
+
+        public bool FiveCopies
+        {
+            get => AskNumberOfBackupCopies == 5;
+            set
+            {
+                fiveCopies = value;
+
+                if (fiveCopies) AskNumberOfBackupCopies = 5;
+                NotifyPropertyChanged(nameof(FiveCopies));
+            }
+        }
+
+        public bool TenCopies
+        {
+            get => AskNumberOfBackupCopies == 10;
+            set
+            {
+                tenCopies = value;
+
+                if (tenCopies) AskNumberOfBackupCopies = 10;
+                NotifyPropertyChanged(nameof(TenCopies));
+            }
+        }
+
+        public bool FiveMinutes
+        {
+            get => AskBackupMinuteInterval == 5;
+            set
+            {
+                fiveMinutes = value;
+
+                if (fiveMinutes) AskBackupMinuteInterval = 5;
+                NotifyPropertyChanged(nameof(FiveMinutes));
+            }
+        }
+
+        public bool FifteenMinutes
+        {
+            get => AskBackupMinuteInterval == 15;
+            set
+            {
+                fifteenMinutes = value;
+
+                if (fifteenMinutes) AskBackupMinuteInterval = 15;
+                NotifyPropertyChanged(nameof(FifteenMinutes));
+            }
+        }
+
+        public bool ThirtyMinutes
+        {
+            get => AskBackupMinuteInterval == 30;
+            set
+            {
+                thirtyMinutes = value;
+
+                if (thirtyMinutes) AskBackupMinuteInterval = 30;
+                NotifyPropertyChanged(nameof(ThirtyMinutes));
+            }
+        }
+
+        #endregion
 
         [JsonIgnore]
         public string BrowseButton_Label { get; set; }
