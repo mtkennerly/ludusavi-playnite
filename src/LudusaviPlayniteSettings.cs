@@ -26,12 +26,15 @@ namespace LudusaviPlaynite
         private bool threeCopies;
         private bool fiveCopies;
         private bool tenCopies;
+        private bool fifteenCopies;
 
         //interval
         private bool fiveMinutes;
         private bool fifteenMinutes;
         private bool thirtyMinutes;
+        private bool sixtyMinutes;
 
+        [JsonIgnore]
         public bool ThreeCopies
         {
             // workaround so the correct radio button is clicked in the UI during initial render
@@ -46,6 +49,7 @@ namespace LudusaviPlaynite
             }
         }
 
+        [JsonIgnore]
         public bool FiveCopies
         {
             get => AskNumberOfBackupCopies == 5;
@@ -58,6 +62,7 @@ namespace LudusaviPlaynite
             }
         }
 
+        [JsonIgnore]
         public bool TenCopies
         {
             get => AskNumberOfBackupCopies == 10;
@@ -70,6 +75,20 @@ namespace LudusaviPlaynite
             }
         }
 
+        [JsonIgnore]
+        public bool FifteenCopies
+        {
+            get => AskNumberOfBackupCopies == 15;
+            set
+            {
+                fifteenCopies = value;
+
+                if (fifteenCopies) AskNumberOfBackupCopies = 15;
+                NotifyPropertyChanged(nameof(FifteenCopies));
+            }
+        }
+
+        [JsonIgnore]
         public bool FiveMinutes
         {
             get => AskBackupMinuteInterval == 5;
@@ -82,6 +101,7 @@ namespace LudusaviPlaynite
             }
         }
 
+        [JsonIgnore]
         public bool FifteenMinutes
         {
             get => AskBackupMinuteInterval == 15;
@@ -94,6 +114,7 @@ namespace LudusaviPlaynite
             }
         }
 
+        [JsonIgnore]
         public bool ThirtyMinutes
         {
             get => AskBackupMinuteInterval == 30;
@@ -103,6 +124,19 @@ namespace LudusaviPlaynite
 
                 if (thirtyMinutes) AskBackupMinuteInterval = 30;
                 NotifyPropertyChanged(nameof(ThirtyMinutes));
+            }
+        }
+
+        [JsonIgnore]
+        public bool SixtyMinutes
+        {
+            get => AskBackupMinuteInterval == 60;
+            set
+            {
+                sixtyMinutes = value;
+
+                if (sixtyMinutes) AskBackupMinuteInterval = 60;
+                NotifyPropertyChanged(nameof(SixtyMinutes));
             }
         }
 

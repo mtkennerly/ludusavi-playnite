@@ -52,6 +52,10 @@
                 <RadioButton Margin="5,2,0,0"
                              GroupName="BackupCopies" Content="10"
                              IsChecked="{Binding TenCopies}"/>
+                <RadioButton Margin="5,2,0,0"
+                             GroupName="BackupCopies" Content="15"
+                             IsChecked="{Binding FifteenCopies}"/>
+
             </StackPanel>
 
             <StackPanel x:Name="Panel_BackupInterval" Orientation="Horizontal" IsEnabled="{Binding AskCreateMultipleBackups}">
@@ -65,6 +69,9 @@
                 <RadioButton Margin="5,2,0,0"
                              GroupName="BackupInterval" Content="30"
                              IsChecked="{Binding ThirtyMinutes}"/>
+                <RadioButton Margin="5,2,0,0"
+                             GroupName="BackupInterval" Content="60"
+                             IsChecked="{Binding SixtyMinutes}"/>
             </StackPanel>
 
             <StackPanel Margin="15">
