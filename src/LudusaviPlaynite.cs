@@ -124,14 +124,16 @@ namespace LudusaviPlaynite
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs menuArgs)
         {
-            return new List<GameMenuItem>
+            var gameMenuItems = new List<GameMenuItem>
             {
                 new GameMenuItem
                 {
                     Description = translator.BackUpSelectedGames_Label(),
                     MenuSection = translator.Ludusavi(),
-                    Action = async args => {
-                        if (UserConsents(translator.BackUpSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
+                    Action = async args =>
+                    {
+                        if (UserConsents(translator.BackUpSelectedGames_Confirm(args.Games
+                            .Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
                         {
                             foreach (var game in args.Games)
                             {
@@ -146,8 +148,10 @@ namespace LudusaviPlaynite
                 {
                     Description = translator.RestoreSelectedGames_Label(),
                     MenuSection = translator.Ludusavi(),
-                    Action = async args => {
-                        if (UserConsents(translator.RestoreSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
+                    Action = async args =>
+                    {
+                        if (UserConsents(translator.RestoreSelectedGames_Confirm(args.Games
+                            .Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
                         {
                             foreach (var game in args.Games)
                             {
@@ -159,6 +163,27 @@ namespace LudusaviPlaynite
                     }
                 }
             };
+
+            if (menuArgs.Games.Count == 1) // Use option only when one game is selected
+            {
+                AddBackCopyMenu(gameMenuItems);
+            }
+
+            return gameMenuItems;
+        }
+
+        private void AddBackCopyMenu(List<GameMenuItem> gameMenuItems)
+        {
+            gameMenuItems.Add(new GameMenuItem
+            {
+                Description = "1",
+                MenuSection = $"{translator.Ludusavi()} | {translator.UseBackupCopy_Label()}"
+            });
+            gameMenuItems.Add(new GameMenuItem
+            {
+                Description = "2",
+                MenuSection = $"{translator.Ludusavi()} | {translator.UseBackupCopy_Label()}"
+            });
         }
 
         public override void OnGameStarted(OnGameStartedEventArgs args)

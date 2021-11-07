@@ -128,6 +128,15 @@ namespace LudusaviPlaynite
             }
         }
 
+        public string UseBackupCopy_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Use Backup copy";
+            }
+        }
+
         string GetSelectionFormattedNames(List<(string, bool)> games)
         {
             if (games.Count() < 50)
