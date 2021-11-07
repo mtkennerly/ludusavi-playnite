@@ -36,13 +36,13 @@
 
             <StackPanel Margin="15">
                 <CheckBox x:Name="CheckBox_CreateMultipleBackups"
-                          IsChecked="{Binding Path=AskCreateMultipleBackups}"
-                          Content="{Binding AskCreateMultipleBackups_Label}"
+                          IsChecked="{Binding Path=CreateMultipleBackups}"
+                          Content="{Binding CreateMultipleBackups_Label}"
                           Click="CreateMultipleBackups_Click"/>
             </StackPanel>
 
-            <StackPanel x:Name="Panel_BackupCopies" Orientation="Horizontal" IsEnabled="{Binding AskCreateMultipleBackups}">
-                <Label Margin="35,2,0,0" Content="{Binding AskNumberOfBackupCopies_Label}"/>
+            <StackPanel x:Name="Panel_BackupCopies" Orientation="Horizontal" IsEnabled="{Binding CreateMultipleBackups}">
+                <Label Margin="35,2,0,0" Content="{Binding NumberOfBackupCopies_Label}"/>
                 <RadioButton Margin="5,2,0,0"
                              GroupName="BackupCopies" Content="3"
                              IsChecked="{Binding Path=ThreeCopies}"/>
@@ -58,8 +58,8 @@
 
             </StackPanel>
 
-            <StackPanel x:Name="Panel_BackupInterval" Orientation="Horizontal" IsEnabled="{Binding AskCreateMultipleBackups}">
-                <Label Margin="35,2,0,0" Content="{Binding AskBackupMinuteInterval_Label}"/>
+            <StackPanel x:Name="Panel_BackupInterval" Orientation="Horizontal" IsEnabled="{Binding CreateMultipleBackups}">
+                <Label Margin="35,2,0,0" Content="{Binding BackupMinuteInterval_Label}"/>
                 <RadioButton Margin="5,2,0,0"
                              GroupName="BackupInterval" Content="5"
                              IsChecked="{Binding FiveMinutes}"/>

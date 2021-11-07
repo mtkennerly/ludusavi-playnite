@@ -128,12 +128,12 @@ namespace LudusaviPlaynite
             }
         }
 
-        public string UseBackupCopy_Label()
+        public string UseBackupCopy_Label(string gameName)
         {
             switch (language)
             {
                 default:
-                    return "Use Backup copy";
+                    return $"Restore using";
             }
         }
 

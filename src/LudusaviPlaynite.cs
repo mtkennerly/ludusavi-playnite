@@ -1,5 +1,4 @@
-﻿using ByteSizeLib;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
@@ -9,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +22,7 @@ namespace LudusaviPlaynite
         public override Guid Id { get; } = Guid.Parse("72e2de43-d859-44d8-914e-4277741c8208");
 
         private Translator translator;
+        private Timer timer;
         private bool pendingOperation { get; set; }
         private bool playedSomething { get; set; }
         private Game lastGamePlayed { get; set; }
@@ -55,20 +55,21 @@ namespace LudusaviPlaynite
                 {
                     Description = translator.Launch_Label(),
                     MenuSection = "@" + translator.Ludusavi(),
-                    Action = args => {
-                        LaunchLudusavi();
-                    }
+                    Action = args => { LaunchLudusavi(); }
                 },
                 new MainMenuItem
                 {
                     Description = translator.BackUpLastGame_Label(),
                     MenuSection = "@" + translator.Ludusavi(),
-                    Action = async args => {
+                    Action = async args =>
+                    {
                         if (!CanPerformOperationOnLastGamePlayed())
                         {
                             return;
                         }
-                        if (UserConsents(translator.BackUpOneGame_Confirm(GetGameName(lastGamePlayed), RequiresCustomEntry(lastGamePlayed))))
+
+                        if (UserConsents(translator.BackUpOneGame_Confirm(GetGameName(lastGamePlayed),
+                            RequiresCustomEntry(lastGamePlayed))))
                         {
                             await Task.Run(() => BackUpOneGame(lastGamePlayed));
                         }
@@ -78,11 +79,13 @@ namespace LudusaviPlaynite
                 {
                     Description = translator.BackUpAllGames_Label(),
                     MenuSection = "@" + translator.Ludusavi(),
-                    Action = async args => {
+                    Action = async args =>
+                    {
                         if (!CanPerformOperation())
                         {
                             return;
                         }
+
                         if (UserConsents(translator.BackUpAllGames_Confirm()))
                         {
                             await Task.Run(() => BackUpAllGames());
@@ -93,12 +96,15 @@ namespace LudusaviPlaynite
                 {
                     Description = translator.RestoreLastGame_Label(),
                     MenuSection = "@" + translator.Ludusavi(),
-                    Action = async args => {
+                    Action = async args =>
+                    {
                         if (!CanPerformOperationOnLastGamePlayed())
                         {
                             return;
                         }
-                        if (UserConsents(translator.RestoreOneGame_Confirm(GetGameName(lastGamePlayed), RequiresCustomEntry(lastGamePlayed))))
+
+                        if (UserConsents(translator.RestoreOneGame_Confirm(GetGameName(lastGamePlayed),
+                            RequiresCustomEntry(lastGamePlayed))))
                         {
                             await Task.Run(() => RestoreOneGame(lastGamePlayed));
                         }
@@ -108,11 +114,13 @@ namespace LudusaviPlaynite
                 {
                     Description = translator.RestoreAllGames_Label(),
                     MenuSection = "@" + translator.Ludusavi(),
-                    Action = async args => {
+                    Action = async args =>
+                    {
                         if (!CanPerformOperation())
                         {
                             return;
                         }
+
                         if (UserConsents(translator.RestoreAllGames_Confirm()))
                         {
                             await Task.Run(() => RestoreAllGames());
@@ -164,31 +172,42 @@ namespace LudusaviPlaynite
                 }
             };
 
-            if (menuArgs.Games.Count == 1) // Use option only when one game is selected
+            // show menu only when one game is selected
+            if (menuArgs.Games.Count == 1 && settings.CreateMultipleBackups)
             {
-                AddBackCopyMenu(gameMenuItems);
+                AddBackupCopyMenu(gameMenuItems, menuArgs.Games.SingleOrDefault());
             }
 
             return gameMenuItems;
         }
 
-        private void AddBackCopyMenu(List<GameMenuItem> gameMenuItems)
+
+
+        public override void OnGameStarting(OnGameStartingEventArgs args)
         {
-            gameMenuItems.Add(new GameMenuItem
+            if (settings.CreateMultipleBackups)
             {
-                Description = "1",
-                MenuSection = $"{translator.Ludusavi()} | {translator.UseBackupCopy_Label()}"
-            });
-            gameMenuItems.Add(new GameMenuItem
-            {
-                Description = "2",
-                MenuSection = $"{translator.Ludusavi()} | {translator.UseBackupCopy_Label()}"
-            });
+                var gameName = ReplaceSpecialChars(args.Game);
+
+                // create directory for the backup copies if it doesn't exist
+                Directory.CreateDirectory($@"{settings.BackupCopiesPath}\{gameName}");
+
+                // create an initial backup if it doesn't exist
+                if (!Directory.Exists($@"{settings.BackupPath}\{gameName}"))
+                    Task.Run(() => BackUpOneGame(args.Game));
+            }
         }
 
         public override void OnGameStarted(OnGameStartedEventArgs args)
         {
-            base.OnGameStarted(args);
+            if (args?.Game is null) return;
+
+            if (settings.CreateMultipleBackups)
+            {
+                timer = new Timer(CreateBackupOnIntervalAsync, args.Game,
+                    settings.BackupMinuteInterval * 60000,
+                    settings.BackupMinuteInterval * 60000);
+            }
         }
 
         public override void OnGameStopped(OnGameStoppedEventArgs arg)
@@ -196,10 +215,13 @@ namespace LudusaviPlaynite
             playedSomething = true;
             lastGamePlayed = arg.Game;
             Game game = arg.Game;
+            timer?.Dispose();
 
-            if (settings.DoBackupOnGameStopped && !ShouldSkipGame(game) && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc))
+            if (settings.DoBackupOnGameStopped && !ShouldSkipGame(game) &&
+                (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc))
             {
-                if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game))))
+                if (!settings.AskBackupOnGameStopped ||
+                    UserConsents(translator.BackUpOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game))))
                 {
                     Task.Run(() => BackUpOneGame(game));
                 }
@@ -207,7 +229,8 @@ namespace LudusaviPlaynite
 
             if (settings.DoPlatformBackupOnNonPcGameStopped && !ShouldSkipGame(game) && !IsOnPc(game))
             {
-                if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game.Platforms[0]?.Name, true)))
+                if (!settings.AskPlatformBackupOnNonPcGameStopped ||
+                    UserConsents(translator.BackUpOneGame_Confirm(game.Platforms[0]?.Name, true)))
                 {
                     Task.Run(() => BackUpOneGame(game, new BackupCriteria { ByPlatform = true }));
                 }
@@ -224,6 +247,78 @@ namespace LudusaviPlaynite
             return new LudusaviPlayniteSettingsView(this, this.translator);
         }
 
+        private void AddBackupCopyMenu(List<GameMenuItem> gameMenuItems, Game game)
+        {
+            if (gameMenuItems is null || game is null) return;
+
+            var gameBackupsPath = $@"{settings.BackupCopiesPath}\{ReplaceSpecialChars(game)}";
+
+            // don't show menu if there are no backups yet
+            if (!Directory.Exists(gameBackupsPath)) return;
+
+            var gameBackups = Directory.GetDirectories(gameBackupsPath);
+
+            Array.Sort(gameBackups);
+
+            for (int i = 0; i < gameBackups.Length; i++)
+            {
+                gameMenuItems.Add(new GameMenuItem
+                {
+                    Description = $"Backup copy {i + 1}",
+                    MenuSection = $"{translator.Ludusavi()} | {translator.UseBackupCopy_Label(game.Name)}"
+                });
+            }
+        }
+
+        private string ReplaceSpecialChars(Game game)
+        {
+            return game?.Name
+                .Replace('|', '_')
+                .Replace(':', '_')
+                .Replace('*', '_');
+        }
+
+        private async void CreateBackupOnIntervalAsync(Object obj)
+        {
+            Game game = (Game)obj;
+
+            //create new backup
+            await Task.Run(() => BackUpOneGame(game));
+
+            var gameName = ReplaceSpecialChars(game);
+            var gameBackupCopiesPath = $@"{settings.BackupCopiesPath}\{gameName}";
+
+            var backupDirectories = Directory.GetDirectories(gameBackupCopiesPath);
+
+            if (backupDirectories.Length == settings.NumberOfBackupCopies)
+            {
+                //try to remove the oldest copy
+                await Task.Run(() =>
+                    FileOperators.TryDeleteDirectory($@"{gameBackupCopiesPath}\1_{gameName}"));
+
+                // check the subdirectories again
+                backupDirectories = Directory.GetDirectories(gameBackupCopiesPath);
+
+                // return and don't create a backup if removal failed
+                if (backupDirectories.Length == settings.NumberOfBackupCopies) return;
+
+                Array.Sort(backupDirectories);
+                // rename the directory of other copies
+                if (backupDirectories.Length > 0)
+                {
+                    for (int i = 0; i < backupDirectories.Length; i++)
+                    {
+                        Directory.Move(backupDirectories[i],
+                            $@"{gameBackupCopiesPath}\{i + 1}_{gameName}");
+                    }
+                }
+            }
+
+            //copy latest backup
+            await Task.Run(() => FileOperators.DirectoryCopy($@"{settings.BackupPath}\{gameName}",
+                    $@"{gameBackupCopiesPath}\{backupDirectories.Length + 1}_{gameName}", true));
+        }
+
         private void NotifyInfo(string message)
         {
             NotifyInfo(message, () => { });
@@ -235,7 +330,9 @@ namespace LudusaviPlaynite
             {
                 return;
             }
-            PlayniteApi.Notifications.Add(new NotificationMessage(Guid.NewGuid().ToString(), message, NotificationType.Info, action));
+
+            PlayniteApi.Notifications.Add(new NotificationMessage(Guid.NewGuid().ToString(), message,
+                NotificationType.Info, action));
         }
 
         private void NotifyError(string message)
@@ -245,7 +342,8 @@ namespace LudusaviPlaynite
 
         private void NotifyError(string message, Action action)
         {
-            PlayniteApi.Notifications.Add(new NotificationMessage(Guid.NewGuid().ToString(), message, NotificationType.Error, action));
+            PlayniteApi.Notifications.Add(new NotificationMessage(Guid.NewGuid().ToString(), message,
+                NotificationType.Error, action));
         }
 
         private void ShowFullResults(ApiResponse response)
@@ -253,11 +351,13 @@ namespace LudusaviPlaynite
             var tempFile = Path.GetTempPath() + Guid.NewGuid().ToString() + ".html";
             using (StreamWriter sw = File.CreateText(tempFile))
             {
-                sw.WriteLine("<html><head><style>body { background-color: black; color: white; font-family: sans-serif; }</style></head><body><ul>");
+                sw.WriteLine(
+                    "<html><head><style>body { background-color: black; color: white; font-family: sans-serif; }</style></head><body><ul>");
                 foreach (var game in response.Games)
                 {
                     sw.WriteLine(string.Format("<li>{0}</li>", translator.FullListGameLineItem(game.Key, game.Value)));
                 }
+
                 sw.WriteLine("</ul></body></html>");
             }
 
@@ -270,7 +370,8 @@ namespace LudusaviPlaynite
                 File.Delete(tempFile);
             }
             catch
-            { }
+            {
+            }
         }
 
         private (int, string) RunCommand(string command, string args)
@@ -337,6 +438,7 @@ namespace LudusaviPlaynite
                 PlayniteApi.Dialogs.ShowMessage(translator.OperationStillPending());
                 return false;
             }
+
             return true;
         }
 
@@ -347,6 +449,7 @@ namespace LudusaviPlaynite
                 PlayniteApi.Dialogs.ShowMessage(translator.NoGamePlayedYet());
                 return false;
             }
+
             return CanPerformOperation();
         }
 
@@ -359,15 +462,16 @@ namespace LudusaviPlaynite
         private bool ShouldSkipGame(Game game)
         {
             return (game.Tags != null
-                && game.Tags.Any(x => x.Name == "ludusavi-skip"))
-                || game.Platforms.Count > 1;
+                    && game.Tags.Any(x => x.Name == "ludusavi-skip"))
+                   || game.Platforms.Count > 1;
         }
 
         string GetGameName(Game game)
         {
             if (!IsOnPc(game) && settings.AddSuffixForNonPcGameNames)
             {
-                return string.Format("{0}{1}", game.Name, settings.SuffixForNonPcGameNames.Replace("<platform>", game.Platforms[0]?.Name));
+                return string.Format("{0}{1}", game.Name,
+                    settings.SuffixForNonPcGameNames.Replace("<platform>", game.Platforms[0]?.Name));
             }
             else
             {
@@ -400,16 +504,23 @@ namespace LudusaviPlaynite
             pendingOperation = true;
             var name = criteria.ByPlatform ? game.Platforms[0]?.Name : GetGameName(game);
 
-            var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, name));
+            var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"",
+                settings.BackupPath, name));
             if (!criteria.ByPlatform)
             {
                 if (response?.Errors.UnknownGames != null && IsOnSteam(game))
                 {
-                    (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
+                    (code, response) = InvokeLudusavi(string.Format(
+                        "backup --merge --try-update --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath,
+                        game.GameId));
                 }
-                if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
+
+                if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix &&
+                    name != game.Name)
                 {
-                    (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+                    (code, response) =
+                        InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"",
+                            settings.BackupPath, game.Name));
                 }
             }
 
@@ -450,7 +561,8 @@ namespace LudusaviPlaynite
         private void BackUpAllGames()
         {
             pendingOperation = true;
-            var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\"", settings.BackupPath));
+            var (code, response) =
+                InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\"", settings.BackupPath));
 
             if (response == null)
             {
@@ -469,6 +581,7 @@ namespace LudusaviPlaynite
                     NotifyError(translator.BackUpAllGames_Failure(result), () => ShowFullResults(result.Response));
                 }
             }
+
             pendingOperation = false;
         }
 
@@ -477,14 +590,19 @@ namespace LudusaviPlaynite
             pendingOperation = true;
             var name = GetGameName(game);
 
-            var (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, name));
+            var (code, response) =
+                InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, name));
             if (response?.Errors.UnknownGames != null && IsOnSteam(game))
             {
-                (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
+                (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" --by-steam-id \"{1}\"",
+                    settings.BackupPath, game.GameId));
             }
-            if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
+
+            if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix &&
+                name != game.Name)
             {
-                (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+                (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"",
+                    settings.BackupPath, game.Name));
             }
 
             if (response == null)

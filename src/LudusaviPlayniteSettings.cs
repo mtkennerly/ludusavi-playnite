@@ -38,13 +38,13 @@ namespace LudusaviPlaynite
         public bool ThreeCopies
         {
             // workaround so the correct radio button is clicked in the UI during initial render
-            get => AskNumberOfBackupCopies == 3;
+            get => NumberOfBackupCopies == 3;
             set
             {
                 // set the integer value only when the radio button is clicked
                 threeCopies = value;
 
-                if (threeCopies) AskNumberOfBackupCopies = 3;
+                if (threeCopies) NumberOfBackupCopies = 3;
                 NotifyPropertyChanged(nameof(ThreeCopies));
             }
         }
@@ -52,12 +52,12 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public bool FiveCopies
         {
-            get => AskNumberOfBackupCopies == 5;
+            get => NumberOfBackupCopies == 5;
             set
             {
                 fiveCopies = value;
 
-                if (fiveCopies) AskNumberOfBackupCopies = 5;
+                if (fiveCopies) NumberOfBackupCopies = 5;
                 NotifyPropertyChanged(nameof(FiveCopies));
             }
         }
@@ -65,12 +65,12 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public bool TenCopies
         {
-            get => AskNumberOfBackupCopies == 10;
+            get => NumberOfBackupCopies == 10;
             set
             {
                 tenCopies = value;
 
-                if (tenCopies) AskNumberOfBackupCopies = 10;
+                if (tenCopies) NumberOfBackupCopies = 10;
                 NotifyPropertyChanged(nameof(TenCopies));
             }
         }
@@ -78,12 +78,12 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public bool FifteenCopies
         {
-            get => AskNumberOfBackupCopies == 15;
+            get => NumberOfBackupCopies == 15;
             set
             {
                 fifteenCopies = value;
 
-                if (fifteenCopies) AskNumberOfBackupCopies = 15;
+                if (fifteenCopies) NumberOfBackupCopies = 15;
                 NotifyPropertyChanged(nameof(FifteenCopies));
             }
         }
@@ -91,12 +91,12 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public bool FiveMinutes
         {
-            get => AskBackupMinuteInterval == 5;
+            get => BackupMinuteInterval == 5;
             set
             {
                 fiveMinutes = value;
 
-                if (fiveMinutes) AskBackupMinuteInterval = 5;
+                if (fiveMinutes) BackupMinuteInterval = 5;
                 NotifyPropertyChanged(nameof(FiveMinutes));
             }
         }
@@ -104,12 +104,12 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public bool FifteenMinutes
         {
-            get => AskBackupMinuteInterval == 15;
+            get => BackupMinuteInterval == 15;
             set
             {
                 fifteenMinutes = value;
 
-                if (fifteenMinutes) AskBackupMinuteInterval = 15;
+                if (fifteenMinutes) BackupMinuteInterval = 15;
                 NotifyPropertyChanged(nameof(FifteenMinutes));
             }
         }
@@ -117,12 +117,12 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public bool ThirtyMinutes
         {
-            get => AskBackupMinuteInterval == 30;
+            get => BackupMinuteInterval == 30;
             set
             {
                 thirtyMinutes = value;
 
-                if (thirtyMinutes) AskBackupMinuteInterval = 30;
+                if (thirtyMinutes) BackupMinuteInterval = 30;
                 NotifyPropertyChanged(nameof(ThirtyMinutes));
             }
         }
@@ -130,12 +130,12 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public bool SixtyMinutes
         {
-            get => AskBackupMinuteInterval == 60;
+            get => BackupMinuteInterval == 60;
             set
             {
                 sixtyMinutes = value;
 
-                if (sixtyMinutes) AskBackupMinuteInterval = 60;
+                if (sixtyMinutes) BackupMinuteInterval = 60;
                 NotifyPropertyChanged(nameof(SixtyMinutes));
             }
         }
@@ -153,7 +153,16 @@ namespace LudusaviPlaynite
         public string ExecutablePath_Label { get; set; }
 
         private string backupPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "ludusavi-playnite");
-        public string BackupPath { get { return backupPath; } set { backupPath = value; NotifyPropertyChanged("BackupPath"); } }
+        public string BackupPath
+        {
+            get => backupPath;
+            set
+            {
+                backupPath = value;
+                BackupCopiesPath = $"{backupPath}\\Copies";
+                NotifyPropertyChanged("BackupPath");
+            }
+        }
         [JsonIgnore]
         public string BackupPath_Label { get; set; }
 
@@ -165,17 +174,30 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string AskBackupOnGameStopped_Label { get; set; }
 
-        public bool AskCreateMultipleBackups { get; set; } = true;
-        [JsonIgnore]
-        public string AskCreateMultipleBackups_Label { get; set; }
+        public string BackupCopiesPath { get; private set; }
 
-        public int AskNumberOfBackupCopies { get; set; } = 3;
-        [JsonIgnore]
-        public string AskNumberOfBackupCopies_Label { get; set; }
+        private bool createMultipleBackups = true;
+        public bool CreateMultipleBackups
+        {
+            get => createMultipleBackups;
+            set
+            {
+                createMultipleBackups = value;
+                if (createMultipleBackups && !Directory.Exists(BackupCopiesPath))
+                    Directory.CreateDirectory(BackupCopiesPath);
+            }
+        }
 
-        public int AskBackupMinuteInterval { get; set; } = 30;
         [JsonIgnore]
-        public string AskBackupMinuteInterval_Label { get; set; }
+        public string CreateMultipleBackups_Label { get; set; }
+
+        public int NumberOfBackupCopies { get; set; } = 3;
+        [JsonIgnore]
+        public string NumberOfBackupCopies_Label { get; set; }
+
+        public int BackupMinuteInterval { get; set; } = 30;
+        [JsonIgnore]
+        public string BackupMinuteInterval_Label { get; set; }
 
         public bool OnlyBackupOnGameStoppedIfPc { get; set; } = true;
         [JsonIgnore]
@@ -215,9 +237,9 @@ namespace LudusaviPlaynite
             BackupPath_Label = translator.BackupPath_Label();
             DoBackupOnGameStopped_Label = translator.DoBackupOnGameStopped_Label();
             AskBackupOnGameStopped_Label = translator.AskBackupOnGameStopped_Label();
-            AskCreateMultipleBackups_Label = translator.AskCreateMultipleBackups_Label();
-            AskNumberOfBackupCopies_Label = translator.AskNumberOfBackupCopies_Label();
-            AskBackupMinuteInterval_Label = translator.AskBackupMinuteInterval_Label();
+            CreateMultipleBackups_Label = translator.AskCreateMultipleBackups_Label();
+            NumberOfBackupCopies_Label = translator.AskNumberOfBackupCopies_Label();
+            BackupMinuteInterval_Label = translator.AskBackupMinuteInterval_Label();
             OnlyBackupOnGameStoppedIfPc_Label = translator.OnlyBackupOnGameStoppedIfPc_Label();
             AddSuffixForNonPcGameNames_Label = translator.AddSuffixForNonPcGameNames_Label();
             RetryNonPcGamesWithoutSuffix_Label = translator.RetryNonPcGamesWithoutSuffix_Label();
@@ -240,11 +262,12 @@ namespace LudusaviPlaynite
             {
                 ExecutablePath = savedSettings.ExecutablePath;
                 BackupPath = savedSettings.BackupPath;
+                BackupCopiesPath = savedSettings.BackupCopiesPath;
                 DoBackupOnGameStopped = savedSettings.DoBackupOnGameStopped;
                 AskBackupOnGameStopped = savedSettings.AskBackupOnGameStopped;
-                AskCreateMultipleBackups = savedSettings.AskCreateMultipleBackups;
-                AskNumberOfBackupCopies = savedSettings.AskNumberOfBackupCopies;
-                AskBackupMinuteInterval = savedSettings.AskBackupMinuteInterval;
+                CreateMultipleBackups = savedSettings.CreateMultipleBackups;
+                NumberOfBackupCopies = savedSettings.NumberOfBackupCopies;
+                BackupMinuteInterval = savedSettings.BackupMinuteInterval;
                 OnlyBackupOnGameStoppedIfPc = savedSettings.OnlyBackupOnGameStoppedIfPc;
                 AddSuffixForNonPcGameNames = savedSettings.AddSuffixForNonPcGameNames;
                 SuffixForNonPcGameNames = savedSettings.SuffixForNonPcGameNames;
