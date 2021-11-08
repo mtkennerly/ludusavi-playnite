@@ -55,7 +55,6 @@
                 <RadioButton Margin="5,2,0,0"
                              GroupName="BackupCopies" Content="15"
                              IsChecked="{Binding FifteenCopies}"/>
-
             </StackPanel>
 
             <StackPanel x:Name="Panel_BackupInterval" Orientation="Horizontal" IsEnabled="{Binding CreateMultipleBackups}">

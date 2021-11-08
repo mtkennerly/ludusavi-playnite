@@ -145,14 +145,43 @@ namespace LudusaviPlaynite
                         {
                             foreach (var game in args.Games)
                             {
-                                {
-                                    await Task.Run(() => BackUpOneGame(game));
-                                }
+                                await Task.Run(() => BackUpOneGame(game));
                             }
                         }
                     }
-                },
-                new GameMenuItem
+                }
+            };
+
+            // show new menu only when one game is selected
+            if (menuArgs.Games.Count == 1)
+            {
+                if (settings.CreateMultipleBackups)
+                {
+                    AddBackupCopyMenu(gameMenuItems, menuArgs.Games.SingleOrDefault());
+                }
+                else
+                {
+                    gameMenuItems.Add(new GameMenuItem
+                    {
+                        Description = translator.RestoreSelectedGames_Label(),
+                        MenuSection = translator.Ludusavi(),
+                        Action = async args =>
+                        {
+                            var game = args.Games.Single();
+
+                            if (UserConsents(translator.RestoreOneGame_Confirm(
+                                GetGameName(game),
+                                RequiresCustomEntry(game))))
+                            {
+                                await Task.Run(() => RestoreOneGame(game));
+                            }
+                        }
+                    });
+                }
+            }
+            else
+            {
+                gameMenuItems.Add(new GameMenuItem
                 {
                     Description = translator.RestoreSelectedGames_Label(),
                     MenuSection = translator.Ludusavi(),
@@ -163,25 +192,15 @@ namespace LudusaviPlaynite
                         {
                             foreach (var game in args.Games)
                             {
-                                {
-                                    await Task.Run(() => RestoreOneGame(game));
-                                }
+                                await Task.Run(() => RestoreOneGame(game));
                             }
                         }
                     }
-                }
-            };
-
-            // show menu only when one game is selected
-            if (menuArgs.Games.Count == 1 && settings.CreateMultipleBackups)
-            {
-                AddBackupCopyMenu(gameMenuItems, menuArgs.Games.SingleOrDefault());
+                });
             }
 
             return gameMenuItems;
         }
-
-
 
         public override void OnGameStarting(OnGameStartingEventArgs args)
         {
@@ -253,19 +272,48 @@ namespace LudusaviPlaynite
 
             var gameBackupsPath = $@"{settings.BackupCopiesPath}\{ReplaceSpecialChars(game)}";
 
-            // don't show menu if there are no backups yet
-            if (!Directory.Exists(gameBackupsPath)) return;
-
+            // create the directory if it doesn't exist
+            Directory.CreateDirectory(gameBackupsPath);
             var gameBackups = Directory.GetDirectories(gameBackupsPath);
 
-            Array.Sort(gameBackups);
-
-            for (int i = 0; i < gameBackups.Length; i++)
+            // create an empty UI if there no backups yet
+            if (gameBackups.Length == 0)
             {
                 gameMenuItems.Add(new GameMenuItem
                 {
-                    Description = $"Backup copy {i + 1}",
                     MenuSection = $"{translator.Ludusavi()} | {translator.UseBackupCopy_Label(game.Name)}"
+                });
+
+                return;
+            }
+
+            for (int i = gameBackups.Length - 1; i >= 0; i--)
+            {
+                var idx = i;
+                gameMenuItems.Add(new GameMenuItem
+                {
+                    Description = $"{translator.UseBackupCopy()} {idx + 1}",
+                    MenuSection = $"{translator.Ludusavi()} | {translator.UseBackupCopy_Label(game.Name)}",
+                    Action = async arg =>
+                    {
+                        if (UserConsents(translator.RestoreOneGame_Confirm(
+                            GetGameName(game),
+                            RequiresCustomEntry(game))))
+                        {
+                            var gameName = ReplaceSpecialChars(game);
+
+                            //copy the backup copy to the original backup then restore
+                            await Task.Run(() =>
+                            {
+                                FileOperators.DirectoryCopy(
+                                    $@"{settings.BackupCopiesPath}\{gameName}\{idx + 1}_{gameName}",
+                                    $@"{settings.BackupPath}\{gameName}",
+                                    true);
+                            });
+
+                            await Task.Run(() => RestoreOneGame(game));
+                        }
+                    }
                 });
             }
         }
@@ -299,10 +347,9 @@ namespace LudusaviPlaynite
                 // check the subdirectories again
                 backupDirectories = Directory.GetDirectories(gameBackupCopiesPath);
 
-                // return and don't create a backup if removal failed
+                // return and don't copy the new backup if removal failed
                 if (backupDirectories.Length == settings.NumberOfBackupCopies) return;
 
-                Array.Sort(backupDirectories);
                 // rename the directory of other copies
                 if (backupDirectories.Length > 0)
                 {
@@ -316,7 +363,7 @@ namespace LudusaviPlaynite
 
             //copy latest backup
             await Task.Run(() => FileOperators.DirectoryCopy($@"{settings.BackupPath}\{gameName}",
-                    $@"{gameBackupCopiesPath}\{backupDirectories.Length + 1}_{gameName}", true));
+                $@"{gameBackupCopiesPath}\{backupDirectories.Length + 1}_{gameName}", true));
         }
 
         private void NotifyInfo(string message)
