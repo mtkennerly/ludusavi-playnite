@@ -209,7 +209,21 @@ namespace LudusaviPlaynite
                 var gameName = ReplaceSpecialChars(args.Game);
 
                 // create directory for the backup copies if it doesn't exist
-                Directory.CreateDirectory($@"{settings.BackupCopiesPath}\{gameName}");
+                var gameBackupCopiesPath = $@"{settings.BackupCopiesPath}\{gameName}";
+                try
+                {
+                    Directory.CreateDirectory(gameBackupCopiesPath);
+                }
+                catch (DirectoryNotFoundException e)
+                {
+                    NotifyError($"The directory {gameBackupCopiesPath} can't be found");
+                    return;
+                }
+                catch (UnauthorizedAccessException e)
+                {
+                    NotifyError($"The program can't access the directory {gameBackupCopiesPath}");
+                    return;
+                }
 
                 // create an initial backup if it doesn't exist
                 if (!Directory.Exists($@"{settings.BackupPath}\{gameName}"))
@@ -270,14 +284,10 @@ namespace LudusaviPlaynite
         {
             if (gameMenuItems is null || game is null) return;
 
-            var gameBackupsPath = $@"{settings.BackupCopiesPath}\{ReplaceSpecialChars(game)}";
-
-            // create the directory if it doesn't exist
-            Directory.CreateDirectory(gameBackupsPath);
-            var gameBackups = Directory.GetDirectories(gameBackupsPath);
+            var gameBackupCopiesPath = $@"{settings.BackupCopiesPath}\{ReplaceSpecialChars(game)}";
 
             // create an empty UI if there no backups yet
-            if (gameBackups.Length == 0)
+            if (!Directory.Exists(gameBackupCopiesPath))
             {
                 gameMenuItems.Add(new GameMenuItem
                 {
@@ -287,7 +297,19 @@ namespace LudusaviPlaynite
                 return;
             }
 
-            for (int i = gameBackups.Length - 1; i >= 0; i--)
+            if (TryGetSubDirectories(gameBackupCopiesPath, out var backupDirectories)) return;
+
+            if (backupDirectories.Length == 0)
+            {
+                gameMenuItems.Add(new GameMenuItem
+                {
+                    MenuSection = $"{translator.Ludusavi()} | {translator.UseBackupCopy_Label(game.Name)}"
+                });
+
+                return;
+            }
+
+            for (int i = backupDirectories.Length - 1; i >= 0; i--)
             {
                 var idx = i;
                 gameMenuItems.Add(new GameMenuItem
@@ -303,13 +325,9 @@ namespace LudusaviPlaynite
                             var gameName = ReplaceSpecialChars(game);
 
                             //copy the backup copy to the original backup then restore
-                            await Task.Run(() =>
-                            {
-                                FileOperators.DirectoryCopy(
-                                    $@"{settings.BackupCopiesPath}\{gameName}\{idx + 1}_{gameName}",
-                                    $@"{settings.BackupPath}\{gameName}",
-                                    true);
-                            });
+                            if (await DirectoryCopy($@"{settings.BackupCopiesPath}\{gameName}\{idx + 1}_{gameName}",
+                                $@"{settings.BackupPath}\{gameName}",
+                                "Restore")) return;
 
                             await Task.Run(() => RestoreOneGame(game));
                         }
@@ -336,7 +354,7 @@ namespace LudusaviPlaynite
             var gameName = ReplaceSpecialChars(game);
             var gameBackupCopiesPath = $@"{settings.BackupCopiesPath}\{gameName}";
 
-            var backupDirectories = Directory.GetDirectories(gameBackupCopiesPath);
+            if (TryGetSubDirectories(gameBackupCopiesPath, out var backupDirectories)) return;
 
             if (backupDirectories.Length == settings.NumberOfBackupCopies)
             {
@@ -362,8 +380,67 @@ namespace LudusaviPlaynite
             }
 
             //copy latest backup
-            await Task.Run(() => FileOperators.DirectoryCopy($@"{settings.BackupPath}\{gameName}",
-                $@"{gameBackupCopiesPath}\{backupDirectories.Length + 1}_{gameName}", true));
+            await DirectoryCopy($@"{settings.BackupPath}\{gameName}",
+                $@"{gameBackupCopiesPath}\{backupDirectories.Length + 1}_{gameName}",
+                "Backup");
+        }
+
+        /// <summary>
+        /// Helper method that includes notifications on exceptions
+        /// </summary>
+        /// <param name="sourceDir"></param>
+        /// <param name="destDir"></param>
+        /// <param name="operation"></param>
+        /// <returns>true if an exception is thrown</returns>
+        private async Task<bool> DirectoryCopy(string sourceDir, string destDir, string operation)
+        {
+            try
+            {
+                await Task.Run(() => FileOperators.DirectoryCopy(sourceDir, destDir, true));
+
+                return false;
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                NotifyError($"Either the {sourceDir} or the {destDir} directory can't be found." +
+                            $"{operation} operation cancelled");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                NotifyError($"The program does not have permission to access " +
+                            $"either the {sourceDir} or the {destDir} directory." +
+                            $"{operation} operation cancelled");
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Helper method that includes notifications on exceptions
+        /// </summary>
+        /// <param name="sourceDir"></param>
+        /// <param name="subDirs"></param>
+        /// <returns>true if an exception is thrown</returns>
+        private bool TryGetSubDirectories(string sourceDir, out string[] subDirs)
+        {
+            try
+            {
+                subDirs = Directory.GetDirectories(sourceDir);
+
+                return false;
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                NotifyError($"The directory {sourceDir} can't be found.");
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                NotifyError($"The program does not have permission" +
+                            $" to access the directory {sourceDir}");
+            }
+            subDirs = null;
+
+            return true;
         }
 
         private void NotifyInfo(string message)
