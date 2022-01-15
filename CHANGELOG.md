@@ -1,3 +1,8 @@
+## Unreleased
+
+* Fixed:
+  * Crash when a game in Playnite did not have any platforms set.
+
 ## v0.6.0 (2021-10-08)
 
 * Changed:

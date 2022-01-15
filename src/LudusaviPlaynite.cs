@@ -177,7 +177,7 @@ namespace LudusaviPlaynite
 
             if (settings.DoPlatformBackupOnNonPcGameStopped && !ShouldSkipGame(game) && !IsOnPc(game))
             {
-                if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game.Platforms[0]?.Name, true)))
+                if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game.Platforms[0].Name, true)))
                 {
                     Task.Run(() => BackUpOneGame(game, new BackupCriteria { ByPlatform = true }));
                 }
@@ -330,14 +330,14 @@ namespace LudusaviPlaynite
         {
             return (game.Tags != null
                 && game.Tags.Any(x => x.Name == "ludusavi-skip"))
-                || game.Platforms.Count > 1;
+                || (game.Platforms != null && game.Platforms.Count > 1);
         }
 
         string GetGameName(Game game)
         {
             if (!IsOnPc(game) && settings.AddSuffixForNonPcGameNames)
             {
-                return string.Format("{0}{1}", game.Name, settings.SuffixForNonPcGameNames.Replace("<platform>", game.Platforms[0]?.Name));
+                return string.Format("{0}{1}", game.Name, settings.SuffixForNonPcGameNames.Replace("<platform>", game.Platforms[0].Name));
             }
             else
             {
@@ -352,7 +352,7 @@ namespace LudusaviPlaynite
 
         bool IsOnPc(Game game)
         {
-            return game.Platforms[0]?.SpecificationId == "pc_windows";
+            return game.Platforms == null || game.Platforms[0]?.SpecificationId == "pc_windows";
         }
 
         bool RequiresCustomEntry(Game game)
@@ -368,7 +368,7 @@ namespace LudusaviPlaynite
         private void BackUpOneGame(Game game, BackupCriteria criteria)
         {
             pendingOperation = true;
-            var name = criteria.ByPlatform ? game.Platforms[0]?.Name : GetGameName(game);
+            var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameName(game);
 
             var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, name));
             if (!criteria.ByPlatform)
