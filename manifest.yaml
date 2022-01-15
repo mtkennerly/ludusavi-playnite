@@ -1,8 +1,8 @@
 AddonId: mtkennerly.ludusavi
 Packages:
-  - Version: 0.6.0
+  - Version: 0.6.1
     RequiredApiVersion: 6.0.0
-    ReleaseDate: 2021-10-08
-    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.6.0/ludusavi-playnite-v0.6.0.pext
+    ReleaseDate: 2022-01-14
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.6.1/ludusavi-playnite-v0.6.1.pext
     Changelog:
-      - Playnite 9 support
+      - 'Fixed: Crash when a game in Playnite did not have any platforms set.'
