@@ -1,3 +1,8 @@
+## Unreleased
+
+* Added:
+  * Game-specific context menu entries to add or remove the `ludusavi-skip` tag.
+
 ## v0.6.1 (2022-01-14)
 
 * Fixed:

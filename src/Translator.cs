@@ -128,11 +128,11 @@ namespace LudusaviPlaynite
             }
         }
 
-        string GetSelectionFormattedNames(List<(string, bool)> games)
+        string GetSelectionFormattedNames(IEnumerable<string> games)
         {
             if (games.Count() < 50)
             {
-                return "\n\n" + String.Join(" | ", games.Select(x => x.Item1));
+                return "\n\n" + String.Join(" | ", games);
             }
             return "";
         }
@@ -159,7 +159,7 @@ namespace LudusaviPlaynite
                 return BackUpOneGame_Confirm(games[0].Item1, games[0].Item2);
             }
 
-            var formattedNames = GetSelectionFormattedNames(games);
+            var formattedNames = GetSelectionFormattedNames(games.Select(x => x.Item1));
             var customNote = GetSelectionCustomNote(games);
 
             switch (language)
@@ -224,7 +224,7 @@ namespace LudusaviPlaynite
                 return RestoreOneGame_Confirm(games[0].Item1, games[0].Item2);
             }
 
-            var formattedNames = GetSelectionFormattedNames(games);
+            var formattedNames = GetSelectionFormattedNames(games.Select(x => x.Item1));
             var customNote = GetSelectionCustomNote(games);
 
             switch (language)
@@ -233,6 +233,49 @@ namespace LudusaviPlaynite
                     return string.Format("Restore save data for {0} selected games?{1}{2}", count, customNote, formattedNames);
             }
         }
+
+        public string AddTagForSelectedGames_Label(string tag)
+        {
+            switch (language)
+            {
+                default:
+                    return string.Format("Add {0} tag for selected games", tag);
+            }
+        }
+
+        public string AddTagForSelectedGames_Confirm(string tag, IEnumerable<string> games)
+        {
+            var count = games.Count();
+            var formattedNames = GetSelectionFormattedNames(games);
+
+            switch (language)
+            {
+                default:
+                    return string.Format("Add {0} tag for {1} selected games?{2}", tag, count, formattedNames);
+            }
+        }
+
+        public string RemoveTagForSelectedGames_Label(string tag)
+        {
+            switch (language)
+            {
+                default:
+                    return string.Format("Remove {0} tag for selected games", tag);
+            }
+        }
+
+        public string RemoveTagForSelectedGames_Confirm(string tag, IEnumerable<string> games)
+        {
+            var count = games.Count();
+            var formattedNames = GetSelectionFormattedNames(games);
+
+            switch (language)
+            {
+                default:
+                    return string.Format("Remove {0} tag for {1} selected games?{2}", tag, count, formattedNames);
+            }
+        }
+
 
         public string OperationStillPending()
         {

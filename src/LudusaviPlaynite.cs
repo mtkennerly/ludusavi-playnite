@@ -18,6 +18,8 @@ namespace LudusaviPlaynite
 {
     public class LudusaviPlaynite : GenericPlugin
     {
+        private const string SKIP_TAG_NAME = "ludusavi-skip";
+
         private static readonly ILogger logger = LogManager.GetLogger();
         public LudusaviPlayniteSettings settings { get; set; }
         public override Guid Id { get; } = Guid.Parse("72e2de43-d859-44d8-914e-4277741c8208");
@@ -157,7 +159,39 @@ namespace LudusaviPlaynite
                             }
                         }
                     }
-                }
+                },
+                new GameMenuItem
+                {
+                    Description = translator.AddTagForSelectedGames_Label(SKIP_TAG_NAME),
+                    MenuSection = translator.Ludusavi(),
+                    Action = async args => {
+                        if (UserConsents(translator.AddTagForSelectedGames_Confirm(SKIP_TAG_NAME, args.Games.Select(x => GetGameName(x)))))
+                        {
+                            foreach (var game in args.Games)
+                            {
+                                {
+                                    await Task.Run(() => AddTag(game, SKIP_TAG_NAME));
+                                }
+                            }
+                        }
+                    }
+                },
+                new GameMenuItem
+                {
+                    Description = translator.RemoveTagForSelectedGames_Label(SKIP_TAG_NAME),
+                    MenuSection = translator.Ludusavi(),
+                    Action = async args => {
+                        if (UserConsents(translator.RemoveTagForSelectedGames_Confirm(SKIP_TAG_NAME, args.Games.Select(x => GetGameName(x)))))
+                        {
+                            foreach (var game in args.Games)
+                            {
+                                {
+                                    await Task.Run(() => RemoveTag(game, SKIP_TAG_NAME));
+                                }
+                            }
+                        }
+                    }
+                },
             };
         }
 
@@ -329,7 +363,7 @@ namespace LudusaviPlaynite
         private bool ShouldSkipGame(Game game)
         {
             return (game.Tags != null
-                && game.Tags.Any(x => x.Name == "ludusavi-skip"))
+                && game.Tags.Any(x => x.Name == SKIP_TAG_NAME))
                 || (game.Platforms != null && game.Platforms.Count > 1);
         }
 
@@ -508,6 +542,45 @@ namespace LudusaviPlaynite
             }
 
             pendingOperation = false;
+        }
+
+        private void AddTag(Game game, string tagName)
+        {
+            var dbTag = PlayniteApi.Database.Tags.FirstOrDefault(tag => tag.Name == tagName);
+            if (dbTag == null)
+            {
+                dbTag = PlayniteApi.Database.Tags.Add(tagName);
+            }
+
+            var dbGame = PlayniteApi.Database.Games[game.Id];
+            if (dbGame.TagIds == null)
+            {
+                dbGame.TagIds = new List<Guid>();
+            }
+            dbGame.TagIds.AddMissing(dbTag.Id);
+            PlayniteApi.Database.Games.Update(dbGame);
+        }
+
+        private void RemoveTag(Game game, string tagName)
+        {
+            if (game.Tags == null || game.Tags.All(tag => tag.Name != tagName))
+            {
+                return;
+            }
+
+            var dbTag = PlayniteApi.Database.Tags.FirstOrDefault(tag => tag.Name == tagName);
+            if (dbTag == null)
+            {
+                return;
+            }
+
+            var dbGame = PlayniteApi.Database.Games[game.Id];
+            if (dbGame.TagIds == null)
+            {
+                return;
+            }
+            dbGame.TagIds.RemoveAll(id => id == dbTag.Id);
+            PlayniteApi.Database.Games.Update(dbGame);
         }
     }
 }
