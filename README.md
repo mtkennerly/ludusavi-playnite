@@ -41,9 +41,18 @@ but you'll also need to open Ludusavi to configure it as needed. For example,
 at this time, the plugin is not able to tell Ludusavi about your Playnite
 library sources, so you'll need to configure Ludusavi's roots separately.
 
-If there are games that you never want to back up after playing, you can tag
-them as `ludusavi-skip` to disable the post-game prompt. However, they will
-still be included if you do a full backup of all games from the menu.
+After-play behavior can be overridden for specific games by using tags:
+
+| Tag               | Back up game | Back up platform (non-PC) |
+|-------------------|--------------|---------------------------|
+| `ludusavi-skip`   | No           | No                        |
+| `ludusavi-backup` | Yes          | If configured             |
+
+For example, if the global backup-after-play option is enabled, but a game is
+marked with `ludusavi-skip`, then it will not be backed up after play.
+However, the game will still be included when doing a full backup of all games from the menu.
+
+If a game has both `skip` and `backup` tags, then it will be skipped.
 
 ## Screenshots
 ### Prompt after exiting a game

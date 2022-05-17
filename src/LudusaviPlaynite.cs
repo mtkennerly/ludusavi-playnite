@@ -18,7 +18,8 @@ namespace LudusaviPlaynite
 {
     public class LudusaviPlaynite : GenericPlugin
     {
-        private const string SKIP_TAG_NAME = "ludusavi-skip";
+        private const string TAG_SKIP = "ludusavi-skip";
+        private const string TAG_BACKUP = "ludusavi-backup";
 
         private static readonly ILogger logger = LogManager.GetLogger();
         public LudusaviPlayniteSettings settings { get; set; }
@@ -126,7 +127,7 @@ namespace LudusaviPlaynite
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs menuArgs)
         {
-            return new List<GameMenuItem>
+            var items = new List<GameMenuItem>
             {
                 new GameMenuItem
                 {
@@ -160,39 +161,51 @@ namespace LudusaviPlaynite
                         }
                     }
                 },
-                new GameMenuItem
-                {
-                    Description = translator.AddTagForSelectedGames_Label(SKIP_TAG_NAME),
-                    MenuSection = translator.Ludusavi(),
-                    Action = async args => {
-                        if (UserConsents(translator.AddTagForSelectedGames_Confirm(SKIP_TAG_NAME, args.Games.Select(x => GetGameName(x)))))
-                        {
-                            foreach (var game in args.Games)
-                            {
-                                {
-                                    await Task.Run(() => AddTag(game, SKIP_TAG_NAME));
-                                }
-                            }
-                        }
-                    }
-                },
-                new GameMenuItem
-                {
-                    Description = translator.RemoveTagForSelectedGames_Label(SKIP_TAG_NAME),
-                    MenuSection = translator.Ludusavi(),
-                    Action = async args => {
-                        if (UserConsents(translator.RemoveTagForSelectedGames_Confirm(SKIP_TAG_NAME, args.Games.Select(x => GetGameName(x)))))
-                        {
-                            foreach (var game in args.Games)
-                            {
-                                {
-                                    await Task.Run(() => RemoveTag(game, SKIP_TAG_NAME));
-                                }
-                            }
-                        }
-                    }
-                },
             };
+
+            foreach (var tag in new[] { TAG_SKIP, TAG_BACKUP })
+            {
+                items.Add(
+                    new GameMenuItem
+                    {
+                        Description = translator.AddTagForSelectedGames_Label(tag),
+                        MenuSection = translator.Ludusavi(),
+                        Action = async args =>
+                        {
+                            if (UserConsents(translator.AddTagForSelectedGames_Confirm(tag, args.Games.Select(x => GetGameName(x)))))
+                            {
+                                foreach (var game in args.Games)
+                                {
+                                    {
+                                        await Task.Run(() => AddTag(game, tag));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    );
+                items.Add(
+                    new GameMenuItem
+                    {
+                        Description = translator.RemoveTagForSelectedGames_Label(tag),
+                        MenuSection = translator.Ludusavi(),
+                        Action = async args =>
+                        {
+                            if (UserConsents(translator.RemoveTagForSelectedGames_Confirm(tag, args.Games.Select(x => GetGameName(x)))))
+                            {
+                                foreach (var game in args.Games)
+                                {
+                                    {
+                                        await Task.Run(() => RemoveTag(game, tag));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    );
+            }
+
+            return items;
         }
 
         public override void OnGameStopped(OnGameStoppedEventArgs arg)
@@ -201,7 +214,7 @@ namespace LudusaviPlaynite
             lastGamePlayed = arg.Game;
             Game game = arg.Game;
 
-            if (settings.DoBackupOnGameStopped && !ShouldSkipGame(game) && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc))
+            if ((settings.DoBackupOnGameStopped || HasTag(game, TAG_BACKUP)) && !ShouldSkipGame(game) && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc))
             {
                 if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game))))
                 {
@@ -362,9 +375,7 @@ namespace LudusaviPlaynite
 
         private bool ShouldSkipGame(Game game)
         {
-            return (game.Tags != null
-                && game.Tags.Any(x => x.Name == SKIP_TAG_NAME))
-                || (game.Platforms != null && game.Platforms.Count > 1);
+            return HasTag(game, TAG_SKIP) || (game.Platforms != null && game.Platforms.Count > 1);
         }
 
         string GetGameName(Game game)
@@ -542,6 +553,11 @@ namespace LudusaviPlaynite
             }
 
             pendingOperation = false;
+        }
+
+        private bool HasTag(Game game, string tagName)
+        {
+            return game.Tags?.Any(tag => tag.Name == tagName) ?? false;
         }
 
         private void AddTag(Game game, string tagName)

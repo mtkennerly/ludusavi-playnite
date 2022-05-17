@@ -2,6 +2,7 @@
 
 * Added:
   * Game-specific context menu entries to add or remove the `ludusavi-skip` tag.
+  * `ludusavi-backup` tag for games to always back up regardless of the global setting.
 
 ## v0.6.1 (2022-01-14)
 
