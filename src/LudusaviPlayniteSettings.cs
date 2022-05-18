@@ -38,6 +38,10 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string BackupPath_Label { get; set; }
 
+        public bool DoRestoreOnGameStarting { get; set; } = false;
+        [JsonIgnore]
+        public string DoRestoreOnGameStarting_Label { get; set; }
+
         public bool DoBackupOnGameStopped { get; set; } = true;
         [JsonIgnore]
         public string DoBackupOnGameStopped_Label { get; set; }
@@ -59,6 +63,10 @@ namespace LudusaviPlaynite
         public bool RetryNonPcGamesWithoutSuffix { get; set; } = false;
         [JsonIgnore]
         public string RetryNonPcGamesWithoutSuffix_Label { get; set; }
+
+        public bool DoPlatformRestoreOnNonPcGameStarting { get; set; } = false;
+        [JsonIgnore]
+        public string DoPlatformRestoreOnNonPcGameStarting_Label { get; set; }
 
         public bool DoPlatformBackupOnNonPcGameStopped { get; set; } = false;
         [JsonIgnore]
@@ -83,11 +91,13 @@ namespace LudusaviPlaynite
             OpenButton_Label = translator.OpenButton();
             ExecutablePath_Label = translator.ExecutablePath_Label();
             BackupPath_Label = translator.BackupPath_Label();
+            DoRestoreOnGameStarting_Label = translator.DoRestoreOnGameStarting_Label();
             DoBackupOnGameStopped_Label = translator.DoBackupOnGameStopped_Label();
             AskBackupOnGameStopped_Label = translator.AskBackupOnGameStopped_Label();
             OnlyBackupOnGameStoppedIfPc_Label = translator.OnlyBackupOnGameStoppedIfPc_Label();
             AddSuffixForNonPcGameNames_Label = translator.AddSuffixForNonPcGameNames_Label();
             RetryNonPcGamesWithoutSuffix_Label = translator.RetryNonPcGamesWithoutSuffix_Label();
+            DoPlatformRestoreOnNonPcGameStarting_Label = translator.DoPlatformRestoreOnNonPcGameStarting_Label();
             DoPlatformBackupOnNonPcGameStopped_Label = translator.DoPlatformBackupOnNonPcGameStopped_Label();
             AskPlatformBackupOnNonPcGameStopped_Label = translator.AskPlatformBackupOnNonPcGameStopped_Label();
             IgnoreBenignNotifications_Label = translator.IgnoreBenignNotifications_Label();
@@ -108,11 +118,13 @@ namespace LudusaviPlaynite
                 ExecutablePath = savedSettings.ExecutablePath;
                 BackupPath = savedSettings.BackupPath;
                 DoBackupOnGameStopped = savedSettings.DoBackupOnGameStopped;
+                DoRestoreOnGameStarting = savedSettings.DoRestoreOnGameStarting;
                 AskBackupOnGameStopped = savedSettings.AskBackupOnGameStopped;
                 OnlyBackupOnGameStoppedIfPc = savedSettings.OnlyBackupOnGameStoppedIfPc;
                 AddSuffixForNonPcGameNames = savedSettings.AddSuffixForNonPcGameNames;
                 SuffixForNonPcGameNames = savedSettings.SuffixForNonPcGameNames;
                 RetryNonPcGamesWithoutSuffix = savedSettings.RetryNonPcGamesWithoutSuffix;
+                DoPlatformRestoreOnNonPcGameStarting = savedSettings.DoPlatformRestoreOnNonPcGameStarting;
                 DoPlatformBackupOnNonPcGameStopped = savedSettings.DoPlatformBackupOnNonPcGameStopped;
                 AskPlatformBackupOnNonPcGameStopped = savedSettings.AskPlatformBackupOnNonPcGameStopped;
                 IgnoreBenignNotifications = savedSettings.IgnoreBenignNotifications;

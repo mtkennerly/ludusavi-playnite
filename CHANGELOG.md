@@ -1,8 +1,10 @@
 ## Unreleased
 
 * Added:
-  * Game-specific context menu entries to add or remove the `ludusavi-skip` tag.
+  * Game-specific context menu entries to add or remove Ludusavi-related tags.
+  * Option to restore save data for a game before playing it.
   * `ludusavi-backup` tag for games to always back up regardless of the global setting.
+  * `ludusavi-restore` tag for games to always restore regardless of the global setting.
 
 ## v0.6.1 (2022-01-14)
 

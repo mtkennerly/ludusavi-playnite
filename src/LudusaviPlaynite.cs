@@ -20,6 +20,8 @@ namespace LudusaviPlaynite
     {
         private const string TAG_SKIP = "ludusavi-skip";
         private const string TAG_BACKUP = "ludusavi-backup";
+        private const string TAG_RESTORE = "ludusavi-restore";
+        private readonly string[] ALL_TAGS = { TAG_SKIP, TAG_BACKUP, TAG_RESTORE };
 
         private static readonly ILogger logger = LogManager.GetLogger();
         public LudusaviPlayniteSettings settings { get; set; }
@@ -163,7 +165,7 @@ namespace LudusaviPlaynite
                 },
             };
 
-            foreach (var tag in new[] { TAG_SKIP, TAG_BACKUP })
+            foreach (var tag in ALL_TAGS)
             {
                 items.Add(
                     new GameMenuItem
@@ -208,13 +210,50 @@ namespace LudusaviPlaynite
             return items;
         }
 
+        public override void OnGameStarting(OnGameStartingEventArgs args)
+        {
+            playedSomething = true;
+            lastGamePlayed = args.Game;
+            Game game = args.Game;
+
+            string gameError = null;
+            string platformError = null;
+
+            if (ShouldRestoreGame(game))
+            {
+                if (!settings.AskBackupOnGameStopped || UserConsents(translator.RestoreOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game))))
+                {
+                    gameError = RestoreOneGame(game);
+                }
+            }
+
+            if (ShouldRestorePlatform(game))
+            {
+                if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.RestoreOneGame_Confirm(game.Platforms[0].Name, true)))
+                {
+                    platformError = RestoreOneGame(game, new BackupCriteria { ByPlatform = true });
+                }
+            }
+
+            // TODO: Obtain rich info to detect this more reliably.
+            var emptyFlag = "No save data found";
+            if (!String.IsNullOrEmpty(gameError) && !gameError.Contains(emptyFlag))
+            {
+                PlayniteApi.Dialogs.ShowErrorMessage(gameError, translator.Ludusavi());
+            }
+            else if (!String.IsNullOrEmpty(platformError) && !platformError.Contains(emptyFlag))
+            {
+                PlayniteApi.Dialogs.ShowErrorMessage(platformError, translator.Ludusavi());
+            }
+        }
+
         public override void OnGameStopped(OnGameStoppedEventArgs arg)
         {
             playedSomething = true;
             lastGamePlayed = arg.Game;
             Game game = arg.Game;
 
-            if ((settings.DoBackupOnGameStopped || HasTag(game, TAG_BACKUP)) && !ShouldSkipGame(game) && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc))
+            if (ShouldBackUpGame(game))
             {
                 if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game))))
                 {
@@ -222,7 +261,7 @@ namespace LudusaviPlaynite
                 }
             }
 
-            if (settings.DoPlatformBackupOnNonPcGameStopped && !ShouldSkipGame(game) && !IsOnPc(game))
+            if (ShouldBackUpPlatform(game))
             {
                 if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game.Platforms[0].Name, true)))
                 {
@@ -378,6 +417,26 @@ namespace LudusaviPlaynite
             return HasTag(game, TAG_SKIP) || (game.Platforms != null && game.Platforms.Count > 1);
         }
 
+        private bool ShouldBackUpGame(Game game)
+        {
+            return (settings.DoBackupOnGameStopped || HasTag(game, TAG_BACKUP)) && !ShouldSkipGame(game) && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc);
+        }
+
+        private bool ShouldRestoreGame(Game game)
+        {
+            return ShouldBackUpGame(game) && (settings.DoRestoreOnGameStarting || HasTag(game, TAG_RESTORE));
+        }
+
+        private bool ShouldBackUpPlatform(Game game)
+        {
+            return settings.DoPlatformBackupOnNonPcGameStopped && !ShouldSkipGame(game) && !IsOnPc(game);
+        }
+
+        private bool ShouldRestorePlatform(Game game)
+        {
+            return ShouldBackUpPlatform(game) && settings.DoPlatformRestoreOnNonPcGameStarting;
+        }
+
         string GetGameName(Game game)
         {
             if (!IsOnPc(game) && settings.AddSuffixForNonPcGameNames)
@@ -397,7 +456,7 @@ namespace LudusaviPlaynite
 
         bool IsOnPc(Game game)
         {
-            return game.Platforms == null || game.Platforms[0]?.SpecificationId == "pc_windows";
+            return game.Platforms == null || game.Platforms.Count == 0 || game.Platforms[0].SpecificationId == "pc_windows";
         }
 
         bool RequiresCustomEntry(Game game)
@@ -487,24 +546,34 @@ namespace LudusaviPlaynite
             pendingOperation = false;
         }
 
-        private void RestoreOneGame(Game game)
+        private string RestoreOneGame(Game game)
         {
+            return this.RestoreOneGame(game, new BackupCriteria { ByPlatform = false });
+        }
+
+        private string RestoreOneGame(Game game, BackupCriteria criteria)
+        {
+            string error = null;
             pendingOperation = true;
-            var name = GetGameName(game);
+            var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameName(game);
 
             var (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, name));
-            if (response?.Errors.UnknownGames != null && IsOnSteam(game))
+            if (!criteria.ByPlatform)
             {
-                (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
-            }
-            if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
-            {
-                (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+                if (response?.Errors.UnknownGames != null && IsOnSteam(game))
+                {
+                    (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
+                }
+                if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
+                {
+                    (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+                }
             }
 
             if (response == null)
             {
-                NotifyError(translator.UnableToRunLudusavi());
+                error = translator.UnableToRunLudusavi();
+                NotifyError(error);
             }
             else
             {
@@ -517,16 +586,19 @@ namespace LudusaviPlaynite
                 {
                     if (response?.Errors.UnknownGames != null)
                     {
-                        NotifyError(translator.RestoreOneGame_Empty(result));
+                        error = translator.RestoreOneGame_Empty(result);
+                        NotifyError(error);
                     }
                     else
                     {
-                        NotifyError(translator.RestoreOneGame_Failure(result));
+                        error = translator.RestoreOneGame_Failure(result);
+                        NotifyError(error);
                     }
                 }
             }
 
             pendingOperation = false;
+            return error;
         }
 
         private void RestoreAllGames()

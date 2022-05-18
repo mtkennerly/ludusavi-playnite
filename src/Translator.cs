@@ -502,7 +502,16 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return "Back up save data for a game when you finish playing it";
+                    return "Back up save data for a game after playing it";
+            }
+        }
+
+        public string DoRestoreOnGameStarting_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Also restore save data for a game before playing it";
             }
         }
 
@@ -548,6 +557,15 @@ namespace LudusaviPlaynite
             {
                 default:
                     return "Back up save data by platform name after playing non-PC games (requires custom entry)";
+            }
+        }
+
+        public string DoPlatformRestoreOnNonPcGameStarting_Label()
+        {
+            switch (language)
+            {
+                default:
+                    return "Also restore save data by platform name before playing non-PC games";
             }
         }
 

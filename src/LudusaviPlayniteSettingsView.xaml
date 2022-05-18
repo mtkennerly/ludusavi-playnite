@@ -28,6 +28,7 @@
                 <CheckBox IsChecked="{Binding DoBackupOnGameStopped}" Content="{Binding DoBackupOnGameStopped_Label}" />
                 <CheckBox Margin="25,2,0,0" IsChecked="{Binding AskBackupOnGameStopped}" Content="{Binding AskBackupOnGameStopped_Label}" />
                 <CheckBox Margin="25,2,0,0" IsChecked="{Binding OnlyBackupOnGameStoppedIfPc}" Content="{Binding OnlyBackupOnGameStoppedIfPc_Label}" />
+                <CheckBox Margin="25,2,0,0" IsChecked="{Binding DoRestoreOnGameStarting}" Content="{Binding DoRestoreOnGameStarting_Label}" />
             </StackPanel>
 
             <StackPanel Margin="15">
@@ -39,6 +40,7 @@
             <StackPanel Margin="15">
                 <CheckBox IsChecked="{Binding DoPlatformBackupOnNonPcGameStopped}" Content="{Binding DoPlatformBackupOnNonPcGameStopped_Label}" />
                 <CheckBox Margin="25,2,0,0" IsChecked="{Binding AskPlatformBackupOnNonPcGameStopped}" Content="{Binding AskPlatformBackupOnNonPcGameStopped_Label}" />
+                <CheckBox Margin="25,2,0,0" IsChecked="{Binding DoPlatformRestoreOnNonPcGameStarting}" Content="{Binding DoPlatformRestoreOnNonPcGameStarting_Label}" />
             </StackPanel>
 
             <StackPanel Margin="15">
