@@ -35,7 +35,23 @@ namespace LudusaviPlaynite
         private const string TAG_PLATFORM_BACKUP_AND_RESTORE = TAG_PREFIX + "Platform: backup and restore";
         private const string TAG_PLATFORM_NO_RESTORE = TAG_PREFIX + "Platform: no restore";
 
-        private readonly string[] ALL_TAGS = { TAG_SKIP, TAG_GAME_BACKUP, TAG_GAME_BACKUP_AND_RESTORE };
+        // Format: {new tag, {conflicting tags}}
+        private readonly Dictionary<string, string[]> TAGS_AND_CONFLICTS = new Dictionary<string, string[]> {
+            {TAG_SKIP, new string[] {}},
+            {TAG_GAME_BACKUP, new string[] {TAG_SKIP, TAG_GAME_NO_BACKUP}},
+            {TAG_GAME_NO_BACKUP, new string[] {TAG_GAME_BACKUP, TAG_GAME_BACKUP_AND_RESTORE}},
+            {TAG_GAME_BACKUP_AND_RESTORE, new string[] {TAG_SKIP, TAG_GAME_BACKUP, TAG_GAME_NO_BACKUP, TAG_GAME_NO_RESTORE}},
+            {TAG_GAME_NO_RESTORE, new string[] {TAG_GAME_BACKUP_AND_RESTORE}},
+            {TAG_PLATFORM_BACKUP, new string[] {TAG_SKIP, TAG_PLATFORM_NO_BACKUP}},
+            {TAG_PLATFORM_NO_BACKUP, new string[] {TAG_PLATFORM_BACKUP, TAG_PLATFORM_BACKUP_AND_RESTORE}},
+            {TAG_PLATFORM_BACKUP_AND_RESTORE, new string[] {TAG_SKIP, TAG_PLATFORM_BACKUP, TAG_PLATFORM_NO_BACKUP, TAG_PLATFORM_NO_RESTORE}},
+            {TAG_PLATFORM_NO_RESTORE, new string[] {TAG_PLATFORM_BACKUP_AND_RESTORE}},
+        };
+        // Format: {(new tag, conflicting tag), conflict replacement}
+        private readonly Dictionary<(string, string), string> TAG_REPLACEMENTS = new Dictionary<(string, string), string> {
+            {(TAG_GAME_NO_RESTORE, TAG_GAME_BACKUP_AND_RESTORE), TAG_GAME_BACKUP},
+            {(TAG_PLATFORM_NO_RESTORE, TAG_PLATFORM_BACKUP_AND_RESTORE), TAG_PLATFORM_BACKUP},
+        };
 
         private static readonly ILogger logger = LogManager.GetLogger();
         public LudusaviPlayniteSettings settings { get; set; }
@@ -179,46 +195,71 @@ namespace LudusaviPlaynite
                 },
             };
 
-            foreach (var tag in ALL_TAGS)
+            foreach (var entry in TAGS_AND_CONFLICTS)
             {
-                items.Add(
-                    new GameMenuItem
-                    {
-                        Description = translator.AddTagForSelectedGames_Label(tag),
-                        MenuSection = translator.Ludusavi(),
-                        Action = async args =>
+                var candidate = entry.Key;
+                var conflicts = entry.Value;
+
+                if (menuArgs.Games.Any(x => !HasTag(x, candidate)))
+                {
+                    items.Add(
+                        new GameMenuItem
                         {
-                            if (UserConsents(translator.AddTagForSelectedGames_Confirm(tag, args.Games.Select(x => GetGameName(x)))))
+                            Description = translator.AddTagForSelectedGames_Label(candidate),
+                            MenuSection = translator.Ludusavi(),
+                            Action = async args =>
                             {
-                                foreach (var game in args.Games)
+                                if (UserConsents(translator.AddTagForSelectedGames_Confirm(candidate, args.Games.Select(x => GetGameName(x)))))
                                 {
+                                    foreach (var game in args.Games)
                                     {
-                                        await Task.Run(() => AddTag(game, tag));
+                                        {
+                                            await Task.Run(() =>
+                                            {
+                                                AddTag(game, candidate);
+                                                foreach (var conflict in conflicts)
+                                                {
+                                                    var removed = RemoveTag(game, conflict);
+                                                    string replacement;
+                                                    if (removed && TAG_REPLACEMENTS.TryGetValue((candidate, conflict), out replacement))
+                                                    {
+                                                        AddTag(game, replacement);
+                                                    }
+                                                }
+                                            });
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
                     );
-                items.Add(
-                    new GameMenuItem
-                    {
-                        Description = translator.RemoveTagForSelectedGames_Label(tag),
-                        MenuSection = translator.Ludusavi(),
-                        Action = async args =>
+                }
+
+                if (menuArgs.Games.Any(x => HasTag(x, candidate)))
+                {
+                    items.Add(
+                        new GameMenuItem
                         {
-                            if (UserConsents(translator.RemoveTagForSelectedGames_Confirm(tag, args.Games.Select(x => GetGameName(x)))))
+                            Description = translator.RemoveTagForSelectedGames_Label(candidate),
+                            MenuSection = translator.Ludusavi(),
+                            Action = async args =>
                             {
-                                foreach (var game in args.Games)
+                                if (UserConsents(translator.RemoveTagForSelectedGames_Confirm(candidate, args.Games.Select(x => GetGameName(x)))))
                                 {
+                                    foreach (var game in args.Games)
                                     {
-                                        await Task.Run(() => RemoveTag(game, tag));
+                                        {
+                                            await Task.Run(() =>
+                                            {
+                                                RemoveTag(game, candidate);
+                                            });
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
                     );
+                }
             }
 
             return items;
@@ -688,7 +729,7 @@ namespace LudusaviPlaynite
             return game.Tags?.Any(tag => tag.Name == tagName) ?? false;
         }
 
-        private void AddTag(Game game, string tagName)
+        private bool AddTag(Game game, string tagName)
         {
             var dbTag = PlayniteApi.Database.Tags.FirstOrDefault(tag => tag.Name == tagName);
             if (dbTag == null)
@@ -701,30 +742,32 @@ namespace LudusaviPlaynite
             {
                 dbGame.TagIds = new List<Guid>();
             }
-            dbGame.TagIds.AddMissing(dbTag.Id);
+            var added = dbGame.TagIds.AddMissing(dbTag.Id);
             PlayniteApi.Database.Games.Update(dbGame);
+            return added;
         }
 
-        private void RemoveTag(Game game, string tagName)
+        private bool RemoveTag(Game game, string tagName)
         {
             if (game.Tags == null || game.Tags.All(tag => tag.Name != tagName))
             {
-                return;
+                return false;
             }
 
             var dbTag = PlayniteApi.Database.Tags.FirstOrDefault(tag => tag.Name == tagName);
             if (dbTag == null)
             {
-                return;
+                return false;
             }
 
             var dbGame = PlayniteApi.Database.Games[game.Id];
             if (dbGame.TagIds == null)
             {
-                return;
+                return false;
             }
-            dbGame.TagIds.RemoveAll(id => id == dbTag.Id);
+            var removed = dbGame.TagIds.RemoveAll(id => id == dbTag.Id);
             PlayniteApi.Database.Games.Update(dbGame);
+            return removed > 0;
         }
 
         private void UpdateTagsForChoice(Game game, Choice choice, string alwaysTag, string neverTag, string fallbackTag = null)

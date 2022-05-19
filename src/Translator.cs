@@ -275,7 +275,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return string.Format("'{0}' - Add tag for selected games", tag);
+                    return string.Format("Tag: '{0}' - Add for selected games", tag);
             }
         }
 
@@ -287,7 +287,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return string.Format("Add '{0}' tag for {1} selected games?{2}", tag, count, formattedNames);
+                    return string.Format("Add '{0}' tag for {1} selected games and remove any conflicting tags?{2}", tag, count, formattedNames);
             }
         }
 
@@ -296,7 +296,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return string.Format("'{0}' - Remove tag for selected games", tag);
+                    return string.Format("Tag: '{0}' - Remove for selected games", tag);
             }
         }
 
