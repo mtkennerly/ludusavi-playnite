@@ -9,6 +9,40 @@ namespace LudusaviPlaynite
         English,
     }
 
+    public enum Choice
+    {
+        Yes,
+        Always,
+        No,
+        Never,
+    }
+
+    public static class ChoiceExt
+    {
+        public static bool Accepted(this Choice choice)
+        {
+            return choice == Choice.Yes || choice == Choice.Always;
+        }
+    }
+
+    public struct OperationPreference
+    {
+        public bool Do;
+        public bool Ask;
+    }
+
+    public struct OperationPreferences
+    {
+        public OperationPreference Backup;
+        public OperationPreference Restore;
+    }
+
+    public struct PlayPreferences
+    {
+        public OperationPreferences Game;
+        public OperationPreferences Platform;
+    }
+
     public struct OperationResult
     {
         public string Name;

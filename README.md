@@ -43,17 +43,24 @@ library sources, so you'll need to configure Ludusavi's roots separately.
 
 Behavior can be overridden for specific games by using tags:
 
-| Tag                | Back up after play | Back up platform (non-PC) after play | Restore before play | Restore platform (non-PC) before play |
-|--------------------|--------------------|--------------------------------------|---------------------|---------------------------------------|
-| `ludusavi-skip`    | No                 | No                                   | No                  | No                                    |
-| `ludusavi-backup`  | Yes                | If configured                        | If configured       | If configured                         |
-| `ludusavi-restore` | If configured      | If configured                        | Yes                 | If configured                         |
+| Tag                                       | Back up after play  | Restore before play | Back up non-PC platform before play | Restore non-PC platform after play |
+|-------------------------------------------|---------------------|---------------------|-------------------------------------|------------------------------------|
+| `[Ludusavi] Skip`                         | No                  | No                  | No                                  | No                                 |
+| `[Ludusavi] Game: backup`                 | Yes, without asking |                     |                                     |                                    |
+| `[Ludusavi] Game: backup and restore`     | Yes, without asking | Yes, without asking |                                     |                                    |
+| `[Ludusavi] Game: no backup`              | No                  | No                  |                                     |                                    |
+| `[Ludusavi] Game: no restore`             |                     | No                  |                                     |                                    |
+| `[Ludusavi] Platform: backup`             |                     |                     | Yes, without asking                 |                                    |
+| `[Ludusavi] Platform: backup and restore` |                     |                     | Yes, without asking                 | Yes, without asking                |
+| `[Ludusavi] Platform: no backup`          |                     |                     | No                                  | No                                 |
+| `[Ludusavi] Platform: no restore`         |                     |                     |                                     | No                                 |
 
 For example, if the global backup-after-play option is enabled, but a game is
-marked with `ludusavi-skip`, then it will not be backed up after play.
+marked with `[Ludusavi] Skip`, then it will not be backed up after play.
 However, the game will still be included when doing a full backup of all games from the menu.
 
-If a game has the `ludusavi-skip` tag, then it will be skipped regardless of other tags.
+`[Ludusavi] Skip` takes precedence over the other tags,
+and the `no` tags take precedence over their positive counterparts.
 
 ## Screenshots
 ### Prompt after exiting a game

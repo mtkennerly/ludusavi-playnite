@@ -60,6 +60,42 @@ namespace LudusaviPlaynite
             }
         }
 
+        public string YesButton()
+        {
+            switch (language)
+            {
+                default:
+                    return "Yes";
+            }
+        }
+
+        public string YesRememberedButton()
+        {
+            switch (language)
+            {
+                default:
+                    return "Yes, always";
+            }
+        }
+
+        public string NoButton()
+        {
+            switch (language)
+            {
+                default:
+                    return "No";
+            }
+        }
+
+        public string NoRememberedButton()
+        {
+            switch (language)
+            {
+                default:
+                    return "No, never";
+            }
+        }
+
         public string Launch_Label()
         {
             switch (language)
@@ -239,7 +275,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return string.Format("Add {0} tag for selected games", tag);
+                    return string.Format("'{0}' - Add tag for selected games", tag);
             }
         }
 
@@ -251,7 +287,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return string.Format("Add {0} tag for {1} selected games?{2}", tag, count, formattedNames);
+                    return string.Format("Add '{0}' tag for {1} selected games?{2}", tag, count, formattedNames);
             }
         }
 
@@ -260,7 +296,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return string.Format("Remove {0} tag for selected games", tag);
+                    return string.Format("'{0}' - Remove tag for selected games", tag);
             }
         }
 
@@ -272,7 +308,7 @@ namespace LudusaviPlaynite
             switch (language)
             {
                 default:
-                    return string.Format("Remove {0} tag for {1} selected games?{2}", tag, count, formattedNames);
+                    return string.Format("Remove '{0}' tag for {1} selected games?{2}", tag, count, formattedNames);
             }
         }
 

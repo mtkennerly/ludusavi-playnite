@@ -1,10 +1,20 @@
 ## Unreleased
 
+* Changed:
+  * The `ludusavi-skip` tag is now `[Ludusavi] Skip`.
 * Added:
   * Game-specific context menu entries to add or remove Ludusavi-related tags.
   * Option to restore save data for a game before playing it.
-  * `ludusavi-backup` tag for games to always back up regardless of the global setting.
-  * `ludusavi-restore` tag for games to always restore regardless of the global setting.
+  * Option to remember your choice when asked if you want to back up a game.
+  * Several new tags to tweak behavior for individual games:
+    * `[Ludusavi] Game: backup`
+    * `[Ludusavi] Game: backup and restore`
+    * `[Ludusavi] Game: no backup`
+    * `[Ludusavi] Game: no restore`
+    * `[Ludusavi] Platform: backup`
+    * `[Ludusavi] Platform: backup and restore`
+    * `[Ludusavi] Platform: no backup`
+    * `[Ludusavi] Platform: no restore`
 
 ## v0.6.1 (2022-01-14)
 

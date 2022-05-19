@@ -18,10 +18,24 @@ namespace LudusaviPlaynite
 {
     public class LudusaviPlaynite : GenericPlugin
     {
-        private const string TAG_SKIP = "ludusavi-skip";
-        private const string TAG_BACKUP = "ludusavi-backup";
-        private const string TAG_RESTORE = "ludusavi-restore";
-        private readonly string[] ALL_TAGS = { TAG_SKIP, TAG_BACKUP, TAG_RESTORE };
+        private const string TAG_PREFIX = "[Ludusavi] ";
+
+        private const string LEGACY_TAG_SKIP = "ludusavi-skip";
+        private const string TAG_SKIP = TAG_PREFIX + "Skip";
+
+        private const string TAG_GAME_BACKUP = TAG_PREFIX + "Game: backup";
+        private const string TAG_GAME_NO_BACKUP = TAG_PREFIX + "Game: no backup";
+
+        private const string TAG_GAME_BACKUP_AND_RESTORE = TAG_PREFIX + "Game: backup and restore";
+        private const string TAG_GAME_NO_RESTORE = TAG_PREFIX + "Game: no restore";
+
+        private const string TAG_PLATFORM_BACKUP = TAG_PREFIX + "Platform: backup";
+        private const string TAG_PLATFORM_NO_BACKUP = TAG_PREFIX + "Platform: no backup";
+
+        private const string TAG_PLATFORM_BACKUP_AND_RESTORE = TAG_PREFIX + "Platform: backup and restore";
+        private const string TAG_PLATFORM_NO_RESTORE = TAG_PREFIX + "Platform: no restore";
+
+        private readonly string[] ALL_TAGS = { TAG_SKIP, TAG_GAME_BACKUP, TAG_GAME_BACKUP_AND_RESTORE };
 
         private static readonly ILogger logger = LogManager.GetLogger();
         public LudusaviPlayniteSettings settings { get; set; }
@@ -215,24 +229,29 @@ namespace LudusaviPlaynite
             playedSomething = true;
             lastGamePlayed = args.Game;
             Game game = args.Game;
+            var prefs = GetPlayPreferences(game);
 
             string gameError = null;
             string platformError = null;
 
-            if (ShouldRestoreGame(game))
+            if (prefs.Game.Restore.Do)
             {
-                if (!settings.AskBackupOnGameStopped || UserConsents(translator.RestoreOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game))))
+                var choice = Choice.No;
+                if (!prefs.Game.Restore.Ask || (choice = AskUser(translator.RestoreOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game)))).Accepted())
                 {
                     gameError = RestoreOneGame(game);
                 }
+                UpdateTagsForChoice(game, choice, TAG_GAME_BACKUP_AND_RESTORE, TAG_GAME_NO_RESTORE, TAG_GAME_BACKUP);
             }
 
-            if (ShouldRestorePlatform(game))
+            if (prefs.Platform.Restore.Do)
             {
-                if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.RestoreOneGame_Confirm(game.Platforms[0].Name, true)))
+                var choice = Choice.No;
+                if (!prefs.Platform.Restore.Ask || (choice = AskUser(translator.RestoreOneGame_Confirm(game.Platforms[0].Name, true))).Accepted())
                 {
                     platformError = RestoreOneGame(game, new BackupCriteria { ByPlatform = true });
                 }
+                UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP_AND_RESTORE, TAG_PLATFORM_NO_RESTORE, TAG_PLATFORM_BACKUP);
             }
 
             // TODO: Obtain rich info to detect this more reliably.
@@ -252,21 +271,26 @@ namespace LudusaviPlaynite
             playedSomething = true;
             lastGamePlayed = arg.Game;
             Game game = arg.Game;
+            var prefs = GetPlayPreferences(game);
 
-            if (ShouldBackUpGame(game))
+            if (prefs.Game.Backup.Do)
             {
-                if (!settings.AskBackupOnGameStopped || UserConsents(translator.BackUpOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game))))
+                var choice = Choice.No;
+                if (!prefs.Game.Backup.Ask || (choice = AskUser(translator.BackUpOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game)))).Accepted())
                 {
                     Task.Run(() => BackUpOneGame(game));
                 }
+                UpdateTagsForChoice(game, choice, TAG_GAME_BACKUP, TAG_GAME_NO_BACKUP);
             }
 
-            if (ShouldBackUpPlatform(game))
+            if (prefs.Platform.Backup.Do)
             {
-                if (!settings.AskPlatformBackupOnNonPcGameStopped || UserConsents(translator.BackUpOneGame_Confirm(game.Platforms[0].Name, true)))
+                var choice = Choice.No;
+                if (!prefs.Platform.Backup.Ask || (choice = AskUser(translator.BackUpOneGame_Confirm(game.Platforms[0].Name, true))).Accepted())
                 {
                     Task.Run(() => BackUpOneGame(game, new BackupCriteria { ByPlatform = true }));
                 }
+                UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP, TAG_PLATFORM_NO_BACKUP);
             }
         }
 
@@ -412,29 +436,45 @@ namespace LudusaviPlaynite
             return choice == MessageBoxResult.Yes;
         }
 
+        private Choice AskUser(string message)
+        {
+            var yes = new MessageBoxOption(translator.YesButton(), true, false);
+            var always = new MessageBoxOption(translator.YesRememberedButton(), false, false);
+            var no = new MessageBoxOption(translator.NoButton(), false, false);
+            var never = new MessageBoxOption(translator.NoRememberedButton(), false, false);
+
+            var choice = PlayniteApi.Dialogs.ShowMessage(
+                message,
+                "",
+                MessageBoxImage.None,
+                new List<MessageBoxOption> { always, never, yes, no }
+            );
+
+            if (choice == yes)
+            {
+                return Choice.Yes;
+            }
+            else if (choice == always)
+            {
+                return Choice.Always;
+            }
+            else if (choice == no)
+            {
+                return Choice.No;
+            }
+            else if (choice == never)
+            {
+                return Choice.Never;
+            }
+            else
+            {
+                throw new InvalidOperationException(String.Format("AskUser got unexpected answer: {0}", choice.Title));
+            }
+        }
+
         private bool ShouldSkipGame(Game game)
         {
             return HasTag(game, TAG_SKIP) || (game.Platforms != null && game.Platforms.Count > 1);
-        }
-
-        private bool ShouldBackUpGame(Game game)
-        {
-            return (settings.DoBackupOnGameStopped || HasTag(game, TAG_BACKUP)) && !ShouldSkipGame(game) && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc);
-        }
-
-        private bool ShouldRestoreGame(Game game)
-        {
-            return ShouldBackUpGame(game) && (settings.DoRestoreOnGameStarting || HasTag(game, TAG_RESTORE));
-        }
-
-        private bool ShouldBackUpPlatform(Game game)
-        {
-            return settings.DoPlatformBackupOnNonPcGameStopped && !ShouldSkipGame(game) && !IsOnPc(game);
-        }
-
-        private bool ShouldRestorePlatform(Game game)
-        {
-            return ShouldBackUpPlatform(game) && settings.DoPlatformRestoreOnNonPcGameStarting;
         }
 
         string GetGameName(Game game)
@@ -669,6 +709,78 @@ namespace LudusaviPlaynite
             }
             dbGame.TagIds.RemoveAll(id => id == dbTag.Id);
             PlayniteApi.Database.Games.Update(dbGame);
+        }
+
+        private void UpdateTagsForChoice(Game game, Choice choice, string alwaysTag, string neverTag, string fallbackTag = null)
+        {
+            if (choice == Choice.Always)
+            {
+                if (fallbackTag != null)
+                {
+                    RemoveTag(game, fallbackTag);
+                }
+                AddTag(game, alwaysTag);
+            }
+            else if (choice == Choice.Never)
+            {
+                if (fallbackTag != null && HasTag(game, alwaysTag))
+                {
+                    AddTag(game, fallbackTag);
+                }
+                RemoveTag(game, alwaysTag);
+                AddTag(game, neverTag);
+            }
+        }
+
+        private PlayPreferences GetPlayPreferences(Game game)
+        {
+            if (ShouldSkipGame(game))
+            {
+                return new PlayPreferences();
+            }
+
+            var gameBackupDo = (settings.DoBackupOnGameStopped || HasTag(game, TAG_GAME_BACKUP) || HasTag(game, TAG_GAME_BACKUP_AND_RESTORE))
+                && !HasTag(game, TAG_GAME_NO_BACKUP)
+                && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc || HasTag(game, TAG_GAME_BACKUP) || HasTag(game, TAG_GAME_BACKUP_AND_RESTORE));
+            var platformBackupDo = (settings.DoPlatformBackupOnNonPcGameStopped || HasTag(game, TAG_PLATFORM_BACKUP) || HasTag(game, TAG_PLATFORM_BACKUP_AND_RESTORE))
+                && !HasTag(game, TAG_PLATFORM_NO_BACKUP)
+                && !IsOnPc(game);
+
+            var prefs = new PlayPreferences
+            {
+                Game = new OperationPreferences
+                {
+                    Backup = new OperationPreference
+                    {
+                        Do = gameBackupDo,
+                        Ask = settings.AskBackupOnGameStopped && !HasTag(game, TAG_GAME_BACKUP) && !HasTag(game, TAG_GAME_BACKUP_AND_RESTORE),
+                    },
+                    Restore = new OperationPreference
+                    {
+                        Do = gameBackupDo
+                            && (settings.DoRestoreOnGameStarting || HasTag(game, TAG_GAME_BACKUP_AND_RESTORE))
+                            && !HasTag(game, TAG_GAME_NO_RESTORE),
+                        Ask = settings.AskBackupOnGameStopped && !HasTag(game, TAG_GAME_BACKUP_AND_RESTORE),
+                    },
+                },
+                Platform = new OperationPreferences
+                {
+                    Backup = new OperationPreference
+                    {
+                        Do = platformBackupDo,
+                        Ask = settings.AskPlatformBackupOnNonPcGameStopped && !HasTag(game, TAG_PLATFORM_BACKUP) && !HasTag(game, TAG_PLATFORM_BACKUP_AND_RESTORE),
+                    },
+                    Restore = new OperationPreference
+                    {
+                        Do = platformBackupDo
+                            && (settings.DoPlatformRestoreOnNonPcGameStarting || HasTag(game, TAG_PLATFORM_BACKUP_AND_RESTORE))
+                            && !HasTag(game, TAG_PLATFORM_NO_RESTORE),
+                        Ask = settings.AskPlatformBackupOnNonPcGameStopped && !HasTag(game, TAG_PLATFORM_BACKUP_AND_RESTORE),
+                    },
+                },
+            };
+
+            return prefs;
         }
     }
 }
