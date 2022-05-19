@@ -23,6 +23,8 @@ namespace LudusaviPlaynite
             }
         }
 
+        public bool MigratedTags { get; set; } = false;
+
         [JsonIgnore]
         public string BrowseButton_Label { get; set; }
         [JsonIgnore]
@@ -115,6 +117,7 @@ namespace LudusaviPlaynite
             // LoadPluginSettings returns null if not saved data is available.
             if (savedSettings != null)
             {
+                MigratedTags = savedSettings.MigratedTags;
                 ExecutablePath = savedSettings.ExecutablePath;
                 BackupPath = savedSettings.BackupPath;
                 DoBackupOnGameStopped = savedSettings.DoBackupOnGameStopped;

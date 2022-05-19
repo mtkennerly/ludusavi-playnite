@@ -224,6 +224,22 @@ namespace LudusaviPlaynite
             return items;
         }
 
+        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
+        {
+            if (!settings.MigratedTags)
+            {
+                var oldTag = PlayniteApi.Database.Tags.FirstOrDefault(x => x.Name == LEGACY_TAG_SKIP);
+                var newTagExists = PlayniteApi.Database.Tags.Any(x => x.Name == TAG_SKIP);
+                if (oldTag != null && !newTagExists)
+                {
+                    oldTag.Name = TAG_SKIP;
+                    PlayniteApi.Database.Tags.Update(oldTag);
+                }
+                settings.MigratedTags = true;
+                SavePluginSettings(settings);
+            }
+        }
+
         public override void OnGameStarting(OnGameStartingEventArgs args)
         {
             playedSomething = true;

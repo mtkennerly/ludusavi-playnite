@@ -2,6 +2,7 @@
 
 * Changed:
   * The `ludusavi-skip` tag is now `[Ludusavi] Skip`.
+    If you were using the old tag, it will be automatically renamed for you.
 * Added:
   * Game-specific context menu entries to add or remove Ludusavi-related tags.
   * Option to restore save data for a game before playing it.
