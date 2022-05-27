@@ -10,10 +10,12 @@ button-no-remembered = No, never
 
 label-launch = Launch
 
-may-need-custom-entry = {$total-custom ->
+may-need-custom-entry = {$total-custom-games ->
     [0] {""}
-    [one] This game requires a matching custom entry in {ludusavi}.
-    *[other] {$total-custom} games require a matching custom entry in {ludusavi}.
+    *[other] {$total-games ->
+        [one] This game requires
+        *[other] Some games require
+    } a matching custom entry in {ludusavi}.
 }
 
 ## Backup
@@ -61,10 +63,16 @@ restore-all-games = Restore save data for all games
 ## Tags
 
 add-tag-for-selected-games = Tag: "{$tag}" - Add for selected games
-    .confirm = Add "{$tag}" tag for {$total-games} selected games and remove any conflicting tags?
+    .confirm = Add "{$tag}" tag for {$total-games} selected {$total-games ->
+        [one] game
+        *[other] games
+    } and remove any conflicting tags?
 
 remove-tag-for-selected-games = Tag: "{$tag}" - Remove for selected games
-    .confirm = Remove "{$tag}" tag for {$total-games} selected games and remove any conflicting tags?
+    .confirm = Remove "{$tag}" tag for {$total-games} selected {$total-games ->
+        [one] game
+        *[other] games
+    } and remove any conflicting tags?
 
 ## Generic errors
 

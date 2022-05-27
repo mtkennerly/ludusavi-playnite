@@ -20,6 +20,9 @@
     * `[Ludusavi] Platform: backup and restore`
     * `[Ludusavi] Platform: no backup`
     * `[Ludusavi] Platform: no restore`
+* Fixed:
+  * When doing a backup or restore of specific games via their context menu,
+    the plugin did not check whether another backup/restore was already in progress.
 
 ## v0.6.1 (2022-01-14)
 

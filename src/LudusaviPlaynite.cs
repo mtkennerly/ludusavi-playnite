@@ -166,6 +166,10 @@ namespace LudusaviPlaynite
                     Description = translator.BackUpSelectedGames_Label(),
                     MenuSection = translator.Ludusavi(),
                     Action = async args => {
+                        if (!CanPerformOperation())
+                        {
+                            return;
+                        }
                         if (UserConsents(translator.BackUpSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
                         {
                             foreach (var game in args.Games)
@@ -182,6 +186,10 @@ namespace LudusaviPlaynite
                     Description = translator.RestoreSelectedGames_Label(),
                     MenuSection = translator.Ludusavi(),
                     Action = async args => {
+                        if (!CanPerformOperation())
+                        {
+                            return;
+                        }
                         if (UserConsents(translator.RestoreSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
                         {
                             foreach (var game in args.Games)

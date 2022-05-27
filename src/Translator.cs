@@ -19,7 +19,7 @@ namespace LudusaviPlaynite
         readonly static string GAME = "game";
         readonly static string PROCESSED_GAMES = "processed-games";
         readonly static string PROCESSED_SIZE = "processed-size";
-        readonly static string TOTAL_CUSTOM = "total-custom";
+        readonly static string TOTAL_CUSTOM_GAMES = "total-custom-games";
         readonly static string TOTAL_GAMES = "total-games";
         readonly static string TOTAL_SIZE = "total-size";
         readonly static string SIZE = "size";
@@ -71,12 +71,12 @@ namespace LudusaviPlaynite
             this.bundle.AddResourceOverriding(target);
         }
 
-        private int TotalCustom(bool needsCustomEntry)
+        private int TotalCustomGames(bool needsCustomEntry)
         {
             return needsCustomEntry ? 1 : 0;
         }
 
-        private int TotalCustom(List<(string, bool)> games)
+        private int TotalCustomGames(List<(string, bool)> games)
         {
             return games.Where(x => x.Item2).Count();
         }
@@ -147,7 +147,8 @@ namespace LudusaviPlaynite
                 "back-up-specific-game.confirm",
                 new FluentArgs() {
                     {GAME, (FluentString)gameName},
-                    {TOTAL_CUSTOM, (FluentNumber)TotalCustom(needsCustomEntry)},
+                    {TOTAL_GAMES, (FluentNumber)1},
+                    {TOTAL_CUSTOM_GAMES, (FluentNumber)TotalCustomGames(needsCustomEntry)},
                 }
             );
         }
@@ -191,7 +192,7 @@ namespace LudusaviPlaynite
                 "back-up-selected-games.confirm",
                 new FluentArgs() {
                     {TOTAL_GAMES, (FluentNumber)count},
-                    {TOTAL_CUSTOM, (FluentNumber)TotalCustom(games)},
+                    {TOTAL_CUSTOM_GAMES, (FluentNumber)TotalCustomGames(games)},
                 }
             ) + formattedNames;
         }
@@ -207,7 +208,8 @@ namespace LudusaviPlaynite
                 "restore-specific-game.confirm",
                 new FluentArgs() {
                     {GAME, (FluentString)gameName},
-                    {TOTAL_CUSTOM, (FluentNumber)TotalCustom(needsCustomEntry)},
+                    {TOTAL_GAMES, (FluentNumber)1},
+                    {TOTAL_CUSTOM_GAMES, (FluentNumber)TotalCustomGames(needsCustomEntry)},
                 }
             );
         }
@@ -241,7 +243,7 @@ namespace LudusaviPlaynite
                 "restore-selected-games.confirm",
                 new FluentArgs() {
                     {TOTAL_GAMES, (FluentNumber)count},
-                    {TOTAL_CUSTOM, (FluentNumber)TotalCustom(games)},
+                    {TOTAL_CUSTOM_GAMES, (FluentNumber)TotalCustomGames(games)},
                 }
             ) + formattedNames;
         }
