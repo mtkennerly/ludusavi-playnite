@@ -12,6 +12,9 @@ is ultimately sourced from [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home
 so please contribute any new or fixed data back to the wiki itself, and your
 improvements will be incorporated into Ludusavi's data as well.
 
+If you'd like to help translate this plugin into other languages,
+[check out the Crowdin project](https://crowdin.com/project/ludusavi-playnite).
+
 ## Setup
 ### Ludusavi
 Refer to the [Ludusavi project](https://github.com/mtkennerly/ludusavi)

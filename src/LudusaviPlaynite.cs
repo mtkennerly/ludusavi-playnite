@@ -64,7 +64,7 @@ namespace LudusaviPlaynite
 
         public LudusaviPlaynite(IPlayniteAPI api) : base(api)
         {
-            translator = new Translator(DetermineLanguage());
+            translator = new Translator(PlayniteApi.ApplicationSettings.Language);
             settings = new LudusaviPlayniteSettings(this, translator);
             Properties = new GenericPluginProperties
             {

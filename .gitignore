@@ -2,4 +2,5 @@ bin/
 dist/
 obj/
 tmp/
+vendor/
 *.sln

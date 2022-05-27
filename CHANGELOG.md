@@ -1,6 +1,10 @@
 ## Unreleased
 
 * Changed:
+  * Localization now uses [Project Fluent](https://projectfluent.org) instead of pure C# code internally.
+    Although English currently remains the only language supported, this change
+    should make it easier for other people to contribute. If you'd like to help,
+    [check out the new Crowdin project](https://crowdin.com/project/ludusavi-playnite).
   * The `ludusavi-skip` tag is now `[Ludusavi] Skip`.
     If you were using the old tag, it will be automatically renamed for you.
 * Added:

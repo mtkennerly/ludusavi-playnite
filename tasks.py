@@ -16,6 +16,11 @@ def get_version():
 
 @task
 def build(ctx):
+    if not (REPO / "vendor" / "Linguini").exists():
+        ctx.run("git clone git@github.com:Ygg01/Linguini.git vendor/Linguini")
+        with ctx.cd("vendor/Linguini"):
+            ctx.run("git checkout 9a7939b00c3ca68df19b45afc0e39bad05c0b483")
+
     ctx.run("dotnet build src -c Release")
 
 

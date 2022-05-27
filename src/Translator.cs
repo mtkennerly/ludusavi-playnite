@@ -1,167 +1,170 @@
 using ByteSizeLib;
+using Linguini.Bundle;
+using Linguini.Bundle.Builder;
+using Linguini.Shared.Types.Bundle;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace LudusaviPlaynite
 {
+    using FluentArgs = Dictionary<string, IFluentType>;
+
     public class Translator
     {
-        private Language language;
+        readonly static string GAME = "game";
+        readonly static string PROCESSED_GAMES = "processed-games";
+        readonly static string PROCESSED_SIZE = "processed-size";
+        readonly static string TOTAL_CUSTOM = "total-custom";
+        readonly static string TOTAL_GAMES = "total-games";
+        readonly static string TOTAL_SIZE = "total-size";
+        readonly static string SIZE = "size";
+        readonly static string STATUS = "status";
+        readonly static string TAG = "tag";
 
-        public Translator(Language language)
+        private FluentBundle bundle;
+
+        public Translator(string language)
         {
-            this.language = language;
+            SetLanguage(language);
+        }
+
+        private FluentBundle MakeBundle(string language)
+        {
+            return LinguiniBuilder.Builder()
+                .CultureInfo(new CultureInfo(language))
+                .AddResource(ReadFtl(language))
+                .SetUseIsolating(false)
+                .UncheckedBuild();
+        }
+
+        private string ReadFtl(string language)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using (var stream = assembly.GetManifestResourceStream("LudusaviPlaynite." + language.Replace("_", "-") + ".ftl"))
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+        private void SetLanguage(string language)
+        {
+            this.bundle = MakeBundle("en-US");
+
+            string target;
+            try
+            {
+                target = ReadFtl(language);
+            }
+            catch
+            {
+                // No translation for this language.
+                return;
+            }
+            this.bundle.AddResourceOverriding(target);
+        }
+
+        private int TotalCustom(bool needsCustomEntry)
+        {
+            return needsCustomEntry ? 1 : 0;
+        }
+
+        private int TotalCustom(List<(string, bool)> games)
+        {
+            return games.Where(x => x.Item2).Count();
+        }
+
+        private string Translate(string id, FluentArgs args = null)
+        {
+            return this.bundle.GetAttrMessage(id, args);
         }
 
         public string Ludusavi()
         {
-            switch (language)
-            {
-                default:
-                    return "Ludusavi";
-            }
+            return Translate("ludusavi");
         }
 
         public string AdjustedSize(ulong bytes)
         {
-            switch (language)
-            {
-                default:
-                    return ByteSize.FromBytes(bytes).ToBinaryString();
-            }
+            return ByteSize.FromBytes(bytes).ToBinaryString();
         }
 
         public string SelectFileExecutableFilter()
         {
-            switch (language)
-            {
-                default:
-                    return "Executable|*.exe";
-            }
+            return Translate("file-filter-executable") + "|*.exe";
         }
 
         public string BrowseButton()
         {
-            switch (language)
-            {
-                default:
-                    return "Browse";
-            }
+            return Translate("button-browse");
         }
 
         public string OpenButton()
         {
-            switch (language)
-            {
-                default:
-                    return "Open";
-            }
+            return Translate("button-open");
         }
 
         public string YesButton()
         {
-            switch (language)
-            {
-                default:
-                    return "Yes";
-            }
+            return Translate("button-yes");
         }
 
         public string YesRememberedButton()
         {
-            switch (language)
-            {
-                default:
-                    return "Yes, always";
-            }
+            return Translate("button-yes-remembered");
         }
 
         public string NoButton()
         {
-            switch (language)
-            {
-                default:
-                    return "No";
-            }
+            return Translate("button-no");
         }
 
         public string NoRememberedButton()
         {
-            switch (language)
-            {
-                default:
-                    return "No, never";
-            }
+            return Translate("button-no-remembered");
         }
 
         public string Launch_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Launch";
-            }
+            return Translate("label-launch");
         }
 
         public string BackUpLastGame_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Back up save data for last game played";
-            }
-        }
-
-        string GetCustomNoteForSingleGame(bool needsCustomEntry)
-        {
-            if (needsCustomEntry)
-            {
-                switch (language)
-                {
-                    default:
-                        return " This requires a matching custom entry in Ludusavi.";
-                }
-            }
-            return "";
+            return Translate("back-up-last-game");
         }
 
         public string BackUpOneGame_Confirm(string gameName, bool needsCustomEntry)
         {
-            var customNote = GetCustomNoteForSingleGame(needsCustomEntry);
-            switch (language)
-            {
-                default:
-                    return string.Format("Back up save data for {0}?{1}", gameName, customNote);
-            }
+            return Translate(
+                "back-up-specific-game.confirm",
+                new FluentArgs() {
+                    {GAME, (FluentString)gameName},
+                    {TOTAL_CUSTOM, (FluentNumber)TotalCustom(needsCustomEntry)},
+                }
+            );
         }
 
         public string BackUpAllGames_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Back up save data for all games";
-            }
+            return Translate("back-up-all-games");
         }
 
         public string BackUpAllGames_Confirm()
         {
-            switch (language)
-            {
-                default:
-                    return "Back up save data for all games that Ludusavi can find?";
-            }
+            return Translate("back-up-all-games.confirm");
         }
 
         public string BackUpSelectedGames_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Back up save data for selected games";
-            }
+            return Translate("back-up-selected-games");
         }
 
         string GetSelectionFormattedNames(IEnumerable<string> games)
@@ -169,19 +172,6 @@ namespace LudusaviPlaynite
             if (games.Count() < 50)
             {
                 return "\n\n" + String.Join(" | ", games);
-            }
-            return "";
-        }
-
-        string GetSelectionCustomNote(List<(string, bool)> games)
-        {
-            if (games.Any(x => x.Item2))
-            {
-                switch (language)
-                {
-                    default:
-                        return " Some games require a matching custom entry in Ludusavi.";
-                }
             }
             return "";
         }
@@ -196,59 +186,45 @@ namespace LudusaviPlaynite
             }
 
             var formattedNames = GetSelectionFormattedNames(games.Select(x => x.Item1));
-            var customNote = GetSelectionCustomNote(games);
 
-            switch (language)
-            {
-                default:
-                    return string.Format("Back up save data for {0} selected games?{1}{2}", count, customNote, formattedNames);
-            }
+            return Translate(
+                "back-up-selected-games.confirm",
+                new FluentArgs() {
+                    {TOTAL_GAMES, (FluentNumber)count},
+                    {TOTAL_CUSTOM, (FluentNumber)TotalCustom(games)},
+                }
+            ) + formattedNames;
         }
 
         public string RestoreLastGame_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Restore save data for last game played";
-            }
+            return Translate("restore-last-game");
         }
 
         public string RestoreOneGame_Confirm(string gameName, bool needsCustomEntry)
         {
-            var customNote = GetCustomNoteForSingleGame(needsCustomEntry);
-            switch (language)
-            {
-                default:
-                    return string.Format("Restore save data for {0}?{1}", gameName, customNote);
-            }
+            return Translate(
+                "restore-specific-game.confirm",
+                new FluentArgs() {
+                    {GAME, (FluentString)gameName},
+                    {TOTAL_CUSTOM, (FluentNumber)TotalCustom(needsCustomEntry)},
+                }
+            );
         }
 
         public string RestoreAllGames_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Restore save data for all games";
-            }
+            return Translate("restore-all-games");
         }
 
         public string RestoreAllGames_Confirm()
         {
-            switch (language)
-            {
-                default:
-                    return "Restore save data for all games that Ludusavi can find?";
-            }
+            return Translate("restore-all-games.confirm");
         }
 
         public string RestoreSelectedGames_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Restore save data for selected games";
-            }
+            return Translate("restore-selected-games");
         }
 
         // games: (name, requiresCustomEntry)
@@ -261,366 +237,262 @@ namespace LudusaviPlaynite
             }
 
             var formattedNames = GetSelectionFormattedNames(games.Select(x => x.Item1));
-            var customNote = GetSelectionCustomNote(games);
-
-            switch (language)
-            {
-                default:
-                    return string.Format("Restore save data for {0} selected games?{1}{2}", count, customNote, formattedNames);
-            }
+            return Translate(
+                "restore-selected-games.confirm",
+                new FluentArgs() {
+                    {TOTAL_GAMES, (FluentNumber)count},
+                    {TOTAL_CUSTOM, (FluentNumber)TotalCustom(games)},
+                }
+            ) + formattedNames;
         }
 
         public string AddTagForSelectedGames_Label(string tag)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format("Tag: '{0}' - Add for selected games", tag);
-            }
+            return Translate(
+                "add-tag-for-selected-games",
+                new FluentArgs() {
+                    {TAG, (FluentString)tag},
+                }
+            );
         }
 
         public string AddTagForSelectedGames_Confirm(string tag, IEnumerable<string> games)
         {
-            var count = games.Count();
             var formattedNames = GetSelectionFormattedNames(games);
-
-            switch (language)
-            {
-                default:
-                    return string.Format("Add '{0}' tag for {1} selected games and remove any conflicting tags?{2}", tag, count, formattedNames);
-            }
+            return Translate(
+                "add-tag-for-selected-games.confirm",
+                new FluentArgs() {
+                    {TAG, (FluentString)tag},
+                    {TOTAL_GAMES, (FluentNumber)games.Count()},
+                }
+            ) + formattedNames;
         }
 
         public string RemoveTagForSelectedGames_Label(string tag)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format("Tag: '{0}' - Remove for selected games", tag);
-            }
+            return Translate(
+                "remove-tag-for-selected-games",
+                new FluentArgs() {
+                    {TAG, (FluentString)tag},
+                }
+            );
         }
 
         public string RemoveTagForSelectedGames_Confirm(string tag, IEnumerable<string> games)
         {
-            var count = games.Count();
             var formattedNames = GetSelectionFormattedNames(games);
-
-            switch (language)
-            {
-                default:
-                    return string.Format("Remove '{0}' tag for {1} selected games?{2}", tag, count, formattedNames);
-            }
+            return Translate(
+                "remove-tag-for-selected-games.confirm",
+                new FluentArgs() {
+                    {TAG, (FluentString)tag},
+                    {TOTAL_GAMES, (FluentNumber)games.Count()},
+                }
+            ) + formattedNames;
         }
-
 
         public string OperationStillPending()
         {
-            switch (language)
-            {
-                default:
-                    return "Ludusavi is still working on a previous request. Please try again when you see the notification that it's done.";
-            }
+            return Translate("operation-still-pending");
         }
 
         public string NoGamePlayedYet()
         {
-            switch (language)
-            {
-                default:
-                    return "You haven't played anything yet in this session.";
-            }
+            return Translate("no-game-played-yet");
         }
 
         public string UnableToRunLudusavi()
         {
-            switch (language)
-            {
-                default:
-                    return "Unable to run Ludusavi.";
-            }
+            return Translate("unable-to-run-ludusavi");
         }
 
         public string BackUpOneGame_Success(OperationResult result)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format(
-                        "Backed up saves for {0} ({1})",
-                        result.Name,
-                        AdjustedSize(result.Response.Overall.ProcessedBytes)
-                    );
-            }
+            return Translate(
+                "back-up-specific-game.on-success",
+                new FluentArgs() {
+                    {GAME, (FluentString)result.Name},
+                    {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)},
+                }
+            );
         }
 
         public string BackUpOneGame_Empty(OperationResult result)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format(
-                        "No save data found to back up for {0}",
-                        result.Name
-                    );
-            }
+            return Translate(
+                "back-up-specific-game.on-empty",
+                new FluentArgs() {
+                    {GAME, (FluentString)result.Name},
+                }
+            );
         }
 
         public string BackUpOneGame_Failure(OperationResult result)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format(
-                        "Backed up saves for {0} ({1} of {2}), but some saves failed",
-                        result.Name,
-                        AdjustedSize(result.Response.Overall.ProcessedBytes),
-                        AdjustedSize(result.Response.Overall.TotalBytes)
-                    );
-            }
+            return Translate(
+                "back-up-specific-game.on-failure",
+                new FluentArgs() {
+                    {GAME, (FluentString)result.Name},
+                    {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)},
+                    {TOTAL_SIZE, (FluentString)AdjustedSize(result.Response.Overall.TotalBytes)},
+                }
+            );
         }
 
         public string BackUpAllGames_Success(OperationResult result)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format(
-                        "Backed up saves for {0} games ({1}); click for full list",
-                        result.Response.Overall.ProcessedGames,
-                        AdjustedSize(result.Response.Overall.ProcessedBytes)
-                    );
-            }
+            return Translate(
+                "back-up-all-games.on-success",
+                new FluentArgs() {
+                    {PROCESSED_GAMES, (FluentNumber)result.Response.Overall.ProcessedGames},
+                    {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)},
+                }
+            );
         }
 
         public string BackUpAllGames_Failure(OperationResult result)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format(
-                        "Backed up saves for {0} of {1} games ({2} of {3}), but some failed; click for full list",
-                        result.Response.Overall.ProcessedGames,
-                        result.Response.Overall.TotalGames,
-                        AdjustedSize(result.Response.Overall.ProcessedBytes),
-                        AdjustedSize(result.Response.Overall.TotalBytes)
-                    );
-            }
+            return Translate(
+                "back-up-all-games.on-failure",
+                new FluentArgs() {
+                    {PROCESSED_GAMES, (FluentNumber)result.Response.Overall.ProcessedGames},
+                    {TOTAL_GAMES, (FluentNumber)result.Response.Overall.TotalGames},
+                    {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)},
+                    {TOTAL_SIZE, (FluentString)AdjustedSize(result.Response.Overall.TotalBytes)},
+                }
+            );
         }
 
         public string RestoreOneGame_Success(OperationResult result)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format(
-                        "Restored saves for {0} ({1})",
-                        result.Name,
-                        AdjustedSize(result.Response.Overall.ProcessedBytes)
-                    );
-            }
+            return Translate(
+                "restore-specific-game.on-success",
+                new FluentArgs() {
+                    {GAME, (FluentString)result.Name},
+                    {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)}
+                }
+            );
         }
 
         public string RestoreOneGame_Empty(OperationResult result)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format(
-                        "No save data found to restore for {0}",
-                        result.Name
-                    );
-            }
+            return Translate(
+                "restore-specific-game.on-empty",
+                new FluentArgs() {
+                    {GAME, (FluentString)result.Name},
+                }
+            );
         }
 
         public string RestoreOneGame_Failure(OperationResult result)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format(
-                        "Restored saves for {0} ({1} of {2}), but some saves failed",
-                        result.Name,
-                        AdjustedSize(result.Response.Overall.ProcessedBytes),
-                        AdjustedSize(result.Response.Overall.TotalBytes)
-                    );
-            }
+            return Translate(
+                "restore-specific-game.on-failure",
+                new FluentArgs() {
+                    {GAME, (FluentString)result.Name},
+                    {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)},
+                    {TOTAL_SIZE, (FluentString)AdjustedSize(result.Response.Overall.TotalBytes)},
+                }
+            );
         }
 
         public string RestoreAllGames_Success(OperationResult result)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format(
-                        "Restored saves for {0} games ({1}); click for full list",
-                        result.Response.Overall.ProcessedGames,
-                        AdjustedSize(result.Response.Overall.ProcessedBytes)
-                    );
-            }
+            return Translate(
+                "restore-all-games.on-success",
+                new FluentArgs() {
+                    {PROCESSED_GAMES, (FluentNumber)result.Response.Overall.ProcessedGames},
+                    {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)},
+                }
+            );
         }
 
         public string RestoreAllGames_Failure(OperationResult result)
         {
-            switch (language)
-            {
-                default:
-                    return string.Format(
-                        "Restored saves for {0} of {1} games ({2} of {3}), but some failed; click for full list",
-                        result.Response.Overall.ProcessedGames,
-                        result.Response.Overall.TotalGames,
-                        AdjustedSize(result.Response.Overall.ProcessedBytes),
-                        AdjustedSize(result.Response.Overall.TotalBytes)
-                    );
-            }
-        }
-
-        public string FullListGameLineItem_Failed()
-        {
-            switch (language)
-            {
-                default:
-                    return "FAILED";
-            }
-        }
-
-        public string FullListGameLineItem_Ignored()
-        {
-            switch (language)
-            {
-                default:
-                    return "IGNORED";
-            }
+            return Translate(
+                "restore-all-games.on-failure",
+                new FluentArgs() {
+                    {PROCESSED_GAMES, (FluentNumber)result.Response.Overall.ProcessedGames},
+                    {TOTAL_GAMES, (FluentNumber)result.Response.Overall.TotalGames},
+                    {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)},
+                    {TOTAL_SIZE, (FluentString)AdjustedSize(result.Response.Overall.TotalBytes)},
+                }
+            );
         }
 
         public string FullListGameLineItem(string name, ApiGame game)
         {
             var size = AdjustedSize(Convert.ToUInt64(game.Files.Sum(x => Convert.ToDecimal(x.Value.Bytes))));
             var failed = game.Files.Any(x => x.Value.Failed) || game.Registry.Any(x => x.Value.Failed);
+            var status = failed ? "failed" : (game.Decision == "Ignored" ? "ignored" : "success");
 
-            switch (language)
-            {
-                default:
-                    if (failed)
-                    {
-                        return string.Format("[{0}] {1} ({2})", FullListGameLineItem_Failed(), name, size);
-                    }
-                    else if (game.Decision == "Ignored")
-                    {
-                        return string.Format("[{0}] {1} ({2})", FullListGameLineItem_Ignored(), name, size);
-                    }
-                    else
-                    {
-                        return string.Format("{0} ({1})", name, size);
-                    }
-            }
+            return Translate(
+                "full-list-game-line-item",
+                new FluentArgs() {
+                    {STATUS, (FluentString)status},
+                    {GAME, (FluentString)name},
+                    {SIZE, (FluentString)size},
+                }
+            );
         }
 
         public string ExecutablePath_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Name or full path of the Ludusavi executable:";
-            }
+            return Translate("config-executable-path");
         }
 
         public string BackupPath_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Full path to directory for storing backups:";
-            }
+            return Translate("config-backup-path");
         }
 
         public string DoBackupOnGameStopped_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Back up save data for a game after playing it";
-            }
+            return Translate("config-do-backup-on-game-stopped");
         }
 
         public string DoRestoreOnGameStarting_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Also restore save data for a game before playing it";
-            }
+            return Translate("config-do-restore-on-game-starting");
         }
 
         public string AskBackupOnGameStopped_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Ask first instead of doing it automatically";
-            }
+            return Translate("config-ask-backup-on-game-stopped");
         }
 
         public string OnlyBackupOnGameStoppedIfPc_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Only do this for PC games";
-            }
+            return Translate("config-only-backup-on-game-stopped-if-pc");
         }
 
         public string AddSuffixForNonPcGameNames_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Look up non-PC games by adding this suffix to their names (requires custom entry):";
-            }
+            return Translate("config-add-suffix-for-non-pc-game-names");
         }
 
         public string RetryNonPcGamesWithoutSuffix_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "If not found with the suffix, then try again without it";
-            }
+            return Translate("config-retry-non-pc-games-without-suffix");
         }
 
         public string DoPlatformBackupOnNonPcGameStopped_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Back up save data by platform name after playing non-PC games (requires custom entry)";
-            }
+            return Translate("config-do-platform-backup-on-non-pc-game-stopped");
         }
 
         public string DoPlatformRestoreOnNonPcGameStarting_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Also restore save data by platform name before playing non-PC games";
-            }
+            return Translate("config-do-platform-restore-on-non-pc-game-starting");
         }
 
         public string AskPlatformBackupOnNonPcGameStopped_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Ask first instead of doing it automatically";
-            }
+            return Translate("config-ask-platform-backup-on-non-pc-game-stopped");
         }
 
         public string IgnoreBenignNotifications_Label()
         {
-            switch (language)
-            {
-                default:
-                    return "Only show notifications on failure";
-            }
+            return Translate("config-ignore-benign-notifications");
         }
     }
 }

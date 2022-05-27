@@ -27,4 +27,13 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="../lang/*.ftl" />
+  </ItemGroup>
+
+  <!-- TODO: remove when Linguini 0.3.0+ is released -->
+  <ItemGroup>
+    <ProjectReference Include="../vendor/Linguini/Linguini.Bundle/Linguini.Bundle.csproj" />
+  </ItemGroup>
+
 </Project>
