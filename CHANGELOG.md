@@ -1,4 +1,4 @@
-## Unreleased
+## v0.7.0 (2022-05-27)
 
 * Changed:
   * Localization now uses [Project Fluent](https://projectfluent.org) instead of pure C# code internally.
@@ -7,6 +7,8 @@
     [check out the new Crowdin project](https://crowdin.com/project/ludusavi-playnite).
   * The `ludusavi-skip` tag is now `[Ludusavi] Skip`.
     If you were using the old tag, it will be automatically renamed for you.
+  * Removed support for [erri120's extension update notifier](https://github.com/erri120/Playnite.Extensions)
+    since Playnite now natively provides this functionality.
 * Added:
   * Game-specific context menu entries to add or remove Ludusavi-related tags.
   * Option to restore save data for a game before playing it.
