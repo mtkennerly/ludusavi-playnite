@@ -1,3 +1,10 @@
+## Unreleased
+
+* Changed:
+  * The plugin can now recognize when a game is on PC or Steam in more situations.
+    Specifically, it now checks the game's platform name and source plugin ID as well,
+    instead of just the platform specification ID and source name.
+
 ## v0.7.0 (2022-05-27)
 
 * Changed:

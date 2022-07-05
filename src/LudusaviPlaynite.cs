@@ -556,12 +556,18 @@ namespace LudusaviPlaynite
 
         bool IsOnSteam(Game game)
         {
-            return game.Source?.Name == "Steam";
+            return game.Source?.Name == "Steam"
+                || game.PluginId == Guid.Parse("cb91dfc9-b977-43bf-8e70-55f46e410fab");
         }
 
         bool IsOnPc(Game game)
         {
-            return game.Platforms == null || game.Platforms.Count == 0 || game.Platforms[0].SpecificationId == "pc_windows";
+            var pcSpecs = new List<string> { "macintosh", "pc_dos", "pc_linux", "pc_windows" };
+            var pcNames = new List<string> { "Macintosh", "PC", "PC (DOS)", "PC (Linux)", "PC (Windows)" };
+            return game.Platforms == null
+                || game.Platforms.Count == 0
+                || pcSpecs.Any(x => x == game.Platforms[0].SpecificationId)
+                || pcNames.Any(x => x == game.Platforms[0].Name);
         }
 
         bool RequiresCustomEntry(Game game)
