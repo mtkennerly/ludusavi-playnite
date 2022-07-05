@@ -54,6 +54,12 @@ namespace LudusaviPlaynite
         public bool ByPlatform;
     }
 
+    public struct RestorationError
+    {
+        public string Message;
+        public bool Empty;
+    }
+
     public struct ApiErrors
     {
         [JsonProperty("someGamesFailed")]

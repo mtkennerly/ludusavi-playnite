@@ -296,8 +296,16 @@ namespace LudusaviPlaynite
             Game game = args.Game;
             var prefs = GetPlayPreferences(game);
 
-            string gameError = null;
-            string platformError = null;
+            var gameError = new RestorationError
+            {
+                Message = null,
+                Empty = false,
+            };
+            var platformError = new RestorationError
+            {
+                Message = null,
+                Empty = false,
+            };
 
             if (prefs.Game.Restore.Do)
             {
@@ -319,15 +327,13 @@ namespace LudusaviPlaynite
                 UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP_AND_RESTORE, TAG_PLATFORM_NO_RESTORE, TAG_PLATFORM_BACKUP);
             }
 
-            // TODO: Obtain rich info to detect this more reliably.
-            var emptyFlag = "No save data found";
-            if (!String.IsNullOrEmpty(gameError) && !gameError.Contains(emptyFlag))
+            if (!String.IsNullOrEmpty(gameError.Message) && !gameError.Empty)
             {
-                PlayniteApi.Dialogs.ShowErrorMessage(gameError, translator.Ludusavi());
+                PlayniteApi.Dialogs.ShowErrorMessage(gameError.Message, translator.Ludusavi());
             }
-            else if (!String.IsNullOrEmpty(platformError) && !platformError.Contains(emptyFlag))
+            else if (!String.IsNullOrEmpty(platformError.Message) && !platformError.Empty)
             {
-                PlayniteApi.Dialogs.ShowErrorMessage(platformError, translator.Ludusavi());
+                PlayniteApi.Dialogs.ShowErrorMessage(platformError.Message, translator.Ludusavi());
             }
         }
 
@@ -657,14 +663,18 @@ namespace LudusaviPlaynite
             pendingOperation = false;
         }
 
-        private string RestoreOneGame(Game game)
+        private RestorationError RestoreOneGame(Game game)
         {
             return this.RestoreOneGame(game, new BackupCriteria { ByPlatform = false });
         }
 
-        private string RestoreOneGame(Game game, BackupCriteria criteria)
+        private RestorationError RestoreOneGame(Game game, BackupCriteria criteria)
         {
-            string error = null;
+            RestorationError error = new RestorationError
+            {
+                Message = null,
+                Empty = false,
+            };
             pendingOperation = true;
             var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameName(game);
 
@@ -683,8 +693,8 @@ namespace LudusaviPlaynite
 
             if (response == null)
             {
-                error = translator.UnableToRunLudusavi();
-                NotifyError(error);
+                error.Message = translator.UnableToRunLudusavi();
+                NotifyError(error.Message);
             }
             else
             {
@@ -697,13 +707,14 @@ namespace LudusaviPlaynite
                 {
                     if (response?.Errors.UnknownGames != null)
                     {
-                        error = translator.RestoreOneGame_Empty(result);
-                        NotifyError(error);
+                        error.Message = translator.RestoreOneGame_Empty(result);
+                        error.Empty = true;
+                        NotifyError(error.Message);
                     }
                     else
                     {
-                        error = translator.RestoreOneGame_Failure(result);
-                        NotifyError(error);
+                        error.Message = translator.RestoreOneGame_Failure(result);
+                        NotifyError(error.Message);
                     }
                 }
             }
