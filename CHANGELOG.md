@@ -1,5 +1,8 @@
 ## Unreleased
 
+* Added:
+  * Translations for Simplified Chinese (partial), Polish, Brazilian Portuguese, and Spanish.
+    (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
 * Changed:
   * The plugin can now recognize when a game is on PC or Steam in more situations.
     Specifically, it now checks the game's platform name and source plugin ID as well,

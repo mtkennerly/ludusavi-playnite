@@ -4,11 +4,6 @@ using System.Collections.Generic;
 
 namespace LudusaviPlaynite
 {
-    public enum Language
-    {
-        English,
-    }
-
     public enum Choice
     {
         Yes,

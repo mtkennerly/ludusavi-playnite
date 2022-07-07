@@ -72,16 +72,6 @@ namespace LudusaviPlaynite
             };
         }
 
-        private Language DetermineLanguage()
-        {
-            switch (PlayniteApi.ApplicationSettings.Language)
-            {
-                case "en_US":
-                default:
-                    return Language.English;
-            }
-        }
-
         public override IEnumerable<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs menuArgs)
         {
             return new List<MainMenuItem>
