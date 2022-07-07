@@ -1,23 +1,39 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.8.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2022-07-07
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.8.0/ludusavi-playnite-v0.8.0.pext
+    Changelog:
+      - >-
+        Added - Translations for Simplified Chinese (partial), Polish, Brazilian Portuguese, and Spanish.
+        (Thanks to contributors on the Crowdin project: https://crowdin.com/project/ludusavi-playnite)
+      - >-
+        Changed - The plugin can now recognize when a game is on PC or Steam in more situations.
+        Specifically, it now checks the game's platform name and source plugin ID as well,
+        instead of just the platform specification ID and source name.
   - Version: 0.7.0
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2022-05-27
     PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.7.0/ludusavi-playnite-v0.7.0.pext
     Changelog:
-      - Changed - Localization now uses Project Fluent (https://projectfluent.org) instead of pure C# code internally.
+      - >-
+        Changed - Localization now uses Project Fluent (https://projectfluent.org) instead of pure C# code internally.
         Although English currently remains the only language supported, this change
         should make it easier for other people to contribute. If you'd like to help,
         check out the new Crowdin project (https://crowdin.com/project/ludusavi-playnite).
-      - Changed - The `ludusavi-skip` tag is now `[Ludusavi] Skip`.
+      - >-
+        Changed - The `ludusavi-skip` tag is now `[Ludusavi] Skip`.
         If you were using the old tag, it will be automatically renamed for you.
-      - Removed support for erri120's extension update notifier (https://github.com/erri120/Playnite.Extensions)
+      - >-
+        Removed support for erri120's extension update notifier (https://github.com/erri120/Playnite.Extensions)
         since Playnite now natively provides this functionality.
       - Added - Game-specific context menu entries to add or remove Ludusavi-related tags.
       - Added - Option to restore save data for a game before playing it.
       - Added - Option to remember your choice when asked if you want to back up a game.
       - Added - Several new tags to tweak behavior for individual games.
-      - Fixed - When doing a backup or restore of specific games via their context menu,
+      - >-
+        Fixed - When doing a backup or restore of specific games via their context menu,
         the plugin did not check whether another backup/restore was already in progress.
   - Version: 0.6.1
     RequiredApiVersion: 6.0.0

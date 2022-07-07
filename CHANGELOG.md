@@ -1,4 +1,4 @@
-## Unreleased
+## v0.8.0 (2022-07-07)
 
 * Added:
   * Translations for Simplified Chinese (partial), Polish, Brazilian Portuguese, and Spanish.
