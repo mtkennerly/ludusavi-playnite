@@ -1,4 +1,4 @@
-## Unreleased
+## v0.8.1 (2022-07-11)
 
 * Fixed:
   * Handling of games whose name begins with a hyphen.
