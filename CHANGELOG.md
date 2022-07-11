@@ -1,3 +1,12 @@
+## Unreleased
+
+* Fixed:
+  * Handling of games whose name begins with a hyphen.
+    Previously, the plugin would not have been able to run Ludusavi for such games.
+  * Handling of games whose name contains quotation marks.
+    Previously, depending on the quote placement, the plugin may not have found
+    anything to back up for such games.
+
 ## v0.8.0 (2022-07-07)
 
 * Added:

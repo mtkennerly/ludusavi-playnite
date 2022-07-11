@@ -431,9 +431,9 @@ namespace LudusaviPlaynite
             return (p.ExitCode, stdout);
         }
 
-        private (int, ApiResponse?) InvokeLudusavi(string args)
+        private (int, ApiResponse?) InvokeLudusavi(Invocation invocation)
         {
-            var fullArgs = string.Format("{0} --api", args);
+            var fullArgs = invocation.Render();
             logger.Debug(string.Format("Running Ludusavi: {0}", fullArgs));
 
             int code;
@@ -581,16 +581,18 @@ namespace LudusaviPlaynite
             pendingOperation = true;
             var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameName(game);
 
-            var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, name));
+            var invocation = new Invocation(Mode.Backup).Path(settings.BackupPath).Game(name);
+
+            var (code, response) = InvokeLudusavi(invocation);
             if (!criteria.ByPlatform)
             {
                 if (response?.Errors.UnknownGames != null && IsOnSteam(game))
                 {
-                    (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
+                    (code, response) = InvokeLudusavi(invocation.SteamId(game.GameId));
                 }
                 if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
                 {
-                    (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+                    (code, response) = InvokeLudusavi(invocation.Game(game.Name));
                 }
             }
 
@@ -631,7 +633,7 @@ namespace LudusaviPlaynite
         private void BackUpAllGames()
         {
             pendingOperation = true;
-            var (code, response) = InvokeLudusavi(string.Format("backup --merge --try-update --path \"{0}\"", settings.BackupPath));
+            var (code, response) = InvokeLudusavi(new Invocation(Mode.Backup).Path(settings.BackupPath));
 
             if (response == null)
             {
@@ -668,16 +670,18 @@ namespace LudusaviPlaynite
             pendingOperation = true;
             var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameName(game);
 
-            var (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, name));
+            var invocation = new Invocation(Mode.Restore).Path(settings.BackupPath).Game(name);
+
+            var (code, response) = InvokeLudusavi(invocation);
             if (!criteria.ByPlatform)
             {
                 if (response?.Errors.UnknownGames != null && IsOnSteam(game))
                 {
-                    (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" --by-steam-id \"{1}\"", settings.BackupPath, game.GameId));
+                    (code, response) = InvokeLudusavi(invocation.SteamId(game.GameId));
                 }
                 if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
                 {
-                    (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\" \"{1}\"", settings.BackupPath, game.Name));
+                    (code, response) = InvokeLudusavi(invocation.Game(game.Name));
                 }
             }
 
@@ -716,7 +720,7 @@ namespace LudusaviPlaynite
         private void RestoreAllGames()
         {
             pendingOperation = true;
-            var (code, response) = InvokeLudusavi(string.Format("restore --force --path \"{0}\"", settings.BackupPath));
+            var (code, response) = InvokeLudusavi(new Invocation(Mode.Restore).Path(settings.BackupPath));
 
             if (response == null)
             {

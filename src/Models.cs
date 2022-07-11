@@ -4,6 +4,79 @@ using System.Collections.Generic;
 
 namespace LudusaviPlaynite
 {
+    public enum Mode
+    {
+        Backup,
+        Restore,
+    }
+
+    public class Invocation
+    {
+        private Mode mode;
+        private string game;
+        private string path;
+        private bool bySteamId;
+
+        public Invocation(Mode mode)
+        {
+            this.mode = mode;
+        }
+
+        public Invocation Path(string value)
+        {
+            this.path = value;
+            return this;
+        }
+
+        public Invocation Game(string value)
+        {
+            this.game = value;
+            this.bySteamId = false;
+            return this;
+        }
+
+        public Invocation SteamId(string value)
+        {
+            this.bySteamId = true;
+            this.game = value;
+            return this;
+        }
+
+        public string Render()
+        {
+            var rendered = "";
+
+            switch (this.mode)
+            {
+                case Mode.Backup:
+                    rendered += "backup --merge --try-update";
+                    break;
+                case Mode.Restore:
+                    rendered += "restore --force";
+                    break;
+            }
+
+            rendered += " --api";
+
+            if (this.path != null && this.path != "")
+            {
+                rendered += string.Format(" --path \"{0}\"", this.path);
+            }
+
+            if (this.bySteamId)
+            {
+                rendered += " --by-steam-id";
+            }
+
+            if (this.game != null && this.game != "")
+            {
+                rendered += string.Format(" -- \"{0}\"", this.game.Replace("\"", "\"\""));
+            }
+
+            return rendered;
+        }
+    }
+
     public enum Choice
     {
         Yes,
