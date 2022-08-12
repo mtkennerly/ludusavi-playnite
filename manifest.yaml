@@ -1,5 +1,13 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.9.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2022-08-13
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.9.0/ludusavi-playnite-v0.9.0.pext
+    Changelog:
+      - >-
+        Added: Completed the translation for Simplified Chinese.
+        (Thanks to contributors on the Crowdin project: https://crowdin.com/project/ludusavi-playnite)
   - Version: 0.8.1
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2022-07-11

@@ -1,4 +1,4 @@
-## Unreleased
+## v0.9.0 (2022-08-13)
 
 * Added:
   * Completed the translation for Simplified Chinese.
