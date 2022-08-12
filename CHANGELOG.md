@@ -1,3 +1,9 @@
+## Unreleased
+
+* Added:
+  * Completed the translation for Simplified Chinese.
+    (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
+
 ## v0.8.1 (2022-07-11)
 
 * Fixed:

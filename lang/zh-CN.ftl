@@ -55,18 +55,10 @@ restore-all-games = 为所有游戏恢复存档
 
 ## Tags
 
-add-tag-for-selected-games = Tag: "{ $tag }" - Add for selected games
-    .confirm =
-        Add "{ $tag }" tag for { $total-games } selected { $total-games ->
-            [one] game
-           *[other] games
-        } and remove any conflicting tags?
-remove-tag-for-selected-games = Tag: "{ $tag }" - Remove for selected games
-    .confirm =
-        Remove "{ $tag }" tag for { $total-games } selected { $total-games ->
-            [one] game
-           *[other] games
-        } and remove any conflicting tags?
+add-tag-for-selected-games = 标签："{ $tag }" - 为所选游戏添加
+    .confirm = 是否为 { $total-games } 个所选游戏添加标签“{ $tag }”游戏并移除一切冲突标签？
+remove-tag-for-selected-games = 标签："{ $tag }" - 从所选游戏移除
+    .confirm = 是否从 { $total-games } 个所选游戏移除标签“{ $tag }”游戏并移除一切冲突标签？
 
 ## Generic errors
 
