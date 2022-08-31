@@ -61,6 +61,8 @@ namespace LudusaviPlaynite
         private bool pendingOperation { get; set; }
         private bool playedSomething { get; set; }
         private Game lastGamePlayed { get; set; }
+        private Version ludusaviVersion { get; set; }
+        private bool supportsMultiBackup { get; set; }
 
         public LudusaviPlaynite(IPlayniteAPI api) : base(api)
         {
@@ -277,6 +279,9 @@ namespace LudusaviPlaynite
                 settings.MigratedTags = true;
                 SavePluginSettings(settings);
             }
+
+            this.ludusaviVersion = GetLudusaviVersion();
+            this.supportsMultiBackup = this.ludusaviVersion >= new Version(0, 12, 0);
         }
 
         public override void OnGameStarting(OnGameStartingEventArgs args)
@@ -429,6 +434,23 @@ namespace LudusaviPlaynite
             p.WaitForExit();
 
             return (p.ExitCode, stdout);
+        }
+
+        private Version GetLudusaviVersion()
+        {
+            int code;
+            string stdout;
+            try
+            {
+                (code, stdout) = RunCommand(settings.ExecutablePath.Trim(), "--version");
+                var version = stdout.Trim().Split(' ').Last();
+                return new Version(version);
+            }
+            catch (Exception e)
+            {
+                logger.Debug(e, "Could not determine Ludusavi version");
+                return new Version(0, 0, 0);
+            }
         }
 
         private (int, ApiResponse?) InvokeLudusavi(Invocation invocation)
