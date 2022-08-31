@@ -63,6 +63,7 @@ namespace LudusaviPlaynite
         private Game lastGamePlayed { get; set; }
         private Version ludusaviVersion { get; set; }
         private bool supportsMultiBackup { get; set; }
+        private Dictionary<string, List<ApiBackup>> backups { get; set; }
 
         public LudusaviPlaynite(IPlayniteAPI api) : base(api)
         {
@@ -173,27 +174,59 @@ namespace LudusaviPlaynite
                         }
                     }
                 },
-                new GameMenuItem
+            };
+
+            if (menuArgs.Games.Count == 1 && this.backups.ContainsKey(menuArgs.Games[0].Name))
+            {
+                var game = menuArgs.Games[0];
+                foreach (var backup in this.backups[game.Name])
                 {
-                    Description = translator.RestoreSelectedGames_Label(),
-                    MenuSection = translator.Ludusavi(),
-                    Action = async args => {
-                        if (!CanPerformOperation())
+                    items.Add(
+                        new GameMenuItem
                         {
-                            return;
-                        }
-                        if (UserConsents(translator.RestoreSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
-                        {
-                            foreach (var game in args.Games)
+                            Description = backup.When.ToLocalTime().ToString(),
+                            MenuSection = string.Format("{0} | {1}", translator.Ludusavi(), translator.RestoreSelectedGames_Label()),
+                            Action = async args =>
                             {
+                                if (!CanPerformOperation())
                                 {
-                                    await Task.Run(() => RestoreOneGame(game));
+                                    return;
+                                }
+                                if (UserConsents(translator.RestoreSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
+                                {
+                                    await Task.Run(() => RestoreOneGame(game, backup.Name));
+                                }
+                            }
+                        }
+                    );
+                }
+            }
+            else
+            {
+                items.Add(
+                    new GameMenuItem
+                    {
+                        Description = translator.RestoreSelectedGames_Label(),
+                        MenuSection = translator.Ludusavi(),
+                        Action = async args =>
+                        {
+                            if (!CanPerformOperation())
+                            {
+                                return;
+                            }
+                            if (UserConsents(translator.RestoreSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
+                            {
+                                foreach (var game in args.Games)
+                                {
+                                    {
+                                        await Task.Run(() => RestoreOneGame(game));
+                                    }
                                 }
                             }
                         }
                     }
-                },
-            };
+                );
+            }
 
             foreach (var entry in TAGS_AND_CONFLICTS)
             {
@@ -280,8 +313,8 @@ namespace LudusaviPlaynite
                 SavePluginSettings(settings);
             }
 
-            this.ludusaviVersion = GetLudusaviVersion();
-            this.supportsMultiBackup = this.ludusaviVersion >= new Version(0, 12, 0);
+            RefreshLudusaviVersion();
+            RefreshLudusaviBackups();
         }
 
         public override void OnGameStarting(OnGameStartingEventArgs args)
@@ -317,7 +350,7 @@ namespace LudusaviPlaynite
                 var choice = Choice.No;
                 if (!prefs.Platform.Restore.Ask || (choice = AskUser(translator.RestoreOneGame_Confirm(game.Platforms[0].Name, true))).Accepted())
                 {
-                    platformError = RestoreOneGame(game, new BackupCriteria { ByPlatform = true });
+                    platformError = RestoreOneGame(game, null, new BackupCriteria { ByPlatform = true });
                 }
                 UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP_AND_RESTORE, TAG_PLATFORM_NO_RESTORE, TAG_PLATFORM_BACKUP);
             }
@@ -368,6 +401,24 @@ namespace LudusaviPlaynite
         public override UserControl GetSettingsView(bool firstRunSettings)
         {
             return new LudusaviPlayniteSettingsView(this, this.translator);
+        }
+
+        public void RefreshLudusaviVersion()
+        {
+            this.ludusaviVersion = GetLudusaviVersion();
+            this.supportsMultiBackup = this.ludusaviVersion >= new Version(0, 12, 0);
+        }
+
+        public void RefreshLudusaviBackups()
+        {
+            if (this.supportsMultiBackup)
+            {
+                var (code, response) = InvokeLudusavi(new Invocation(Mode.Backups).Path(settings.BackupPath));
+                if (response?.Games != null)
+                {
+                    this.backups = response?.Games.ToDictionary(pair => pair.Key, pair => pair.Value.Backups);
+                }
+            }
         }
 
         private void NotifyInfo(string message)
@@ -649,6 +700,7 @@ namespace LudusaviPlaynite
                 }
             }
 
+            RefreshLudusaviBackups();
             pendingOperation = false;
         }
 
@@ -674,15 +726,22 @@ namespace LudusaviPlaynite
                     NotifyError(translator.BackUpAllGames_Failure(result), () => ShowFullResults(result.Response));
                 }
             }
+
+            RefreshLudusaviBackups();
             pendingOperation = false;
         }
 
         private RestorationError RestoreOneGame(Game game)
         {
-            return this.RestoreOneGame(game, new BackupCriteria { ByPlatform = false });
+            return this.RestoreOneGame(game, null);
         }
 
-        private RestorationError RestoreOneGame(Game game, BackupCriteria criteria)
+        private RestorationError RestoreOneGame(Game game, string backup)
+        {
+            return this.RestoreOneGame(game, backup, new BackupCriteria { ByPlatform = false });
+        }
+
+        private RestorationError RestoreOneGame(Game game, string backup, BackupCriteria criteria)
         {
             RestorationError error = new RestorationError
             {
@@ -692,7 +751,7 @@ namespace LudusaviPlaynite
             pendingOperation = true;
             var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameName(game);
 
-            var invocation = new Invocation(Mode.Restore).Path(settings.BackupPath).Game(name);
+            var invocation = new Invocation(Mode.Restore).Path(settings.BackupPath).Game(name).Backup(backup);
 
             var (code, response) = InvokeLudusavi(invocation);
             if (!criteria.ByPlatform)

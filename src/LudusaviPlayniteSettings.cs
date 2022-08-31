@@ -151,6 +151,8 @@ namespace LudusaviPlaynite
             // Code executed when user decides to confirm changes made since BeginEdit was called.
             // This method should save settings made to Option1 and Option2.
             plugin.SavePluginSettings(this);
+            this.plugin.RefreshLudusaviVersion();
+            this.plugin.RefreshLudusaviBackups();
         }
 
         public bool VerifySettings(out List<string> errors)

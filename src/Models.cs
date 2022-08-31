@@ -1,12 +1,20 @@
 using Newtonsoft.Json;
 using Playnite.SDK.Models;
+using System;
 using System.Collections.Generic;
 
 namespace LudusaviPlaynite
 {
+    public class Backup
+    {
+        public string name;
+        public DateTime when;
+    }
+
     public enum Mode
     {
         Backup,
+        Backups,
         Restore,
     }
 
@@ -16,6 +24,7 @@ namespace LudusaviPlaynite
         private string game;
         private string path;
         private bool bySteamId;
+        private string backup;
 
         public Invocation(Mode mode)
         {
@@ -42,6 +51,12 @@ namespace LudusaviPlaynite
             return this;
         }
 
+        public Invocation Backup(string backup)
+        {
+            this.backup = backup;
+            return this;
+        }
+
         public string Render()
         {
             var rendered = "";
@@ -50,6 +65,9 @@ namespace LudusaviPlaynite
             {
                 case Mode.Backup:
                     rendered += "backup --merge --try-update";
+                    break;
+                case Mode.Backups:
+                    rendered += "backups";
                     break;
                 case Mode.Restore:
                     rendered += "restore --force";
@@ -66,6 +84,11 @@ namespace LudusaviPlaynite
             if (this.bySteamId)
             {
                 rendered += " --by-steam-id";
+            }
+
+            if (this.backup != null)
+            {
+                rendered += string.Format(" --backup \"{0}\"", this.backup);
             }
 
             if (this.game != null && this.game != "")
@@ -164,6 +187,14 @@ namespace LudusaviPlaynite
         public bool Failed;
     }
 
+    public struct ApiBackup
+    {
+        [JsonProperty("name")]
+        public string Name;
+        [JsonProperty("when")]
+        public DateTime When;
+    }
+
     public struct ApiGame
     {
         [JsonProperty("decision")]
@@ -172,6 +203,8 @@ namespace LudusaviPlaynite
         public Dictionary<string, ApiFile> Files;
         [JsonProperty("registry")]
         public Dictionary<string, ApiRegistry> Registry;
+        [JsonProperty("backups")]
+        public List<ApiBackup> Backups;
     }
 
     public struct ApiResponse
