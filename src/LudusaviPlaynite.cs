@@ -789,12 +789,12 @@ namespace LudusaviPlaynite
         {
             var prefs = GetPlayPreferences(game);
 
-            if (prefs.Game.Backup.Do && settings.DoBackupDuringPlay)
+            if (prefs.Game.Backup.Do && !prefs.Game.Backup.Ask && settings.DoBackupDuringPlay)
             {
                 Task.Run(() => BackUpOneGame(game, OperationTiming.DuringPlay));
             }
 
-            if (prefs.Platform.Backup.Do && settings.DoBackupDuringPlay)
+            if (prefs.Platform.Backup.Do && !prefs.Platform.Backup.Ask && settings.DoBackupDuringPlay)
             {
                 Task.Run(() => BackUpOneGame(game, OperationTiming.DuringPlay, new BackupCriteria { ByPlatform = true }));
             }
