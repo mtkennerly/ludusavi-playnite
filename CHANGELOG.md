@@ -1,4 +1,4 @@
-## Unreleased
+## v0.10.0 (2022-09-01)
 
 * Added:
   * Support for multiple backups per game. This requires Ludusavi 0.12.0 or newer.

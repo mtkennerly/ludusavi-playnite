@@ -1,11 +1,12 @@
 # Ludusavi for Playnite
-This repository contains a [Playnite 8+](https://playnite.link) plugin to
+This repository contains a [Playnite](https://playnite.link) plugin to
 back up your save data using [Ludusavi](https://github.com/mtkennerly/ludusavi).
 
 ## Features
-* Known save locations for more than 8,000 games.
+* Known save locations for more than 10,000 games.
 * On-demand backup and restore for all saves.
-* Automatically back up a game when you finish playing it.
+* Automatically back up a game when you finish playing it
+  and even periodically during play.
 
 The [info on what to back up](https://github.com/mtkennerly/ludusavi-manifest)
 is ultimately sourced from [PCGamingWiki](https://www.pcgamingwiki.com/wiki/Home),
@@ -18,8 +19,8 @@ If you'd like to help translate this plugin into other languages,
 ## Setup
 ### Ludusavi
 Refer to the [Ludusavi project](https://github.com/mtkennerly/ludusavi)
-for instructions on how to install Ludusavi itself. You'll need Ludusavi
-version 0.7.0 or newer, but 0.12.0+ is recommended to enable more features.
+for instructions on how to install Ludusavi itself. Ludusavi 0.12.0 or newer
+is recommended, but version 0.7.0 or newer will work (albeit without some features).
 
 By default, the plugin will look for the Ludusavi executable in your `PATH`
 environment variable, but you can also configure the plugin with the full
