@@ -4,6 +4,7 @@
   * Support for multiple backups per game. This requires Ludusavi 0.12.0 or newer.
     You can open Ludusavi to configure how many backups to keep.
     The feature will be disabled if an older version is detected.
+  * Support for automatic backups on an interval while playing a game.
 
 ## v0.9.0 (2022-08-13)
 

@@ -78,6 +78,14 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string AskPlatformBackupOnNonPcGameStopped_Label { get; set; }
 
+        public bool DoBackupDuringPlay { get; set; }
+        [JsonIgnore]
+        public string DoBackupDuringPlay_Label { get; set; }
+
+        public double BackupDuringPlayInterval { get; set; } = 30;
+        [JsonIgnore]
+        public string BackupDuringPlayInterval_Label { get; set; }
+
         public bool IgnoreBenignNotifications { get; set; } = false;
         [JsonIgnore]
         public string IgnoreBenignNotifications_Label { get; set; }
@@ -102,6 +110,8 @@ namespace LudusaviPlaynite
             DoPlatformRestoreOnNonPcGameStarting_Label = translator.DoPlatformRestoreOnNonPcGameStarting_Label();
             DoPlatformBackupOnNonPcGameStopped_Label = translator.DoPlatformBackupOnNonPcGameStopped_Label();
             AskPlatformBackupOnNonPcGameStopped_Label = translator.AskPlatformBackupOnNonPcGameStopped_Label();
+            DoBackupDuringPlay_Label = translator.DoBackupDuringPlay_Label();
+            BackupDuringPlayInterval_Label = translator.BackupDuringPlayInterval_Label();
             IgnoreBenignNotifications_Label = translator.IgnoreBenignNotifications_Label();
 
             // Injecting your plugin instance is required for Save/Load method because Playnite saves data to a location based on what plugin requested the operation.
@@ -130,6 +140,8 @@ namespace LudusaviPlaynite
                 DoPlatformRestoreOnNonPcGameStarting = savedSettings.DoPlatformRestoreOnNonPcGameStarting;
                 DoPlatformBackupOnNonPcGameStopped = savedSettings.DoPlatformBackupOnNonPcGameStopped;
                 AskPlatformBackupOnNonPcGameStopped = savedSettings.AskPlatformBackupOnNonPcGameStopped;
+                DoBackupDuringPlay = savedSettings.DoBackupDuringPlay;
+                BackupDuringPlayInterval = savedSettings.BackupDuringPlayInterval;
                 IgnoreBenignNotifications = savedSettings.IgnoreBenignNotifications;
             }
         }

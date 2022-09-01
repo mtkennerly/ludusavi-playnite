@@ -25,6 +25,8 @@ namespace LudusaviPlaynite
         readonly static string SIZE = "size";
         readonly static string STATUS = "status";
         readonly static string TAG = "tag";
+        readonly static string TOTAL_BACKUPS = "total-backups";
+        readonly static string FAILED_BACKUPS = "failed-backups";
 
         private FluentBundle bundle;
 
@@ -364,6 +366,29 @@ namespace LudusaviPlaynite
             );
         }
 
+        public string BackUpDuringPlay_Success(string game, int totalBackups)
+        {
+            return Translate(
+                "back-up-during-play-on-success",
+                new FluentArgs() {
+                    {GAME, (FluentString)game},
+                    {TOTAL_BACKUPS, (FluentNumber)totalBackups},
+                }
+            );
+        }
+
+        public string BackUpDuringPlay_Failure(string game, int totalBackups, int failedBackups)
+        {
+            return Translate(
+                "back-up-during-play-on-failure",
+                new FluentArgs() {
+                    {GAME, (FluentString)game},
+                    {TOTAL_BACKUPS, (FluentNumber)totalBackups},
+                    {FAILED_BACKUPS, (FluentNumber)failedBackups},
+                }
+            );
+        }
+
         public string RestoreOneGame_Success(OperationResult result)
         {
             return Translate(
@@ -490,6 +515,16 @@ namespace LudusaviPlaynite
         public string AskPlatformBackupOnNonPcGameStopped_Label()
         {
             return Translate("config-ask-platform-backup-on-non-pc-game-stopped");
+        }
+
+        public string DoBackupDuringPlay_Label()
+        {
+            return Translate("config-do-backup-during-play");
+        }
+
+        public string BackupDuringPlayInterval_Label()
+        {
+            return Translate("label-minutes");
         }
 
         public string IgnoreBenignNotifications_Label()

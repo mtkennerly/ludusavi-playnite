@@ -39,6 +39,9 @@ back-up-all-games = Back up save data for all games
     .on-success = Backed up saves for {$processed-games} games ({$processed-size}); click for full list
     .on-failure = Backed up saves for {$processed-games} of {$total-games} games ({$processed-size} of {$total-size}), but some failed; click for full list
 
+back-up-during-play-on-success = Triggered {$total-backups} backups while playing {$game}
+back-up-during-play-on-failure = Triggered {$total-backups} backups while playing {$game}, of which {$failed-backups} failed
+
 ## Restore
 
 restore-specific-game =
@@ -101,4 +104,7 @@ config-retry-non-pc-games-without-suffix = If not found with the suffix, then tr
 config-do-platform-backup-on-non-pc-game-stopped = Back up save data by platform name after playing non-PC games (requires custom entry)
 config-do-platform-restore-on-non-pc-game-starting = Also restore save data by platform name before playing non-PC games
 config-ask-platform-backup-on-non-pc-game-stopped = Ask first instead of doing it automatically
+config-do-backup-during-play = For games to back up after play, also back up during play (without asking) on an interval
 config-ignore-benign-notifications = Only show notifications on failure
+
+label-minutes = Minutes:

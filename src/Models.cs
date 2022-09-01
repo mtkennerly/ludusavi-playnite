@@ -145,6 +145,14 @@ namespace LudusaviPlaynite
         public bool ByPlatform;
     }
 
+    public enum OperationTiming
+    {
+        Free,
+        BeforePlay,
+        DuringPlay,
+        AfterPlay,
+    }
+
     public struct RestorationError
     {
         public string Message;
