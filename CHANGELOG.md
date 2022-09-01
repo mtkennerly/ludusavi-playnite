@@ -8,6 +8,7 @@
 * Fixed:
   * Disabled fallback restoration by Steam ID for Ludusavi versions older than
     0.12.0 to avoid a defect in those versions.
+  * The plugin settings window now has a horizontal scroll bar when necessary.
 
 ## v0.9.0 (2022-08-13)
 
