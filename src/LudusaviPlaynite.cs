@@ -64,6 +64,7 @@ namespace LudusaviPlaynite
         private Game lastGamePlayed { get; set; }
         private Version ludusaviVersion { get; set; }
         private bool supportsMultiBackup { get; set; }
+        private bool supportsRestoreBySteamId { get; set; }
         private Dictionary<string, List<ApiBackup>> backups { get; set; }
         private Timer duringPlayBackupTimer { get; set; }
         private int duringPlayBackupTotal { get; set; }
@@ -435,7 +436,12 @@ namespace LudusaviPlaynite
         public void RefreshLudusaviVersion()
         {
             this.ludusaviVersion = GetLudusaviVersion();
+
+            // This version introduced CLI support for multi-backup selection.
             this.supportsMultiBackup = this.ludusaviVersion >= new Version(0, 12, 0);
+
+            // This version fixed a defect when restoring by Steam ID.
+            this.supportsRestoreBySteamId = this.ludusaviVersion >= new Version(0, 12, 0);
         }
 
         public void RefreshLudusaviBackups()
@@ -825,7 +831,7 @@ namespace LudusaviPlaynite
             var (code, response) = InvokeLudusavi(invocation);
             if (!criteria.ByPlatform)
             {
-                if (response?.Errors.UnknownGames != null && IsOnSteam(game))
+                if (response?.Errors.UnknownGames != null && IsOnSteam(game) && this.supportsRestoreBySteamId)
                 {
                     (code, response) = InvokeLudusavi(invocation.SteamId(game.GameId));
                 }

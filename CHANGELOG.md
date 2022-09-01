@@ -5,6 +5,9 @@
     You can open Ludusavi to configure how many backups to keep.
     The feature will be disabled if an older version is detected.
   * Support for automatic backups on an interval while playing a game.
+* Fixed:
+  * Disabled fallback restoration by Steam ID for Ludusavi versions older than
+    0.12.0 to avoid a defect in those versions.
 
 ## v0.9.0 (2022-08-13)
 
