@@ -34,6 +34,8 @@ back-up-all-games = 为所有游戏备份存档
     .confirm = 要备份录读加一能找到的所有游戏的存档吗？
     .on-success = 已备份 { $processed-games } 游戏的存档（{ $processed-size }）；点击查看完整列表
     .on-failure = 已备份 { $total-games } 中的 { $processed-games } 游戏的存档（{ $total-size } 中的 { $processed-size }），但有些失败了；点击查看完整列表
+back-up-during-play-on-success = Triggered { $total-backups } backups while playing { $game }
+back-up-during-play-on-failure = Triggered { $total-backups } backups while playing { $game }, of which { $failed-backups } failed
 
 ## Restore
 
@@ -88,4 +90,6 @@ config-retry-non-pc-games-without-suffix = 若未找到后缀，则不带后缀�
 config-do-platform-backup-on-non-pc-game-stopped = 在游玩非 PC 游戏后按平台名称备份存档数据（需要自定义条目）
 config-do-platform-restore-on-non-pc-game-starting = 在游玩非 PC 游戏前同样按平台名称备份存档数据
 config-ask-platform-backup-on-non-pc-game-stopped = “先奏后斩”
+config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
 config-ignore-benign-notifications = 仅在失败时显示通知
+label-minutes = Minutes:

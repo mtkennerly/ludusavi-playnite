@@ -34,6 +34,8 @@ back-up-all-games = Stwórz kopię zapasową dla wszystkich gier
     .confirm = Stwórz kopię zapasową dla wszystkich gier, które może znaleźć Ludusavi?
     .on-success = Stworzono kopię zapasową dla { $processed-games } gier ({ $processed-size }); Naciśnij, aby pokazać całą listę
     .on-failure = Stworzono kopię zapasową dla { $processed-games } z { $total-games } gier ({ $processed-size } z { $total-size }), ale niektóre się nie powiodły; kliknij, aby pokazać pełną listę
+back-up-during-play-on-success = Triggered { $total-backups } backups while playing { $game }
+back-up-during-play-on-failure = Triggered { $total-backups } backups while playing { $game }, of which { $failed-backups } failed
 
 ## Restore
 
@@ -96,4 +98,6 @@ config-retry-non-pc-games-without-suffix = Jeśli nie znaleziono z sufiksem, spr
 config-do-platform-backup-on-non-pc-game-stopped = Kopia zapasowa danych po nazwie platformy po graniu w gry non-PC (wymaga wpisu niestandardowego)
 config-do-platform-restore-on-non-pc-game-starting = Przywróć również dane po nazwie platformy przed graniem w gry non-PC
 config-ask-platform-backup-on-non-pc-game-stopped = Zapytaj, zamiast tego automatycznie
+config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
 config-ignore-benign-notifications = Pokaż powiadomienia tylko przy niepowodzeniu
+label-minutes = Minutes:
