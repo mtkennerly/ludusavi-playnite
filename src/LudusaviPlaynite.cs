@@ -501,7 +501,7 @@ namespace LudusaviPlaynite
             }
             else
             {
-                NotifyInfo(message);
+                NotifyError(message);
             }
         }
 

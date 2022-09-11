@@ -1,3 +1,8 @@
+## Unreleased
+
+* Fixed:
+  * Some errors were logged at info level.
+
 ## v0.10.0 (2022-09-01)
 
 * Added:
