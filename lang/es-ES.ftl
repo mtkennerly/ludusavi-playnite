@@ -34,8 +34,8 @@ back-up-all-games = Respaldar datos guardados para todos los juegos
     .confirm = ¿Respaldar datos guardados para todos los juegos que Ludusavi puede encontrar?
     .on-success = Se respaldaron datos de guardado de { $processed-games } juegos ({ $processed-size }); clic para lista completa
     .on-failure = Se respaldaron datos de guardado de { $processed-games } de { $total-games } juegos ({ $processed-size } de { $total-size }), pero algunos fallaron; haz clic para la lista completa
-back-up-during-play-on-success = Triggered { $total-backups } backups while playing { $game }
-back-up-during-play-on-failure = Triggered { $total-backups } backups while playing { $game }, of which { $failed-backups } failed
+back-up-during-play-on-success = Se han activado { $total-backups } copias de seguridad mientras se jugaba { $game }
+back-up-during-play-on-failure = Se han activado { $total-backups } copias de seguridad mientras se jugaba { $game }, de las cuales { $failed-backups } han fallado
 
 ## Restore
 
@@ -98,6 +98,6 @@ config-retry-non-pc-games-without-suffix = Si no se encuentra con el sufijo, ent
 config-do-platform-backup-on-non-pc-game-stopped = Respaldar datos guardados por nombre de plataforma después de jugar juegos que no sean de PC (requiere entrada personalizada)
 config-do-platform-restore-on-non-pc-game-starting = Restaurar también los datos guardados por nombre de plataforma antes de jugar partidas que no sean de PC
 config-ask-platform-backup-on-non-pc-game-stopped = Preguntar primero en lugar de hacerlo automáticamente
-config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
+config-do-backup-during-play = Respaldar juegos en un intervalo mientras se juega, si también serían respaldadas después del juego sin preguntar
 config-ignore-benign-notifications = Mostrar sólo notificaciones por fallo
-label-minutes = Minutes:
+label-minutes = Minutos:

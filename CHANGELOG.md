@@ -1,5 +1,8 @@
-## Unreleased
+## v0.10.1 (2022-09-11)
 
+* Added:
+  * Updated translations.
+    (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
 * Fixed:
   * Some errors were logged at info level.
 
