@@ -1,3 +1,9 @@
+## Unreleased
+
+* Fixed:
+  * The extension's context menu section did not appear when selecting a single game
+    if the installed Ludusavi version did not support multi-backup.
+
 ## v0.10.1 (2022-09-11)
 
 * Added:

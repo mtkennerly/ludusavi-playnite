@@ -62,10 +62,10 @@ namespace LudusaviPlaynite
         private bool pendingOperation { get; set; }
         private bool playedSomething { get; set; }
         private Game lastGamePlayed { get; set; }
-        private Version ludusaviVersion { get; set; }
+        private Version ludusaviVersion { get; set; } = new Version(0, 0, 0);
         private bool supportsMultiBackup { get; set; }
         private bool supportsRestoreBySteamId { get; set; }
-        private Dictionary<string, List<ApiBackup>> backups { get; set; }
+        private Dictionary<string, List<ApiBackup>> backups { get; set; } = new Dictionary<string, List<ApiBackup>>();
         private Timer duringPlayBackupTimer { get; set; }
         private int duringPlayBackupTotal { get; set; }
         private int duringPlayBackupFailed { get; set; }
