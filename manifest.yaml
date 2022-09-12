@@ -1,5 +1,13 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.10.2
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2022-09-12
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.10.2/ludusavi-playnite-v0.10.2.pext
+    Changelog:
+      - >-
+        Fixed: The extension's context menu section did not appear when selecting a single game
+        if the installed Ludusavi version did not support multi-backup.
   - Version: 0.10.1
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2022-09-11

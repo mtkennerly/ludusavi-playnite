@@ -1,4 +1,4 @@
-## Unreleased
+## v0.10.2 (2022-09-12)
 
 * Fixed:
   * The extension's context menu section did not appear when selecting a single game
