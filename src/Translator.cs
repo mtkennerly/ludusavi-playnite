@@ -19,11 +19,8 @@ namespace LudusaviPlaynite
         readonly static string GAME = "game";
         readonly static string PROCESSED_GAMES = "processed-games";
         readonly static string PROCESSED_SIZE = "processed-size";
-        readonly static string TOTAL_CUSTOM_GAMES = "total-custom-games";
         readonly static string TOTAL_GAMES = "total-games";
         readonly static string TOTAL_SIZE = "total-size";
-        readonly static string SIZE = "size";
-        readonly static string STATUS = "status";
         readonly static string TAG = "tag";
         readonly static string TOTAL_BACKUPS = "total-backups";
         readonly static string FAILED_BACKUPS = "failed-backups";
@@ -143,16 +140,34 @@ namespace LudusaviPlaynite
             return Translate("back-up-last-game");
         }
 
+        private string NeedsCustomEntry(int totalGames)
+        {
+            return Translate(
+                "needs-custom-entry",
+                new FluentArgs() {
+                    { TOTAL_GAMES, (FluentNumber)totalGames },
+                }
+            );
+        }
+
+        private string NeedsCustomEntry_Appended(bool needed)
+        {
+            return needed ? " " + NeedsCustomEntry(1) : "";
+        }
+
+        private string NeedsCustomEntry_Appended(List<(string, bool)> games)
+        {
+            return TotalCustomGames(games) > 0 ? " " + NeedsCustomEntry(games.Count) : "";
+        }
+
         public string BackUpOneGame_Confirm(string gameName, bool needsCustomEntry)
         {
             return Translate(
                 "back-up-specific-game.confirm",
                 new FluentArgs() {
                     {GAME, (FluentString)gameName},
-                    {TOTAL_GAMES, (FluentNumber)1},
-                    {TOTAL_CUSTOM_GAMES, (FluentNumber)TotalCustomGames(needsCustomEntry)},
                 }
-            );
+            ) + NeedsCustomEntry_Appended(needsCustomEntry);
         }
 
         public string BackUpAllGames_Label()
@@ -194,9 +209,8 @@ namespace LudusaviPlaynite
                 "back-up-selected-games.confirm",
                 new FluentArgs() {
                     {TOTAL_GAMES, (FluentNumber)count},
-                    {TOTAL_CUSTOM_GAMES, (FluentNumber)TotalCustomGames(games)},
                 }
-            ) + formattedNames;
+            ) + NeedsCustomEntry_Appended(games) + formattedNames;
         }
 
         public string RestoreLastGame_Label()
@@ -210,10 +224,8 @@ namespace LudusaviPlaynite
                 "restore-specific-game.confirm",
                 new FluentArgs() {
                     {GAME, (FluentString)gameName},
-                    {TOTAL_GAMES, (FluentNumber)1},
-                    {TOTAL_CUSTOM_GAMES, (FluentNumber)TotalCustomGames(needsCustomEntry)},
                 }
-            );
+            ) + NeedsCustomEntry_Appended(needsCustomEntry);
         }
 
         public string RestoreAllGames_Label()
@@ -245,9 +257,8 @@ namespace LudusaviPlaynite
                 "restore-selected-games.confirm",
                 new FluentArgs() {
                     {TOTAL_GAMES, (FluentNumber)count},
-                    {TOTAL_CUSTOM_GAMES, (FluentNumber)TotalCustomGames(games)},
                 }
-            ) + formattedNames;
+            ) + NeedsCustomEntry_Appended(games) + formattedNames;
         }
 
         public string AddTagForSelectedGames_Label(string tag)
@@ -452,14 +463,18 @@ namespace LudusaviPlaynite
             var failed = game.Files.Any(x => x.Value.Failed) || game.Registry.Any(x => x.Value.Failed);
             var status = failed ? "failed" : (game.Decision == "Ignored" ? "ignored" : "success");
 
-            return Translate(
-                "full-list-game-line-item",
-                new FluentArgs() {
-                    {STATUS, (FluentString)status},
-                    {GAME, (FluentString)name},
-                    {SIZE, (FluentString)size},
-                }
-            );
+            if (failed)
+            {
+                return string.Format("[{0}] {1} ({2})", Translate("badge-failed"), name, size);
+            }
+            else if (game.Decision == "Ignored")
+            {
+                return string.Format("[{0}] {1} ({2})", Translate("badge-ignored"), name, size);
+            }
+            else
+            {
+                return string.Format("{0} ({1})", name, size);
+            }
         }
 
         public string ExecutablePath_Label()

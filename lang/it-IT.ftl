@@ -7,20 +7,18 @@ button-yes-remembered = Sì, sempre
 button-no = No
 button-no-remembered = No, mai
 label-launch = Avvia
-may-need-custom-entry =
-    { $total-custom-games ->
-        [0] { "" }
-       *[other]
-            { $total-games ->
-                [one] Questo gioco richiede
-               *[other] Alcuni giochi richiedono
-            } una voce personalizzata corrispondente in { ludusavi }.
-    }
+badge-failed = FALLITO
+badge-ignored = IGNORATO
+needs-custom-entry =
+    { $total-games ->
+        [one] Questo gioco richiede
+        *[other] Alcuni giochi richiedono
+    } una voce personalizzata corrispondente in { ludusavi }.
 
 ## Backup
 
 back-up-specific-game =
-    .confirm = Backup dei dati di salvataggio per { $game }? { may-need-custom-entry }
+    .confirm = Backup dei dati di salvataggio per { $game }?
     .on-success = Salvataggi salvati per { $game } ({ $processed-size })
     .on-empty = Nessun dato di salvataggio trovato per il backup di { $game }
     .on-failure = Salvataggi salvati per { $game } ({ $processed-size } di { $total-size }), ma alcuni salvataggi non sono riusciti
@@ -29,7 +27,7 @@ back-up-last-game = Backup dati di salvataggio per l'ultimo gioco giocato
 # Defers to `back-up-specific-game.*` for each game individually.
 # In `.confirm`, there will always be more than one game.
 back-up-selected-games = Backup dei dati di salvataggio per i giochi selezionati
-    .confirm = Backup dei dati di salvataggio per { $total-games } giochi selezionati? { may-need-custom-entry }
+    .confirm = Backup dei dati di salvataggio per { $total-games } giochi selezionati?
 back-up-all-games = Backup dei dati di salvataggio per tutti i giochi
     .confirm = Backup dei dati di salvataggio per tutti i giochi che Ludusavi può trovare?
     .on-success = Salvataggi salvati per { $processed-games } giochi ({ $processed-size }); clicca per la lista completa
@@ -40,7 +38,7 @@ back-up-during-play-on-failure = Attivato { $total-backups } backup durante la r
 ## Restore
 
 restore-specific-game =
-    .confirm = Ripristina i dati di salvataggio per { $game }? { may-need-custom-entry }
+    .confirm = Ripristina i dati di salvataggio per { $game }?
     .on-success = Salvataggi ripristinati per { $game } ({ $processed-size })
     .on-empty = Nessun salvataggio trovato da ripristinare per { $game }
     .on-failure = Salvataggi ripristinati per { $game } ({ $processed-size } di { $total-size }), ma alcuni salvataggi sono falliti
@@ -49,7 +47,7 @@ restore-last-game = Ripristina salvataggi dell'ultimo gioco giocato
 # Defers to `restore-specific-game.*` for each game individually.
 # In `.confirm`, there will always be more than one game.
 restore-selected-games = Ripristina salvataggi per i giochi selezionati
-    .confirm = Ripristina i dati di salvataggio per { $total-games } giochi selezionati? { may-need-custom-entry }
+    .confirm = Ripristina i dati di salvataggio per { $total-games } giochi selezionati?
 restore-all-games = Ripristina i dati di salvataggio per tutti i giochi
     .confirm = Ripristinare il salvataggio dei dati per tutti i giochi che Ludusavi riesce a trovare?
     .on-success = Salvataggi ripristinati per { $processed-games } giochi ({ $processed-size }); clicca per la lista completa
@@ -75,15 +73,6 @@ remove-tag-for-selected-games = Tag: "{ $tag }" - Rimuovi per i giochi seleziona
 operation-still-pending = { ludusavi } sta ancora lavorando su una richiesta precedente. Si prega di riprovare quando vedi la notifica che è finita.
 no-game-played-yet = Non hai ancora giocato nulla in questa sessione.
 unable-to-run-ludusavi = Impossibile avviare { ludusavi }.
-
-## Full backup/restore error reporting
-
-full-list-game-line-item =
-    { $status ->
-        [failed] [FALLITO] { $game } ({ $size })
-        [ignored] [IGNORATO] { $game } ({ $size })
-       *[success] { $game } ({ $size })
-    }
 
 ## Settings
 

@@ -10,18 +10,18 @@ button-no-remembered = No, never
 
 label-launch = Launch
 
-may-need-custom-entry = {$total-custom-games ->
-    [0] {""}
-    *[other] {$total-games ->
-        [one] This game requires
-        *[other] Some games require
-    } a matching custom entry in {ludusavi}.
-}
+badge-failed = FAILED
+badge-ignored = IGNORED
+
+needs-custom-entry = {$total-games ->
+    [one] This game requires
+    *[other] Some games require
+} a matching custom entry in {ludusavi}.
 
 ## Backup
 
 back-up-specific-game =
-    .confirm = Back up save data for {$game}? {may-need-custom-entry}
+    .confirm = Back up save data for {$game}?
     .on-success = Backed up saves for {$game} ({$processed-size})
     .on-empty = No save data found to back up for {$game}
     .on-failure = Backed up saves for {$game} ({$processed-size} of {$total-size}), but some saves failed
@@ -32,7 +32,7 @@ back-up-last-game = Back up save data for last game played
 # Defers to `back-up-specific-game.*` for each game individually.
 # In `.confirm`, there will always be more than one game.
 back-up-selected-games = Back up save data for selected games
-    .confirm = Back up save data for {$total-games} selected games? {may-need-custom-entry}
+    .confirm = Back up save data for {$total-games} selected games?
 
 back-up-all-games = Back up save data for all games
     .confirm = Back up save data for all games that Ludusavi can find?
@@ -45,7 +45,7 @@ back-up-during-play-on-failure = Triggered {$total-backups} backups while playin
 ## Restore
 
 restore-specific-game =
-    .confirm = Restore save data for {$game}? {may-need-custom-entry}
+    .confirm = Restore save data for {$game}?
     .on-success = Restored saves for {$game} ({$processed-size})
     .on-empty = No save data found to restore for {$game}
     .on-failure = Restored saves for {$game} ({$processed-size} of {$total-size}), but some saves failed
@@ -56,7 +56,7 @@ restore-last-game = Restore save data for last game played
 # Defers to `restore-specific-game.*` for each game individually.
 # In `.confirm`, there will always be more than one game.
 restore-selected-games = Restore save data for selected games
-    .confirm = Restore save data for {$total-games} selected games? {may-need-custom-entry}
+    .confirm = Restore save data for {$total-games} selected games?
 
 restore-all-games = Restore save data for all games
     .confirm = Restore save data for all games that Ludusavi can find?
@@ -82,14 +82,6 @@ remove-tag-for-selected-games = Tag: "{$tag}" - Remove for selected games
 operation-still-pending = {ludusavi} is still working on a previous request. Please try again when you see the notification that it's done.
 no-game-played-yet = You haven't played anything yet in this session.
 unable-to-run-ludusavi = Unable to run {ludusavi}.
-
-## Full backup/restore error reporting
-
-full-list-game-line-item = {$status ->
-    [failed] [FAILED] {$game} ({$size})
-    [ignored] [IGNORED] {$game} ({$size})
-    *[success] {$game} ({$size})
-}
 
 ## Settings
 

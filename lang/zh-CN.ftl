@@ -7,20 +7,18 @@ button-yes-remembered = 是，总是
 button-no = 否
 button-no-remembered = 否，永不
 label-launch = 启动
-may-need-custom-entry =
-    { $total-custom-games ->
-        [0] { "" }
-       *[other]
-            { $total-games ->
-                [one] 该游戏需要的
-               *[other] 某些游戏需要的
-            } 某个匹配的自定义条目于 { ludusavi }.
-    }
+badge-failed = 已失败
+badge-ignored = 已忽略
+needs-custom-entry =
+    { $total-games ->
+         [one] 该游戏需要的
+        *[other] 某些游戏需要的
+    } 某个匹配的自定义条目于 { ludusavi }.
 
 ## Backup
 
 back-up-specific-game =
-    .confirm = 要备份 { $game } 的存档数据吗？ { may-need-custom-entry }
+    .confirm = 要备份 { $game } 的存档数据吗？
     .on-success = 已备份 { $game } 的存档数据。（{ $processed-size }）
     .on-empty = 没有找到可以备份的 { $game } 的存档数据
     .on-failure = 已备份 { $game } 的存档（{ $total-size } 中的 { $processed-size }），但有些存档失败了
@@ -29,7 +27,7 @@ back-up-last-game = 为最近游玩的游戏备份存档
 # Defers to `back-up-specific-game.*` for each game individually.
 # In `.confirm`, there will always be more than one game.
 back-up-selected-games = 为所选游戏备份存档
-    .confirm = 要备份 { $total-games } 所选游戏的存档数据吗？ { may-need-custom-entry }
+    .confirm = 要备份 { $total-games } 所选游戏的存档数据吗？
 back-up-all-games = 为所有游戏备份存档
     .confirm = 要备份录读加一能找到的所有游戏的存档吗？
     .on-success = 已备份 { $processed-games } 游戏的存档（{ $processed-size }）；点击查看完整列表
@@ -40,7 +38,7 @@ back-up-during-play-on-failure = Triggered { $total-backups } backups while play
 ## Restore
 
 restore-specific-game =
-    .confirm = 要恢复 { $game } 的存档数据吗？ { may-need-custom-entry }
+    .confirm = 要恢复 { $game } 的存档数据吗？
     .on-success = 已恢复 { $game } 的存档数据。（{ $processed-size }）
     .on-empty = 没有找到可以恢复的 { $game } 的存档数据
     .on-failure = 已恢复 { $game } 的存档（{ $total-size } 中的 { $processed-size }），但有些存档失败了
@@ -49,7 +47,7 @@ restore-last-game = 为最近游玩的游戏恢复存档
 # Defers to `restore-specific-game.*` for each game individually.
 # In `.confirm`, there will always be more than one game.
 restore-selected-games = 为所选游戏恢复存档
-    .confirm = 要恢复 { $total-games } 所选游戏的存档数据吗？ { may-need-custom-entry }
+    .confirm = 要恢复 { $total-games } 所选游戏的存档数据吗？
 restore-all-games = 为所有游戏恢复存档
     .confirm = 要恢复录读加一能找到的所有游戏的存档吗？
     .on-success = 已恢复 { $processed-games } 游戏的存档（{ $processed-size }）；点击查看完整列表
@@ -67,15 +65,6 @@ remove-tag-for-selected-games = 标签："{ $tag }" - 从所选游戏移除
 operation-still-pending = { ludusavi } 仍在处理前一请求。请在看到它已完成的通知后再试。
 no-game-played-yet = 您还未在此次会话中玩任何东西。
 unable-to-run-ludusavi = 无法运行 { ludusavi }。
-
-## Full backup/restore error reporting
-
-full-list-game-line-item =
-    { $status ->
-        [failed] [已失败] { $game } ({ $size })
-        [ignored] [已忽略] { $game } ({ $size })
-       *[success] { $game } ({ $size })
-    }
 
 ## Settings
 
