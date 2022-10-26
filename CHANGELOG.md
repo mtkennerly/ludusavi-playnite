@@ -1,3 +1,8 @@
+## Unreleased
+
+* Changed:
+  * For compatibility with Ludusavi v0.14.0, the plugin now passes `--force` to the backup command.
+
 ## v0.10.2 (2022-09-12)
 
 * Fixed:

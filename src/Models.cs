@@ -64,7 +64,7 @@ namespace LudusaviPlaynite
             switch (this.mode)
             {
                 case Mode.Backup:
-                    rendered += "backup --merge --try-update";
+                    rendered += "backup --force --merge --try-update";
                     break;
                 case Mode.Backups:
                     rendered += "backups";
