@@ -177,6 +177,18 @@ namespace LudusaviPlaynite
         public int ProcessedGames;
         [JsonProperty("processedBytes")]
         public ulong ProcessedBytes;
+        [JsonProperty("changedGames")]
+        public ApiChangeCount? ChangedGames;
+    }
+
+    public struct ApiChangeCount
+    {
+        [JsonProperty("new")]
+        public int New;
+        [JsonProperty("different")]
+        public ulong Different;
+        [JsonProperty("same")]
+        public int Same;
     }
 
     public struct ApiFile
@@ -185,8 +197,8 @@ namespace LudusaviPlaynite
         public bool Failed;
         [JsonProperty("bytes")]
         public ulong Bytes;
-        [JsonProperty("originalPath")]
-        public string OriginalPath;
+        [JsonProperty("change")]
+        public string Change;
     }
 
     public struct ApiRegistry
@@ -207,6 +219,8 @@ namespace LudusaviPlaynite
     {
         [JsonProperty("decision")]
         public string Decision;
+        [JsonProperty("change")]
+        public string Change;
         [JsonProperty("files")]
         public Dictionary<string, ApiFile> Files;
         [JsonProperty("registry")]

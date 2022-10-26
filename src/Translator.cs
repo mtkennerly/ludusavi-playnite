@@ -160,6 +160,13 @@ namespace LudusaviPlaynite
             return TotalCustomGames(games) > 0 ? " " + NeedsCustomEntry(games.Count) : "";
         }
 
+        private string ChangeSummary(OperationResult result)
+        {
+            var totalNew = result.Response.Overall.ChangedGames?.New ?? 0;
+            var totalDiff = result.Response.Overall.ChangedGames?.Different ?? 0;
+            return $" [+{totalNew}, Δ{totalDiff}]";
+        }
+
         public string BackUpOneGame_Confirm(string gameName, bool needsCustomEntry)
         {
             return Translate(
@@ -331,6 +338,16 @@ namespace LudusaviPlaynite
             );
         }
 
+        public string BackUpOneGame_Unchanged(OperationResult result)
+        {
+            return Translate(
+                "back-up-specific-game.on-unchanged",
+                new FluentArgs() {
+                    {GAME, (FluentString)result.Name},
+                }
+            );
+        }
+
         public string BackUpOneGame_Empty(OperationResult result)
         {
             return Translate(
@@ -361,7 +378,7 @@ namespace LudusaviPlaynite
                     {PROCESSED_GAMES, (FluentNumber)result.Response.Overall.ProcessedGames},
                     {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)},
                 }
-            );
+            ) + ChangeSummary(result);
         }
 
         public string BackUpAllGames_Failure(OperationResult result)
@@ -374,7 +391,7 @@ namespace LudusaviPlaynite
                     {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)},
                     {TOTAL_SIZE, (FluentString)AdjustedSize(result.Response.Overall.TotalBytes)},
                 }
-            );
+            ) + ChangeSummary(result);
         }
 
         public string BackUpDuringPlay_Success(string game, int totalBackups)
@@ -411,6 +428,16 @@ namespace LudusaviPlaynite
             );
         }
 
+        public string RestoreOneGame_Unchanged(OperationResult result)
+        {
+            return Translate(
+                "restore-specific-game.on-unchanged",
+                new FluentArgs() {
+                    {GAME, (FluentString)result.Name},
+                }
+            );
+        }
+
         public string RestoreOneGame_Empty(OperationResult result)
         {
             return Translate(
@@ -441,7 +468,7 @@ namespace LudusaviPlaynite
                     {PROCESSED_GAMES, (FluentNumber)result.Response.Overall.ProcessedGames},
                     {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)},
                 }
-            );
+            ) + ChangeSummary(result);
         }
 
         public string RestoreAllGames_Failure(OperationResult result)
@@ -454,7 +481,7 @@ namespace LudusaviPlaynite
                     {PROCESSED_SIZE, (FluentString)AdjustedSize(result.Response.Overall.ProcessedBytes)},
                     {TOTAL_SIZE, (FluentString)AdjustedSize(result.Response.Overall.TotalBytes)},
                 }
-            );
+            ) + ChangeSummary(result);
         }
 
         public string FullListGameLineItem(string name, ApiGame game)
@@ -463,18 +490,30 @@ namespace LudusaviPlaynite
             var failed = game.Files.Any(x => x.Value.Failed) || game.Registry.Any(x => x.Value.Failed);
             var status = failed ? "failed" : (game.Decision == "Ignored" ? "ignored" : "success");
 
+            var parts = new List<string>();
+
+            if (game.Change == "New")
+            {
+                parts.Add("[+]");
+            }
+            else if (game.Change == "Different")
+            {
+                parts.Add("[Δ]");
+            }
+
             if (failed)
             {
-                return string.Format("[{0}] {1} ({2})", Translate("badge-failed"), name, size);
+                parts.Add(string.Format("[{0}]", Translate("badge-failed")));
             }
             else if (game.Decision == "Ignored")
             {
-                return string.Format("[{0}] {1} ({2})", Translate("badge-ignored"), name, size);
+                parts.Add(string.Format("[{0}]", Translate("badge-ignored")));
             }
-            else
-            {
-                return string.Format("{0} ({1})", name, size);
-            }
+
+            parts.Add(name);
+            parts.Add(string.Format("({0})", size));
+
+            return string.Join(" ", parts);
         }
 
         public string ExecutablePath_Label()

@@ -1,7 +1,11 @@
 ## Unreleased
 
+* Added:
+  * The plugin now indicates when there was nothing new to back up or restore.
+    When doing a full scan, the expanded list also indicates new (+) or updated (Δ) for each game.
+    This requires Ludusavi 0.14.0 or newer.
 * Changed:
-  * For compatibility with Ludusavi v0.14.0, the plugin now passes `--force` to the backup command.
+  * For compatibility with Ludusavi 0.14.0, the plugin now passes `--force` to the backup command.
 
 ## v0.10.2 (2022-09-12)
 

@@ -23,6 +23,7 @@ needs-custom-entry = {$total-games ->
 back-up-specific-game =
     .confirm = Back up save data for {$game}?
     .on-success = Backed up saves for {$game} ({$processed-size})
+    .on-unchanged = Nothing new to back up for {$game}
     .on-empty = No save data found to back up for {$game}
     .on-failure = Backed up saves for {$game} ({$processed-size} of {$total-size}), but some saves failed
 
@@ -47,6 +48,7 @@ back-up-during-play-on-failure = Triggered {$total-backups} backups while playin
 restore-specific-game =
     .confirm = Restore save data for {$game}?
     .on-success = Restored saves for {$game} ({$processed-size})
+    .on-unchanged = Nothing new to restore for {$game}
     .on-empty = No save data found to restore for {$game}
     .on-failure = Restored saves for {$game} ({$processed-size} of {$total-size}), but some saves failed
 
