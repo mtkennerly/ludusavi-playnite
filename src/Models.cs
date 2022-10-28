@@ -159,6 +159,26 @@ namespace LudusaviPlaynite
         public bool Empty;
     }
 
+    public class LudusaviVersion
+    {
+        public Version version;
+
+        public LudusaviVersion(Version version)
+        {
+            this.version = version;
+        }
+
+        public bool supportsMultiBackup()
+        {
+            return this.version >= new Version(0, 12, 0);
+        }
+
+        public bool supportsRestoreBySteamId()
+        {
+            return this.version >= new Version(0, 12, 0);
+        }
+    }
+
     public struct ApiErrors
     {
         [JsonProperty("someGamesFailed")]

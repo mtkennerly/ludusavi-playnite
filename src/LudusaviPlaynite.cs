@@ -62,9 +62,7 @@ namespace LudusaviPlaynite
         private bool pendingOperation { get; set; }
         private bool playedSomething { get; set; }
         private Game lastGamePlayed { get; set; }
-        private Version ludusaviVersion { get; set; } = new Version(0, 0, 0);
-        private bool supportsMultiBackup { get; set; }
-        private bool supportsRestoreBySteamId { get; set; }
+        private LudusaviVersion appVersion { get; set; } = new LudusaviVersion(new Version(0, 0, 0));
         private Dictionary<string, List<ApiBackup>> backups { get; set; } = new Dictionary<string, List<ApiBackup>>();
         private Timer duringPlayBackupTimer { get; set; }
         private int duringPlayBackupTotal { get; set; }
@@ -435,18 +433,12 @@ namespace LudusaviPlaynite
 
         public void RefreshLudusaviVersion()
         {
-            this.ludusaviVersion = GetLudusaviVersion();
-
-            // This version introduced CLI support for multi-backup selection.
-            this.supportsMultiBackup = this.ludusaviVersion >= new Version(0, 12, 0);
-
-            // This version fixed a defect when restoring by Steam ID.
-            this.supportsRestoreBySteamId = this.ludusaviVersion >= new Version(0, 12, 0);
+            this.appVersion = new LudusaviVersion(GetLudusaviVersion());
         }
 
         public void RefreshLudusaviBackups()
         {
-            if (this.supportsMultiBackup)
+            if (this.appVersion.supportsMultiBackup())
             {
                 var (code, response) = InvokeLudusavi(new Invocation(Mode.Backups).Path(settings.BackupPath));
                 if (response?.Games != null)
@@ -838,7 +830,7 @@ namespace LudusaviPlaynite
             var (code, response) = InvokeLudusavi(invocation);
             if (!criteria.ByPlatform)
             {
-                if (response?.Errors.UnknownGames != null && IsOnSteam(game) && this.supportsRestoreBySteamId)
+                if (response?.Errors.UnknownGames != null && IsOnSteam(game) && this.appVersion.supportsRestoreBySteamId())
                 {
                     (code, response) = InvokeLudusavi(invocation.SteamId(game.GameId));
                 }
