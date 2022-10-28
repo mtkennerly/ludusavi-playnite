@@ -28,6 +28,7 @@ namespace LudusaviPlaynite
         private int? steamId;
         private string backup;
         private bool findBackup;
+        private bool normalized;
 
         public Invocation(Mode mode)
         {
@@ -82,6 +83,12 @@ namespace LudusaviPlaynite
             return this;
         }
 
+        public Invocation Normalized()
+        {
+            this.normalized = true;
+            return this;
+        }
+
         public string Render()
         {
             var rendered = "";
@@ -127,6 +134,11 @@ namespace LudusaviPlaynite
             if (this.findBackup)
             {
                 rendered += " --backup";
+            }
+
+            if (this.normalized)
+            {
+                rendered += " --normalized";
             }
 
             if (this.games.Count > 0)

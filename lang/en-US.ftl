@@ -93,6 +93,7 @@ config-do-backup-on-game-stopped = Back up save data for a game after playing it
 config-do-restore-on-game-starting = Also restore save data for a game before playing it
 config-ask-backup-on-game-stopped = Ask first instead of doing it automatically
 config-only-backup-on-game-stopped-if-pc = Only do this for PC games
+config-retry-unrecognized-game-with-normalization = If not found, retry by normalizing the title
 config-add-suffix-for-non-pc-game-names = Look up non-PC games by adding this suffix to their names (requires custom entry):
 config-retry-non-pc-games-without-suffix = If not found with the suffix, then try again without it
 config-do-platform-backup-on-non-pc-game-stopped = Back up save data by platform name after playing non-PC games (requires custom entry)

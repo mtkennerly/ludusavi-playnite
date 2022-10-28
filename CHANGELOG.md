@@ -8,8 +8,14 @@
     the plugin now indicates when Ludusavi knows it by a different name.
     Example: `Backed up saves for Playnite Title (↪ Ludusavi Title)`.
     This is enabled if you have Ludusavi 0.14.0 or newer.
-  * Support for Ludusavi 0.14.0's `find` command.
+  * An option to look up games by a normalization of their titles.
+    For example, this means the plugin can retry "Some Game: Special Edition (2022)" as just "Some Game"
+    if Ludusavi didn't recognize the original title.
+    If the normalized title produces multiple matches, the plugin chooses the first one.
+    This is enabled if you have Ludusavi 0.14.0 or newer.
 * Changed:
+  * When Ludusavi 0.14.0 or newer is installed, the plugin now uses the `find` command to look up games.
+    As a side effect, a game's Steam ID (if applicable) is now checked before its title rather than after.
   * For compatibility with Ludusavi 0.14.0, the plugin now passes `--force` to the backup command.
     This remains compatible with older versions as well.
 

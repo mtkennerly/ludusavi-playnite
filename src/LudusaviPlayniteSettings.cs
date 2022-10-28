@@ -56,6 +56,10 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string OnlyBackupOnGameStoppedIfPc_Label { get; set; }
 
+        public bool RetryUnrecognizedGameWithNormalization { get; set; } = false;
+        [JsonIgnore]
+        public string RetryUnrecognizedGameWithNormalization_Label { get; set; }
+
         public bool AddSuffixForNonPcGameNames { get; set; } = false;
         [JsonIgnore]
         public string AddSuffixForNonPcGameNames_Label { get; set; }
@@ -105,6 +109,7 @@ namespace LudusaviPlaynite
             DoBackupOnGameStopped_Label = translator.DoBackupOnGameStopped_Label();
             AskBackupOnGameStopped_Label = translator.AskBackupOnGameStopped_Label();
             OnlyBackupOnGameStoppedIfPc_Label = translator.OnlyBackupOnGameStoppedIfPc_Label();
+            RetryUnrecognizedGameWithNormalization_Label = translator.RetryUnrecognizedGameWithNormalization_Label();
             AddSuffixForNonPcGameNames_Label = translator.AddSuffixForNonPcGameNames_Label();
             RetryNonPcGamesWithoutSuffix_Label = translator.RetryNonPcGamesWithoutSuffix_Label();
             DoPlatformRestoreOnNonPcGameStarting_Label = translator.DoPlatformRestoreOnNonPcGameStarting_Label();
@@ -134,6 +139,7 @@ namespace LudusaviPlaynite
                 DoRestoreOnGameStarting = savedSettings.DoRestoreOnGameStarting;
                 AskBackupOnGameStopped = savedSettings.AskBackupOnGameStopped;
                 OnlyBackupOnGameStoppedIfPc = savedSettings.OnlyBackupOnGameStoppedIfPc;
+                RetryUnrecognizedGameWithNormalization = savedSettings.RetryUnrecognizedGameWithNormalization;
                 AddSuffixForNonPcGameNames = savedSettings.AddSuffixForNonPcGameNames;
                 SuffixForNonPcGameNames = savedSettings.SuffixForNonPcGameNames;
                 RetryNonPcGamesWithoutSuffix = savedSettings.RetryNonPcGamesWithoutSuffix;

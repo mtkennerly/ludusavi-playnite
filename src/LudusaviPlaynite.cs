@@ -718,6 +718,10 @@ namespace LudusaviPlaynite
                 {
                     invocation.AddGame(game.Name);
                 }
+                if (settings.RetryUnrecognizedGameWithNormalization)
+                {
+                    invocation.Normalized();
+                }
             }
 
             var (code, response) = InvokeLudusavi(invocation);

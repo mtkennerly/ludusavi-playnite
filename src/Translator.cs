@@ -556,6 +556,11 @@ namespace LudusaviPlaynite
             return Translate("config-only-backup-on-game-stopped-if-pc");
         }
 
+        public string RetryUnrecognizedGameWithNormalization_Label()
+        {
+            return Translate("config-retry-unrecognized-game-with-normalization");
+        }
+
         public string AddSuffixForNonPcGameNames_Label()
         {
             return Translate("config-add-suffix-for-non-pc-game-names");

@@ -29,6 +29,7 @@
                 <CheckBox Margin="25,2,0,0" IsChecked="{Binding AskBackupOnGameStopped}" Content="{Binding AskBackupOnGameStopped_Label}" />
                 <CheckBox Margin="25,2,0,0" IsChecked="{Binding OnlyBackupOnGameStoppedIfPc}" Content="{Binding OnlyBackupOnGameStoppedIfPc_Label}" />
                 <CheckBox Margin="25,2,0,0" IsChecked="{Binding DoRestoreOnGameStarting}" Content="{Binding DoRestoreOnGameStarting_Label}" />
+                <CheckBox Margin="25,2,0,0" IsChecked="{Binding RetryUnrecognizedGameWithNormalization}" Content="{Binding RetryUnrecognizedGameWithNormalization_Label}" />
             </StackPanel>
 
             <StackPanel Margin="15">
