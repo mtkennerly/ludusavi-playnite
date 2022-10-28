@@ -3,9 +3,15 @@
 * Added:
   * The plugin now indicates when there was nothing new to back up or restore.
     When doing a full scan, the expanded list also indicates new (+) or updated (Δ) for each game.
-    This requires Ludusavi 0.14.0 or newer.
+    This is enabled if you have Ludusavi 0.14.0 or newer.
+  * When backing up or restoring a specific game,
+    the plugin now indicates when Ludusavi knows it by a different name.
+    Example: `Backed up saves for Playnite Title (↪ Ludusavi Title)`.
+    This is enabled if you have Ludusavi 0.14.0 or newer.
+  * Support for Ludusavi 0.14.0's `find` command.
 * Changed:
   * For compatibility with Ludusavi 0.14.0, the plugin now passes `--force` to the backup command.
+    This remains compatible with older versions as well.
 
 ## v0.10.2 (2022-09-12)
 

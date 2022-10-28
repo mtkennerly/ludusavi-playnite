@@ -102,3 +102,7 @@ config-do-backup-during-play = Back up games on an interval during play, if they
 config-ignore-benign-notifications = Only show notifications on failure
 
 label-minutes = Minutes:
+
+## Miscellaneous
+
+unrecognized-game = Ludusavi does not recognize {$game}

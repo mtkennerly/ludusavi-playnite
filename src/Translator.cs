@@ -327,6 +327,16 @@ namespace LudusaviPlaynite
             return Translate("unable-to-run-ludusavi");
         }
 
+        public string UnrecognizedGame(string name)
+        {
+            return Translate(
+                "unrecognized-game",
+                new FluentArgs() {
+                    {GAME, (FluentString)name},
+                }
+            );
+        }
+
         public string BackUpOneGame_Success(OperationResult result)
         {
             return Translate(

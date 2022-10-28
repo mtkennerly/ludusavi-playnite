@@ -15,20 +15,25 @@ namespace LudusaviPlaynite
     {
         Backup,
         Backups,
+        Find,
         Restore,
     }
 
     public class Invocation
     {
         private Mode mode;
-        private string game;
+        private List<string> games;
         private string path;
         private bool bySteamId;
+        private int? steamId;
         private string backup;
+        private bool findBackup;
 
         public Invocation(Mode mode)
         {
             this.mode = mode;
+            this.games = new List<string>();
+            this.steamId = null;
         }
 
         public Invocation Path(string value)
@@ -37,23 +42,43 @@ namespace LudusaviPlaynite
             return this;
         }
 
+        public Invocation AddGame(string value)
+        {
+            this.games.Add(value);
+            return this;
+        }
+
         public Invocation Game(string value)
         {
-            this.game = value;
+            this.games.Clear();
+            this.games.Add(value);
             this.bySteamId = false;
             return this;
         }
 
-        public Invocation SteamId(string value)
+        public Invocation BySteamId(string value)
         {
             this.bySteamId = true;
-            this.game = value;
+            this.games.Clear();
+            this.games.Add(value);
+            return this;
+        }
+
+        public Invocation SteamId(int value)
+        {
+            this.steamId = value;
             return this;
         }
 
         public Invocation Backup(string backup)
         {
             this.backup = backup;
+            return this;
+        }
+
+        public Invocation FindBackup()
+        {
+            this.findBackup = true;
             return this;
         }
 
@@ -68,6 +93,9 @@ namespace LudusaviPlaynite
                     break;
                 case Mode.Backups:
                     rendered += "backups";
+                    break;
+                case Mode.Find:
+                    rendered += "find";
                     break;
                 case Mode.Restore:
                     rendered += "restore --force";
@@ -86,14 +114,28 @@ namespace LudusaviPlaynite
                 rendered += " --by-steam-id";
             }
 
+            if (this.steamId != null)
+            {
+                rendered += string.Format(" --steam-id {0}", this.steamId);
+            }
+
             if (this.backup != null)
             {
                 rendered += string.Format(" --backup \"{0}\"", this.backup);
             }
 
-            if (this.game != null && this.game != "")
+            if (this.findBackup)
             {
-                rendered += string.Format(" -- \"{0}\"", this.game.Replace("\"", "\"\""));
+                rendered += " --backup";
+            }
+
+            if (this.games.Count > 0)
+            {
+                rendered += " --";
+                foreach (var game in this.games)
+                {
+                    rendered += string.Format(" \"{0}\"", game.Replace("\"", "\"\""));
+                }
             }
 
             return rendered;
@@ -175,7 +217,13 @@ namespace LudusaviPlaynite
 
         public bool supportsRestoreBySteamId()
         {
+            // This version fixed a defect when restoring by Steam ID.
             return this.version >= new Version(0, 12, 0);
+        }
+
+        public bool supportsFindCommand()
+        {
+            return this.version >= new Version(0, 14, 0);
         }
     }
 

@@ -696,6 +696,47 @@ namespace LudusaviPlaynite
             return !IsOnPc(game);
         }
 
+        private string FindGame(Game game, string name, OperationTiming timing, BackupCriteria criteria, Mode mode)
+        {
+            if (!this.appVersion.supportsFindCommand())
+            {
+                return null;
+            }
+
+            var invocation = new Invocation(Mode.Find).Path(settings.BackupPath).Game(name);
+            if (mode == Mode.Backup)
+            {
+                invocation.FindBackup();
+            }
+            if (!criteria.ByPlatform)
+            {
+                if (IsOnSteam(game) && int.TryParse(game.GameId, out var id))
+                {
+                    invocation.SteamId(id);
+                }
+                if (!IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
+                {
+                    invocation.AddGame(game.Name);
+                }
+            }
+
+            var (code, response) = InvokeLudusavi(invocation);
+            if (response == null)
+            {
+                NotifyError(translator.UnableToRunLudusavi(), timing);
+                return null;
+            }
+
+            var officialName = response?.Games.Keys.FirstOrDefault();
+            if (code != 0 || officialName == null)
+            {
+                NotifyError(translator.UnrecognizedGame(name), timing);
+                return null;
+            }
+
+            return officialName;
+        }
+
         private void BackUpOneGame(Game game, OperationTiming timing)
         {
             this.BackUpOneGame(game, timing, new BackupCriteria { ByPlatform = false });
@@ -705,15 +746,32 @@ namespace LudusaviPlaynite
         {
             pendingOperation = true;
             var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameName(game);
+            var displayName = name;
+
+            if (this.appVersion.supportsFindCommand())
+            {
+                var found = FindGame(game, name, timing, criteria, Mode.Backup);
+                if (found == null)
+                {
+                    pendingOperation = false;
+                    return;
+                }
+                name = found;
+                if (name != displayName)
+                {
+                    displayName = $"{displayName} (↪ {name})";
+                }
+            }
 
             var invocation = new Invocation(Mode.Backup).Path(settings.BackupPath).Game(name);
 
             var (code, response) = InvokeLudusavi(invocation);
-            if (!criteria.ByPlatform)
+
+            if (!this.appVersion.supportsFindCommand() && !criteria.ByPlatform)
             {
                 if (response?.Errors.UnknownGames != null && IsOnSteam(game))
                 {
-                    (code, response) = InvokeLudusavi(invocation.SteamId(game.GameId));
+                    (code, response) = InvokeLudusavi(invocation.BySteamId(game.GameId));
                 }
                 if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
                 {
@@ -727,7 +785,7 @@ namespace LudusaviPlaynite
             }
             else
             {
-                var result = new OperationResult { Name = name, Response = (ApiResponse)response };
+                var result = new OperationResult { Name = displayName, Response = (ApiResponse)response };
                 if (code == 0)
                 {
                     if (response?.Overall.TotalGames > 0)
@@ -824,15 +882,34 @@ namespace LudusaviPlaynite
             };
             pendingOperation = true;
             var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameName(game);
+            var displayName = name;
+
+            if (this.appVersion.supportsFindCommand())
+            {
+                var found = FindGame(game, name, OperationTiming.Free, criteria, Mode.Restore);
+                if (found == null)
+                {
+                    pendingOperation = false;
+                    error.Message = translator.UnrecognizedGame(name);
+                    error.Empty = true;
+                    NotifyError(error.Message);
+                    return error;
+                }
+                name = found;
+                if (name != displayName)
+                {
+                    displayName = $"{displayName} (↪ {name})";
+                }
+            }
 
             var invocation = new Invocation(Mode.Restore).Path(settings.BackupPath).Game(name).Backup(backup);
 
             var (code, response) = InvokeLudusavi(invocation);
-            if (!criteria.ByPlatform)
+            if (!this.appVersion.supportsFindCommand() && !criteria.ByPlatform)
             {
                 if (response?.Errors.UnknownGames != null && IsOnSteam(game) && this.appVersion.supportsRestoreBySteamId())
                 {
-                    (code, response) = InvokeLudusavi(invocation.SteamId(game.GameId));
+                    (code, response) = InvokeLudusavi(invocation.BySteamId(game.GameId));
                 }
                 if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
                 {
@@ -847,7 +924,7 @@ namespace LudusaviPlaynite
             }
             else
             {
-                var result = new OperationResult { Name = name, Response = (ApiResponse)response };
+                var result = new OperationResult { Name = displayName, Response = (ApiResponse)response };
                 if (code == 0)
                 {
                     if (response?.Overall.ChangedGames?.Same == 0)
