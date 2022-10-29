@@ -536,6 +536,31 @@ namespace LudusaviPlaynite
             return Translate("config-backup-path");
         }
 
+        public string OverrideBackupFormat_Label()
+        {
+            return Translate("config-override-backup-format");
+        }
+
+        public string OverrideBackupCompression_Label()
+        {
+            return Translate("config-override-backup-compression");
+        }
+
+        public string OverrideBackupRetention_Label()
+        {
+            return Translate("config-override-backup-retention");
+        }
+
+        public string FullBackupLimit_Label()
+        {
+            return Translate("config-full-backup-limit");
+        }
+
+        public string DifferentialBackupLimit_Label()
+        {
+            return Translate("config-differential-backup-limit");
+        }
+
         public string DoBackupOnGameStopped_Label()
         {
             return Translate("config-do-backup-on-game-stopped");
@@ -599,6 +624,16 @@ namespace LudusaviPlaynite
         public string IgnoreBenignNotifications_Label()
         {
             return Translate("config-ignore-benign-notifications");
+        }
+
+        public string OptionSimple()
+        {
+            return Translate("option-simple");
+        }
+
+        public string OptionNone()
+        {
+            return Translate("option-none");
         }
     }
 }

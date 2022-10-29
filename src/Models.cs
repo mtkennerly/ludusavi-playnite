@@ -89,7 +89,7 @@ namespace LudusaviPlaynite
             return this;
         }
 
-        public string Render()
+        public string Render(LudusaviPlayniteSettings settings, LudusaviVersion version)
         {
             var rendered = "";
 
@@ -139,6 +139,46 @@ namespace LudusaviPlaynite
             if (this.normalized)
             {
                 rendered += " --normalized";
+            }
+
+            if (this.mode == Mode.Backup && version.supportsCustomizingBackupFormat())
+            {
+                if (settings.OverrideBackupFormat)
+                {
+                    rendered += " --format";
+                    switch (settings.BackupFormat)
+                    {
+                        case BackupFormatType.Simple:
+                            rendered += " simple";
+                            break;
+                        case BackupFormatType.Zip:
+                            rendered += " zip";
+                            break;
+                    }
+                }
+                if (settings.OverrideBackupCompression)
+                {
+                    rendered += " --compression";
+                    switch (settings.BackupCompression)
+                    {
+                        case BackupCompressionType.None:
+                            rendered += " none";
+                            break;
+                        case BackupCompressionType.Deflate:
+                            rendered += " deflate";
+                            break;
+                        case BackupCompressionType.Bzip2:
+                            rendered += " bzip2";
+                            break;
+                        case BackupCompressionType.Zstd:
+                            rendered += " zstd";
+                            break;
+                    }
+                }
+                if (settings.OverrideBackupRetention)
+                {
+                    rendered += $" --full-limit {settings.FullBackupLimit} --differential-limit {settings.DifferentialBackupLimit}";
+                }
             }
 
             if (this.games.Count > 0)
@@ -234,6 +274,11 @@ namespace LudusaviPlaynite
         }
 
         public bool supportsFindCommand()
+        {
+            return this.version >= new Version(0, 14, 0);
+        }
+
+        public bool supportsCustomizingBackupFormat()
         {
             return this.version >= new Version(0, 14, 0);
         }

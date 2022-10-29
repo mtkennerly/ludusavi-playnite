@@ -25,6 +25,30 @@
             </StackPanel>
 
             <StackPanel Margin="15">
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding OverrideBackupFormat}" Content="{Binding OverrideBackupFormat_Label}" />
+                    <ComboBox Margin="10,0,0,0" ItemsSource="{Binding Path=BackupFormatOptions}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=BackupFormat, Mode=TwoWay}" />
+                </StackPanel>
+
+                <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                    <CheckBox Margin="0,0,0,0" IsChecked="{Binding OverrideBackupCompression}" Content="{Binding OverrideBackupCompression_Label}" />
+                    <ComboBox Margin="10,0,0,0" ItemsSource="{Binding Path=BackupCompressionOptions}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=BackupCompression, Mode=TwoWay}" />
+                </StackPanel>
+
+                <CheckBox Margin="0,2,0,0" IsChecked="{Binding OverrideBackupRetention}" Content="{Binding OverrideBackupRetention_Label}" />
+                <StackPanel Margin="25,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Label Content="{Binding FullBackupLimit_Label}" />
+                    <TextBox Margin="10,0,0,0" MinWidth="50" Text="{Binding FullBackupLimit}" />
+                    <TextBlock Margin="10,2,0,0" Text="(1-255)" />
+                </StackPanel>
+                <StackPanel Margin="25,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Label Content="{Binding DifferentialBackupLimit_Label}" />
+                    <TextBox Margin="10,0,0,0" MinWidth="50" Text="{Binding DifferentialBackupLimit}" />
+                    <TextBlock Margin="10,2,0,0" Text="(0-255)" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Margin="15">
                 <CheckBox IsChecked="{Binding DoBackupOnGameStopped}" Content="{Binding DoBackupOnGameStopped_Label}" />
                 <CheckBox Margin="25,2,0,0" IsChecked="{Binding AskBackupOnGameStopped}" Content="{Binding AskBackupOnGameStopped_Label}" />
                 <CheckBox Margin="25,2,0,0" IsChecked="{Binding OnlyBackupOnGameStoppedIfPc}" Content="{Binding OnlyBackupOnGameStoppedIfPc_Label}" />

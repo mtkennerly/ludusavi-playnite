@@ -89,6 +89,11 @@ unable-to-run-ludusavi = Unable to run {ludusavi}.
 
 config-executable-path = Name or full path of the Ludusavi executable:
 config-backup-path = Full path to directory for storing backups:
+config-override-backup-format = Override backup format.
+config-override-backup-compression = Override backup compression.
+config-override-backup-retention = Override backup retention.
+config-full-backup-limit = Max full backups per game:
+config-differential-backup-limit = Max differential backups per full backup:
 config-do-backup-on-game-stopped = Back up save data for a game after playing it
 config-do-restore-on-game-starting = Also restore save data for a game before playing it
 config-ask-backup-on-game-stopped = Ask first instead of doing it automatically
@@ -103,6 +108,9 @@ config-do-backup-during-play = Back up games on an interval during play, if they
 config-ignore-benign-notifications = Only show notifications on failure
 
 label-minutes = Minutes:
+
+option-simple = Simple
+option-none = None
 
 ## Miscellaneous
 

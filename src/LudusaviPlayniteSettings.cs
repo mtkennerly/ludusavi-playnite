@@ -10,6 +10,20 @@ using System.IO;
 
 namespace LudusaviPlaynite
 {
+    public enum BackupFormatType
+    {
+        Simple,
+        Zip,
+    }
+
+    public enum BackupCompressionType
+    {
+        None,
+        Deflate,
+        Bzip2,
+        Zstd,
+    }
+
     public class LudusaviPlayniteSettings : ISettings, INotifyPropertyChanged
     {
         private readonly LudusaviPlaynite plugin;
@@ -22,6 +36,12 @@ namespace LudusaviPlaynite
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        [JsonIgnore]
+        public Dictionary<BackupFormatType, string> BackupFormatOptions { get; }
+
+        [JsonIgnore]
+        public Dictionary<BackupCompressionType, string> BackupCompressionOptions { get; }
 
         public bool MigratedTags { get; set; } = false;
 
@@ -39,6 +59,30 @@ namespace LudusaviPlaynite
         public string BackupPath { get { return backupPath; } set { backupPath = value; NotifyPropertyChanged("BackupPath"); } }
         [JsonIgnore]
         public string BackupPath_Label { get; set; }
+
+        public bool OverrideBackupFormat { get; set; } = false;
+        [JsonIgnore]
+        public string OverrideBackupFormat_Label { get; set; }
+
+        public BackupFormatType BackupFormat { get; set; } = BackupFormatType.Simple;
+
+        public bool OverrideBackupCompression { get; set; } = false;
+        [JsonIgnore]
+        public string OverrideBackupCompression_Label { get; set; }
+
+        public BackupCompressionType BackupCompression { get; set; } = BackupCompressionType.Deflate;
+
+        public bool OverrideBackupRetention { get; set; } = false;
+        [JsonIgnore]
+        public string OverrideBackupRetention_Label { get; set; }
+
+        public byte FullBackupLimit { get; set; } = 2;
+        [JsonIgnore]
+        public string FullBackupLimit_Label { get; set; }
+
+        public byte DifferentialBackupLimit { get; set; } = 10;
+        [JsonIgnore]
+        public string DifferentialBackupLimit_Label { get; set; }
 
         public bool DoRestoreOnGameStarting { get; set; } = false;
         [JsonIgnore]
@@ -101,10 +145,29 @@ namespace LudusaviPlaynite
 
         public LudusaviPlayniteSettings(LudusaviPlaynite plugin, Translator translator)
         {
+            BackupFormatOptions = new Dictionary<BackupFormatType, string>()
+            {
+                {BackupFormatType.Simple, translator.OptionSimple()},
+                {BackupFormatType.Zip, "Zip"},
+            };
+
+            BackupCompressionOptions = new Dictionary<BackupCompressionType, string>()
+            {
+                {BackupCompressionType.None, translator.OptionNone()},
+                {BackupCompressionType.Deflate, "Deflate"},
+                {BackupCompressionType.Bzip2, "Bzip2"},
+                {BackupCompressionType.Zstd, "Zstd"},
+            };
+
             BrowseButton_Label = translator.BrowseButton();
             OpenButton_Label = translator.OpenButton();
             ExecutablePath_Label = translator.ExecutablePath_Label();
             BackupPath_Label = translator.BackupPath_Label();
+            OverrideBackupFormat_Label = translator.OverrideBackupFormat_Label();
+            OverrideBackupCompression_Label = translator.OverrideBackupCompression_Label();
+            OverrideBackupRetention_Label = translator.OverrideBackupRetention_Label();
+            FullBackupLimit_Label = translator.FullBackupLimit_Label();
+            DifferentialBackupLimit_Label = translator.DifferentialBackupLimit_Label();
             DoRestoreOnGameStarting_Label = translator.DoRestoreOnGameStarting_Label();
             DoBackupOnGameStopped_Label = translator.DoBackupOnGameStopped_Label();
             AskBackupOnGameStopped_Label = translator.AskBackupOnGameStopped_Label();
@@ -135,6 +198,15 @@ namespace LudusaviPlaynite
                 MigratedTags = savedSettings.MigratedTags;
                 ExecutablePath = savedSettings.ExecutablePath;
                 BackupPath = savedSettings.BackupPath;
+
+                OverrideBackupFormat = savedSettings.OverrideBackupFormat;
+                BackupFormat = savedSettings.BackupFormat;
+                OverrideBackupCompression = savedSettings.OverrideBackupCompression;
+                BackupCompression = savedSettings.BackupCompression;
+                OverrideBackupRetention = savedSettings.OverrideBackupRetention;
+                FullBackupLimit = savedSettings.FullBackupLimit;
+                DifferentialBackupLimit = savedSettings.DifferentialBackupLimit;
+
                 DoBackupOnGameStopped = savedSettings.DoBackupOnGameStopped;
                 DoRestoreOnGameStarting = savedSettings.DoRestoreOnGameStarting;
                 AskBackupOnGameStopped = savedSettings.AskBackupOnGameStopped;

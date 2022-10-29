@@ -12,7 +12,11 @@
     For example, this means the plugin can retry "Some Game: Special Edition (2022)" as just "Some Game"
     if Ludusavi didn't recognize the original title.
     If the normalized title produces multiple matches, the plugin chooses the first one.
-    This is enabled if you have Ludusavi 0.14.0 or newer.
+    This setting only takes effect if you have Ludusavi 0.14.0 or newer.
+  * Plugin settings to override the backup format, compression, and retention.
+    These will still default to whatever you have configured in Ludusavi itself,
+    but now you can override it from Playnite.
+    These settings only take effect if you have Ludusavi 0.14.0 or newer.
 * Changed:
   * When Ludusavi 0.14.0 or newer is installed, the plugin now uses the `find` command to look up games.
     As a side effect, a game's Steam ID (if applicable) is now checked before its title rather than after.

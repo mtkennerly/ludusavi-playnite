@@ -558,7 +558,7 @@ namespace LudusaviPlaynite
 
         private (int, ApiResponse?) InvokeLudusavi(Invocation invocation)
         {
-            var fullArgs = invocation.Render();
+            var fullArgs = invocation.Render(settings, appVersion);
             logger.Debug(string.Format("Running Ludusavi: {0}", fullArgs));
 
             int code;
