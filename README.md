@@ -1,5 +1,5 @@
 # Ludusavi for Playnite
-This repository contains a [Playnite](https://playnite.link) plugin to
+This project is a [Playnite](https://playnite.link) plugin to
 back up your save data using [Ludusavi](https://github.com/mtkennerly/ludusavi).
 
 ## Features
@@ -19,8 +19,9 @@ If you'd like to help translate this plugin into other languages,
 ## Setup
 ### Ludusavi
 Refer to the [Ludusavi project](https://github.com/mtkennerly/ludusavi)
-for instructions on how to install Ludusavi itself. Ludusavi 0.12.0 or newer
-is recommended, but version 0.7.0 or newer will work (albeit without some features).
+for instructions on how to install Ludusavi itself.
+Ludusavi 0.14.0 or newer is recommended for full functionality,
+but version 0.7.0 or newer will work (albeit without some features enabled).
 
 By default, the plugin will look for the Ludusavi executable in your `PATH`
 environment variable, but you can also configure the plugin with the full
@@ -86,20 +87,23 @@ and the `no` tags take precedence over their positive counterparts.
 * The backup and restore operations run in the background after you start them.
   You'll get a notification in Playnite when they finish. If you try to start
   another operation before the first one finishes, you'll have to wait.
-* When processing a single game, the plugin will first ask Ludusavi to look it
-  up by name. Sometimes, that can fail since Playnite and Ludusavi don't always
-  use the same names, so if Ludusavi doesn't recognize it, and if the game is
-  from Steam, then the plugin will ask again with the game's Steam ID.
-  If that fails too, then you'll get a notification that no data was found.
+* When processing specific games via the context menu,
+  the plugin will try to look them up a few ways, in this order of precedence:
 
-  This also applies to the "selected games" context menu option.
-  However, it does not apply to the "all games" main menu option.
+  * Steam ID (if applicable)
+  * Title
+  * Normalized title (if enabled in the plugin settings)
+    * For example, "Some Game: Special Edition (2022)" normalizes to just "Some Game".
+
+  Playnite and Ludusavi don't always use the same name for each game,
+  so that's why these fallbacks are needed.
+  If a match is found with a different name than in Playnite,
+  then the notification will include `Playnite Title (↪ Ludusavi Title)`.
+* After doing a full backup/restore of all games, you can click the notification to see the list.
+  There, "+" denotes a newly found game, and "Δ" denotes a game whose saves have changed.
 * For backups, the plugin always sets Ludusavi's `--merge` flag. This way,
   if you back up saves for one game, it will not interfere with any backups
   you may have for another game.
-* Only one set of save backups is kept for each game. If you decide that
-  you'd like to archive a particular set of backups, simply copy them to an
-  external drive or cloud storage.
 * Although Ludusavi only knows about PC games by default, you can add custom
   entries in Ludusavi for non-PC games if you'd like. The plugin provides a
   setting to either look up those custom entries by the game's name on its own
