@@ -20,6 +20,7 @@ needs-custom-entry =
 back-up-specific-game =
     .confirm = 要备份 { $game } 的存档数据吗？
     .on-success = 已备份 { $game } 的存档数据。（{ $processed-size }）
+    .on-unchanged = Nothing new to back up for { $game }
     .on-empty = 没有找到可以备份的 { $game } 的存档数据
     .on-failure = 已备份 { $game } 的存档（{ $total-size } 中的 { $processed-size }），但有些存档失败了
 # Defers to `back-up-specific-game.*`.
@@ -40,6 +41,7 @@ back-up-during-play-on-failure = Triggered { $total-backups } backups while play
 restore-specific-game =
     .confirm = 要恢复 { $game } 的存档数据吗？
     .on-success = 已恢复 { $game } 的存档数据。（{ $processed-size }）
+    .on-unchanged = Nothing new to restore for { $game }
     .on-empty = 没有找到可以恢复的 { $game } 的存档数据
     .on-failure = 已恢复 { $game } 的存档（{ $total-size } 中的 { $processed-size }），但有些存档失败了
 # Defers to `restore-specific-game.*`.
@@ -70,10 +72,16 @@ unable-to-run-ludusavi = 无法运行 { ludusavi }。
 
 config-executable-path = 录读加一可执行文件的名称或完整路径：
 config-backup-path = 存储备份的目录的完整路径：
+config-override-backup-format = Override backup format.
+config-override-backup-compression = Override backup compression.
+config-override-backup-retention = Override backup retention.
+config-full-backup-limit = Max full backups per game:
+config-differential-backup-limit = Max differential backups per full backup:
 config-do-backup-on-game-stopped = 在玩一个游戏之后备份其存档数据
 config-do-restore-on-game-starting = 在玩一个游戏之前同样恢复其存档数据
 config-ask-backup-on-game-stopped = “先奏后斩”
 config-only-backup-on-game-stopped-if-pc = 仅用于 PC 游戏
+config-retry-unrecognized-game-with-normalization = If not found, retry by normalizing the title
 config-add-suffix-for-non-pc-game-names = 通过将此后缀添加到非 PC 游戏名称后面以检查之（需要自定义条目）：
 config-retry-non-pc-games-without-suffix = 若未找到后缀，则不带后缀再试一次
 config-do-platform-backup-on-non-pc-game-stopped = 在游玩非 PC 游戏后按平台名称备份存档数据（需要自定义条目）
@@ -82,3 +90,10 @@ config-ask-platform-backup-on-non-pc-game-stopped = “先奏后斩”
 config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
 config-ignore-benign-notifications = 仅在失败时显示通知
 label-minutes = Minutes:
+option-simple = Simple
+option-none = None
+
+## Miscellaneous
+
+upgrade-prompt = Install Ludusavi { $version } or newer for the best experience. Click to view the latest release.
+unrecognized-game = Ludusavi does not recognize { $game }

@@ -20,6 +20,7 @@ needs-custom-entry =
 back-up-specific-game =
     .confirm = Kopia zapasowa danych dla { $game }?
     .on-success = Stworzono kopię zapasową dla { $game } ({ $processed-size })
+    .on-unchanged = Nothing new to back up for { $game }
     .on-empty = Nie znaleziono zapisów dla { $game }
     .on-failure = Przywrócono zapisy dla { $game } ({ $processed-size } z { $total-size }), ale niektóre się nie powiodły
 # Defers to `back-up-specific-game.*`.
@@ -40,6 +41,7 @@ back-up-during-play-on-failure = Triggered { $total-backups } backups while play
 restore-specific-game =
     .confirm = Przywrócić zapisy dla { $game }?
     .on-success = Przywrócono zapisy dla { $game } ({ $processed-size })
+    .on-unchanged = Nothing new to restore for { $game }
     .on-empty = Nie znaleziono zapisów do przywrócenia dla { $game }
     .on-failure = Przywrócono zapisy dla { $game } ({ $processed-size } z { $total-size }), ale niektóre się nie powiodły
 # Defers to `restore-specific-game.*`.
@@ -78,10 +80,16 @@ unable-to-run-ludusavi = Nie udało się uruchomić { ludusavi }.
 
 config-executable-path = Nazwa lub pełna ścieżka pliku wykonywalnego Ludusavi:
 config-backup-path = Pełna ścieżka katalogu do przechowywania kopii zapasowych:
+config-override-backup-format = Override backup format.
+config-override-backup-compression = Override backup compression.
+config-override-backup-retention = Override backup retention.
+config-full-backup-limit = Max full backups per game:
+config-differential-backup-limit = Max differential backups per full backup:
 config-do-backup-on-game-stopped = Utwórz kopię zapasową dla gry po jej graniu
 config-do-restore-on-game-starting = Przywróć również zapisy dla gry przed jej graniem
 config-ask-backup-on-game-stopped = Zapytaj, zamiast zrobić to automatycznie
 config-only-backup-on-game-stopped-if-pc = Tylko dla gier PC
+config-retry-unrecognized-game-with-normalization = If not found, retry by normalizing the title
 config-add-suffix-for-non-pc-game-names = Wyszukaj gry non-PC, dodając ten sufiks do ich nazw (wymaga wpisu niestandardowego):
 config-retry-non-pc-games-without-suffix = Jeśli nie znaleziono z sufiksem, spróbuj ponownie bez niego
 config-do-platform-backup-on-non-pc-game-stopped = Kopia zapasowa danych po nazwie platformy po graniu w gry non-PC (wymaga wpisu niestandardowego)
@@ -90,3 +98,10 @@ config-ask-platform-backup-on-non-pc-game-stopped = Zapytaj, zamiast tego automa
 config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
 config-ignore-benign-notifications = Pokaż powiadomienia tylko przy niepowodzeniu
 label-minutes = Minutes:
+option-simple = Prosty
+option-none = Brak
+
+## Miscellaneous
+
+upgrade-prompt = Install Ludusavi { $version } or newer for the best experience. Click to view the latest release.
+unrecognized-game = Ludusavi does not recognize { $game }
