@@ -17,6 +17,8 @@
     These will still default to whatever you have configured in Ludusavi itself,
     but now you can override it from Playnite.
     These settings only take effect if you have Ludusavi 0.14.0 or newer.
+  * On startup, the plugin will show a one-time notification
+    if a newer version of Ludusavi is recommended for the best experience.
 * Changed:
   * When Ludusavi 0.14.0 or newer is installed, the plugin now uses the `find` command to look up games.
     As a side effect, a game's Steam ID (if applicable) is now checked before its title rather than after.

@@ -44,6 +44,7 @@ namespace LudusaviPlaynite
         public Dictionary<BackupCompressionType, string> BackupCompressionOptions { get; }
 
         public bool MigratedTags { get; set; } = false;
+        public string SuggestedUpgradeTo { get; set; } = "0.0.0";
 
         [JsonIgnore]
         public string BrowseButton_Label { get; set; }
@@ -196,6 +197,8 @@ namespace LudusaviPlaynite
             if (savedSettings != null)
             {
                 MigratedTags = savedSettings.MigratedTags;
+                SuggestedUpgradeTo = savedSettings.SuggestedUpgradeTo;
+
                 ExecutablePath = savedSettings.ExecutablePath;
                 BackupPath = savedSettings.BackupPath;
 

@@ -24,6 +24,7 @@ namespace LudusaviPlaynite
         readonly static string TAG = "tag";
         readonly static string TOTAL_BACKUPS = "total-backups";
         readonly static string FAILED_BACKUPS = "failed-backups";
+        readonly static string VERSION = "version";
 
         private FluentBundle bundle;
 
@@ -634,6 +635,16 @@ namespace LudusaviPlaynite
         public string OptionNone()
         {
             return Translate("option-none");
+        }
+
+        public string UpgradePrompt(string version)
+        {
+            return Translate(
+                "upgrade-prompt",
+                new FluentArgs() {
+                    { VERSION, (FluentString)version },
+                }
+            );
         }
     }
 }

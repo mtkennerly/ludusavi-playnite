@@ -114,4 +114,5 @@ option-none = None
 
 ## Miscellaneous
 
+upgrade-prompt = Install Ludusavi {$version} or newer for the best experience. Click to view the latest release.
 unrecognized-game = Ludusavi does not recognize {$game}

@@ -19,6 +19,8 @@ namespace LudusaviPlaynite
 {
     public class LudusaviPlaynite : GenericPlugin
     {
+        private readonly Version RECOMMENDED_APP_VERSION = new Version(0, 14, 0);
+
         private const string TAG_PREFIX = "[Ludusavi] ";
 
         private const string LEGACY_TAG_SKIP = "ludusavi-skip";
@@ -318,6 +320,24 @@ namespace LudusaviPlaynite
 
             RefreshLudusaviVersion();
             RefreshLudusaviBackups();
+
+            if (appVersion.version < RECOMMENDED_APP_VERSION && new Version(settings.SuggestedUpgradeTo) < RECOMMENDED_APP_VERSION)
+            {
+                NotifyInfo(
+                    translator.UpgradePrompt(RECOMMENDED_APP_VERSION.ToString()),
+                    () =>
+                    {
+                        try
+                        {
+                            RunCommand("cmd.exe", "/c \"start https://github.com/mtkennerly/ludusavi/releases\"");
+                        }
+                        catch
+                        { }
+                    }
+                );
+                settings.SuggestedUpgradeTo = RECOMMENDED_APP_VERSION.ToString();
+                SavePluginSettings(settings);
+            }
         }
 
         public override void OnGameStarting(OnGameStartingEventArgs args)
