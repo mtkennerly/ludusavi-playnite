@@ -1,4 +1,4 @@
-## Unreleased
+## v0.11.0 (2022-10-29)
 
 * Added:
   * The plugin now indicates when there was nothing new to back up or restore.

@@ -1,5 +1,39 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.11.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2022-10-29
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.11.0/ludusavi-playnite-v0.11.0.pext
+    Changelog:
+      - >-
+        Added: The plugin now indicates when there was nothing new to back up or restore.
+        When doing a full scan, the expanded list also indicates new (+) or updated (Δ) for each game.
+        This is enabled if you have Ludusavi 0.14.0 or newer.
+      - >-
+        Added: When backing up or restoring a specific game,
+        the plugin now indicates when Ludusavi knows it by a different name.
+        Example: `Backed up saves for Playnite Title (↪ Ludusavi Title)`.
+        This is enabled if you have Ludusavi 0.14.0 or newer.
+      - >-
+        Added: An option to look up games by a normalization of their titles.
+        For example, this means the plugin can retry "Some Game: Special Edition (2022)" as just "Some Game"
+        if Ludusavi didn't recognize the original title.
+        If the normalized title produces multiple matches, the plugin chooses the first one.
+        This setting only takes effect if you have Ludusavi 0.14.0 or newer.
+      - >-
+        Added: Plugin settings to override the backup format, compression, and retention.
+        These will still default to whatever you have configured in Ludusavi itself,
+        but now you can override it from Playnite.
+        These settings only take effect if you have Ludusavi 0.14.0 or newer.
+      - >-
+        Added: On startup, the plugin will show a one-time notification
+        if a newer version of Ludusavi is recommended for the best experience.
+      - >-
+        Changed: When Ludusavi 0.14.0 or newer is installed, the plugin now uses the `find` command to look up games.
+        As a side effect, a game's Steam ID (if applicable) is now checked before its title rather than after.
+      - >-
+        Changed: For compatibility with Ludusavi 0.14.0, the plugin now passes `--force` to the backup command.
+        This remains compatible with older versions as well.
   - Version: 0.10.2
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2022-09-12

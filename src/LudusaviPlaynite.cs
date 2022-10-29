@@ -774,6 +774,7 @@ namespace LudusaviPlaynite
             pendingOperation = true;
             var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameName(game);
             var displayName = name;
+            var refresh = true;
 
             if (this.appVersion.supportsFindCommand())
             {
@@ -823,11 +824,13 @@ namespace LudusaviPlaynite
                         }
                         else
                         {
+                            refresh = false;
                             NotifyInfo(translator.BackUpOneGame_Unchanged(result), timing);
                         }
                     }
                     else
                     {
+                        refresh = false;
                         NotifyError(translator.BackUpOneGame_Empty(result), timing);
                     }
                 }
@@ -835,6 +838,7 @@ namespace LudusaviPlaynite
                 {
                     if (response?.Errors.UnknownGames != null)
                     {
+                        refresh = false;
                         NotifyError(translator.BackUpOneGame_Empty(result), timing);
                     }
                     else
@@ -844,7 +848,10 @@ namespace LudusaviPlaynite
                 }
             }
 
-            RefreshLudusaviBackups();
+            if (refresh)
+            {
+                RefreshLudusaviBackups();
+            }
             pendingOperation = false;
         }
 
