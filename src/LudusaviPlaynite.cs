@@ -318,26 +318,29 @@ namespace LudusaviPlaynite
                 SavePluginSettings(settings);
             }
 
-            RefreshLudusaviVersion();
-            RefreshLudusaviBackups();
-
-            if (appVersion.version < RECOMMENDED_APP_VERSION && new Version(settings.SuggestedUpgradeTo) < RECOMMENDED_APP_VERSION)
+            Task.Run(() =>
             {
-                NotifyInfo(
-                    translator.UpgradePrompt(RECOMMENDED_APP_VERSION.ToString()),
-                    () =>
-                    {
-                        try
+                RefreshLudusaviVersion();
+                RefreshLudusaviBackups();
+
+                if (appVersion.version < RECOMMENDED_APP_VERSION && new Version(settings.SuggestedUpgradeTo) < RECOMMENDED_APP_VERSION)
+                {
+                    NotifyInfo(
+                        translator.UpgradePrompt(RECOMMENDED_APP_VERSION.ToString()),
+                        () =>
                         {
-                            RunCommand("cmd.exe", "/c \"start https://github.com/mtkennerly/ludusavi/releases\"");
+                            try
+                            {
+                                RunCommand("cmd.exe", "/c \"start https://github.com/mtkennerly/ludusavi/releases\"");
+                            }
+                            catch
+                            { }
                         }
-                        catch
-                        { }
-                    }
-                );
-                settings.SuggestedUpgradeTo = RECOMMENDED_APP_VERSION.ToString();
-                SavePluginSettings(settings);
-            }
+                    );
+                    settings.SuggestedUpgradeTo = RECOMMENDED_APP_VERSION.ToString();
+                    SavePluginSettings(settings);
+                }
+            });
         }
 
         public override void OnGameStarting(OnGameStartingEventArgs args)
