@@ -8,8 +8,8 @@ jobs:
   pre-commit:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.7'
       - run: |
@@ -20,7 +20,7 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           pip install invoke pyyaml
           invoke build
@@ -29,7 +29,7 @@ jobs:
           curl -O https://playnite.link/update/stable/9.18/Playnite918.zip
           unzip Playnite918.zip -d tmp/playnite
           invoke pack --toolbox ./tmp/playnite/Toolbox.exe
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: artifacts
           path: |
