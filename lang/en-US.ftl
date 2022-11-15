@@ -116,3 +116,4 @@ option-none = None
 
 upgrade-prompt = Install Ludusavi {$version} or newer for the best experience. Click to view the latest release.
 unrecognized-game = Ludusavi does not recognize {$game}
+cannot-open-folder = Cannot open folder

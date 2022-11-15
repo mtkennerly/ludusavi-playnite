@@ -59,7 +59,14 @@ namespace LudusaviPlaynite
 
         public void OnOpenBackupPath(object sender, RoutedEventArgs e)
         {
-            Process.Start(NormalizePath(plugin.settings.BackupPath));
+            try
+            {
+                Process.Start(NormalizePath(plugin.settings.BackupPath));
+            }
+            catch
+            {
+                this.plugin.ShowError(this.translator.CannotOpenFolder());
+            }
         }
     }
 }

@@ -1,3 +1,8 @@
+## Unreleased
+
+* Fixed:
+  * Crash when trying to open a nonexistent folder from the settings window.
+
 ## v0.11.0 (2022-10-29)
 
 * Added:

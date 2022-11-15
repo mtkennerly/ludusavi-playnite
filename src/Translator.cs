@@ -646,5 +646,10 @@ namespace LudusaviPlaynite
                 }
             );
         }
+
+        public string CannotOpenFolder()
+        {
+            return Translate("cannot-open-folder");
+        }
     }
 }

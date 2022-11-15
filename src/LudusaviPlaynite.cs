@@ -383,11 +383,11 @@ namespace LudusaviPlaynite
 
             if (!String.IsNullOrEmpty(gameError.Message) && !gameError.Empty)
             {
-                PlayniteApi.Dialogs.ShowErrorMessage(gameError.Message, translator.Ludusavi());
+                ShowError(gameError.Message);
             }
             else if (!String.IsNullOrEmpty(platformError.Message) && !platformError.Empty)
             {
-                PlayniteApi.Dialogs.ShowErrorMessage(platformError.Message, translator.Ludusavi());
+                ShowError(platformError.Message);
             }
 
             if (settings.DoBackupDuringPlay)
@@ -518,6 +518,11 @@ namespace LudusaviPlaynite
             {
                 NotifyError(message);
             }
+        }
+
+        public void ShowError(string message)
+        {
+            PlayniteApi.Dialogs.ShowErrorMessage(message, translator.Ludusavi());
         }
 
         private void ShowFullResults(ApiResponse response)
