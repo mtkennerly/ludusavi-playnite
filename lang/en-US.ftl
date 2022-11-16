@@ -84,6 +84,7 @@ remove-tag-for-selected-games = Tag: "{$tag}" - Remove for selected games
 operation-still-pending = {ludusavi} is still working on a previous request. Please try again when you see the notification that it's done.
 no-game-played-yet = You haven't played anything yet in this session.
 unable-to-run-ludusavi = Unable to run {ludusavi}.
+cannot-open-folder = Cannot open folder.
 
 ## Settings
 
@@ -116,4 +117,3 @@ option-none = None
 
 upgrade-prompt = Install Ludusavi {$version} or newer for the best experience. Click to view the latest release.
 unrecognized-game = Ludusavi does not recognize {$game}
-cannot-open-folder = Cannot open folder

@@ -26,8 +26,8 @@ jobs:
           invoke build
 
           mkdir tmp
-          curl -O https://playnite.link/update/stable/9.18/Playnite918.zip
-          unzip Playnite918.zip -d tmp/playnite
+          curl -O https://playnite.link/update/stable/10.7/Playnite107.zip
+          unzip Playnite107.zip -d tmp/playnite
           invoke pack --toolbox ./tmp/playnite/Toolbox.exe
       - uses: actions/upload-artifact@v3
         with:
