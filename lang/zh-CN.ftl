@@ -67,6 +67,7 @@ remove-tag-for-selected-games = 标签："{ $tag }" - 从所选游戏移除
 operation-still-pending = { ludusavi } 仍在处理前一请求。请在看到它已完成的通知后再试。
 no-game-played-yet = 您还未在此次会话中玩任何东西。
 unable-to-run-ludusavi = 无法运行 { ludusavi }。
+cannot-open-folder = Cannot open folder.
 
 ## Settings
 

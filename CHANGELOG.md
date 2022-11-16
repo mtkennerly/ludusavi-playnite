@@ -1,7 +1,10 @@
-## Unreleased
+## v0.11.1 (2022-11-16)
 
 * Fixed:
   * Crash when trying to open a nonexistent folder from the settings window.
+* Changed:
+  * Updated translations.
+    (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
 
 ## v0.11.0 (2022-10-29)
 
