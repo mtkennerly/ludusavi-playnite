@@ -1,3 +1,8 @@
+## Unreleased
+
+* Fixed:
+  * Games could not be backed up if they had Unicode characters in their title (e.g., "Ninja Gaiden Σ").
+
 ## v0.11.1 (2022-11-16)
 
 * Fixed:

@@ -559,6 +559,7 @@ namespace LudusaviPlaynite
             p.StartInfo.CreateNoWindow = true;
             p.StartInfo.FileName = command;
             p.StartInfo.Arguments = args;
+            p.StartInfo.StandardOutputEncoding = Encoding.UTF8;
             p.Start();
 
             var stdout = p.StandardOutput.ReadToEnd();
