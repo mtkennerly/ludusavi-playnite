@@ -38,6 +38,8 @@ namespace LudusaviPlaynite
         private const string TAG_PLATFORM_BACKUP_AND_RESTORE = TAG_PREFIX + "Platform: backup and restore";
         private const string TAG_PLATFORM_NO_RESTORE = TAG_PREFIX + "Platform: no restore";
 
+        public const string TAG_BACKED_UP = TAG_PREFIX + "Backed up";
+
         // Format: {new tag, {conflicting tags}}
         private readonly Dictionary<string, string[]> TAGS_AND_CONFLICTS = new Dictionary<string, string[]> {
             {TAG_SKIP, new string[] {}},
@@ -468,6 +470,11 @@ namespace LudusaviPlaynite
                 {
                     this.backups = response?.Games.ToDictionary(pair => pair.Key, pair => pair.Value.Backups);
                 }
+            }
+
+            if (this.settings.TagGamesWithBackups)
+            {
+                TagGamesWithBackups();
             }
         }
 
@@ -1086,6 +1093,21 @@ namespace LudusaviPlaynite
                 }
                 RemoveTag(game, alwaysTag);
                 AddTag(game, neverTag);
+            }
+        }
+
+        private void TagGamesWithBackups()
+        {
+            foreach (var game in PlayniteApi.Database.Games)
+            {
+                if (this.backups.ContainsKey(game.Name))
+                {
+                    AddTag(game, TAG_BACKED_UP);
+                }
+                else
+                {
+                    RemoveTag(game, TAG_BACKED_UP);
+                }
             }
         }
 

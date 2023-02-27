@@ -107,6 +107,7 @@ config-do-platform-restore-on-non-pc-game-starting = Also restore save data by p
 config-ask-platform-backup-on-non-pc-game-stopped = Ask first instead of doing it automatically
 config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
 config-ignore-benign-notifications = Only show notifications on failure
+config-tag-games-with-backups = Automatically tag games with backups as "{$tag}"
 
 label-minutes = Minutes:
 

@@ -69,7 +69,8 @@
             </StackPanel>
 
             <StackPanel Margin="15">
-                <CheckBox IsChecked="{Binding DoBackupDuringPlay}" Content="{Binding DoBackupDuringPlay_Label}" />
+                <CheckBox IsChecked="{Binding TagGamesWithBackups}" Content="{Binding TagGamesWithBackups_Label}" />
+                <CheckBox Margin="0,2,0,0" IsChecked="{Binding DoBackupDuringPlay}" Content="{Binding DoBackupDuringPlay_Label}" />
                 <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
                     <Label Margin="25,2,0,0" Content="{Binding BackupDuringPlayInterval_Label}" />
                     <TextBox Margin="10,2,0,0" MinWidth="50" Text="{Binding BackupDuringPlayInterval}" />

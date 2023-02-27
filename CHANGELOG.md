@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Added:
+  * An option to automatically tag games with backups.
 * Fixed:
   * Games could not be backed up if they had Unicode characters in their title (e.g., "Ninja Gaiden Σ").
   * With older versions of Ludusavi, the plugin would report that there was nothing new to back up,

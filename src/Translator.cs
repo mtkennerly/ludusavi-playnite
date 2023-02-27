@@ -627,6 +627,16 @@ namespace LudusaviPlaynite
             return Translate("config-ignore-benign-notifications");
         }
 
+        public string TagGamesWithBackups_Label()
+        {
+            return Translate(
+                "config-tag-games-with-backups",
+                new FluentArgs() {
+                    {TAG, (FluentString)LudusaviPlaynite.TAG_BACKED_UP},
+                }
+            );
+        }
+
         public string OptionSimple()
         {
             return Translate("option-simple");

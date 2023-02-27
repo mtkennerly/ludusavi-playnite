@@ -131,6 +131,10 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string DoBackupDuringPlay_Label { get; set; }
 
+        public bool TagGamesWithBackups { get; set; } = false;
+        [JsonIgnore]
+        public string TagGamesWithBackups_Label { get; set; }
+
         public double BackupDuringPlayInterval { get; set; } = 30;
         [JsonIgnore]
         public string BackupDuringPlayInterval_Label { get; set; }
@@ -180,6 +184,7 @@ namespace LudusaviPlaynite
             DoPlatformBackupOnNonPcGameStopped_Label = translator.DoPlatformBackupOnNonPcGameStopped_Label();
             AskPlatformBackupOnNonPcGameStopped_Label = translator.AskPlatformBackupOnNonPcGameStopped_Label();
             DoBackupDuringPlay_Label = translator.DoBackupDuringPlay_Label();
+            TagGamesWithBackups_Label = translator.TagGamesWithBackups_Label();
             BackupDuringPlayInterval_Label = translator.BackupDuringPlayInterval_Label();
             IgnoreBenignNotifications_Label = translator.IgnoreBenignNotifications_Label();
 
@@ -222,6 +227,7 @@ namespace LudusaviPlaynite
                 DoPlatformBackupOnNonPcGameStopped = savedSettings.DoPlatformBackupOnNonPcGameStopped;
                 AskPlatformBackupOnNonPcGameStopped = savedSettings.AskPlatformBackupOnNonPcGameStopped;
                 DoBackupDuringPlay = savedSettings.DoBackupDuringPlay;
+                TagGamesWithBackups = savedSettings.TagGamesWithBackups;
                 BackupDuringPlayInterval = savedSettings.BackupDuringPlayInterval;
                 IgnoreBenignNotifications = savedSettings.IgnoreBenignNotifications;
             }
