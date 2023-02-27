@@ -68,6 +68,7 @@ namespace LudusaviPlaynite
         private Game lastGamePlayed { get; set; }
         private LudusaviVersion appVersion { get; set; } = new LudusaviVersion(new Version(0, 0, 0));
         private Dictionary<string, List<ApiBackup>> backups { get; set; } = new Dictionary<string, List<ApiBackup>>();
+        private List<string> manifestGames { get; set; } = new List<string>();
         private Timer duringPlayBackupTimer { get; set; }
         private int duringPlayBackupTotal { get; set; }
         private int duringPlayBackupFailed { get; set; }
@@ -183,10 +184,10 @@ namespace LudusaviPlaynite
                 },
             };
 
-            if (menuArgs.Games.Count == 1 && this.backups.ContainsKey(menuArgs.Games[0].Name))
+            if (menuArgs.Games.Count == 1 && IsBackedUp(menuArgs.Games[0]))
             {
                 var game = menuArgs.Games[0];
-                foreach (var backup in this.backups[game.Name])
+                foreach (var backup in GetBackups(game))
                 {
                     items.Add(
                         new GameMenuItem
@@ -235,6 +236,77 @@ namespace LudusaviPlaynite
                 );
             }
 
+            if (menuArgs.Games.Count == 1)
+            {
+                var title = menuArgs.Games[0].Name;
+                string renamed = GetDictValue(settings.AlternativeTitles, title, null);
+
+                items.Add(
+                    new GameMenuItem
+                    {
+                        Description = translator.LookUpAsOtherTitle(renamed),
+                        MenuSection = translator.Ludusavi(),
+                        Action = args =>
+                        {
+                            GenericItemOption result = null;
+
+                            if (this.appVersion.supportsManifestShow() && this.manifestGames.Count > 0)
+                            {
+                                var options = this.manifestGames.Select(x => new GenericItemOption(x, "")).ToList();
+                                result = PlayniteApi.Dialogs.ChooseItemWithSearch(
+                                    new List<GenericItemOption>(options),
+                                    (query) =>
+                                    {
+                                        if (query == null)
+                                        {
+                                            return options;
+                                        }
+                                        else
+                                        {
+                                            return this.manifestGames
+                                                .Where(x => x.ToLower().Contains(query.ToLower()))
+                                                .Select(x => new GenericItemOption(x, "")).ToList();
+                                        }
+                                    }
+                                );
+                            }
+                            else
+                            {
+                                var input = PlayniteApi.Dialogs.SelectString(translator.LookUpAsOtherTitle(null), "", "");
+                                if (!string.IsNullOrEmpty(input?.SelectedString?.Trim()))
+                                {
+                                    result = new GenericItemOption(input.SelectedString.Trim(), "");
+                                }
+                            }
+
+                            if (result != null)
+                            {
+                                settings.AlternativeTitles[title] = result.Name;
+                                SavePluginSettings(settings);
+                                RefreshLudusaviBackups();
+                            }
+                        }
+                    }
+                );
+
+                if (settings.AlternativeTitles.ContainsKey(menuArgs.Games[0].Name))
+                {
+                    items.Add(
+                        new GameMenuItem
+                        {
+                            Description = translator.LookUpAsNormalTitle(),
+                            MenuSection = translator.Ludusavi(),
+                            Action = args =>
+                            {
+                                settings.AlternativeTitles.Remove(title);
+                                SavePluginSettings(settings);
+                                RefreshLudusaviBackups();
+                            }
+                        }
+                    );
+                }
+            }
+
             foreach (var entry in TAGS_AND_CONFLICTS)
             {
                 var candidate = entry.Key;
@@ -249,7 +321,7 @@ namespace LudusaviPlaynite
                             MenuSection = translator.Ludusavi(),
                             Action = async args =>
                             {
-                                if (UserConsents(translator.AddTagForSelectedGames_Confirm(candidate, args.Games.Select(x => GetGameName(x)))))
+                                if (UserConsents(translator.AddTagForSelectedGames_Confirm(candidate, args.Games.Select(x => x.Name))))
                                 {
                                     foreach (var game in args.Games)
                                     {
@@ -284,7 +356,7 @@ namespace LudusaviPlaynite
                             MenuSection = translator.Ludusavi(),
                             Action = async args =>
                             {
-                                if (UserConsents(translator.RemoveTagForSelectedGames_Confirm(candidate, args.Games.Select(x => GetGameName(x)))))
+                                if (UserConsents(translator.RemoveTagForSelectedGames_Confirm(candidate, args.Games.Select(x => x.Name))))
                                 {
                                     foreach (var game in args.Games)
                                     {
@@ -324,6 +396,7 @@ namespace LudusaviPlaynite
             {
                 RefreshLudusaviVersion();
                 RefreshLudusaviBackups();
+                RefreshLudusaviGames();
 
                 if (appVersion.version < RECOMMENDED_APP_VERSION && new Version(settings.SuggestedUpgradeTo) < RECOMMENDED_APP_VERSION)
                 {
@@ -463,18 +536,35 @@ namespace LudusaviPlaynite
 
         public void RefreshLudusaviBackups()
         {
-            if (this.appVersion.supportsMultiBackup())
+            if (!(this.appVersion.supportsMultiBackup()))
             {
-                var (code, response) = InvokeLudusavi(new Invocation(Mode.Backups).Path(settings.BackupPath));
-                if (response?.Games != null)
-                {
-                    this.backups = response?.Games.ToDictionary(pair => pair.Key, pair => pair.Value.Backups);
-                }
+                return;
+            }
+
+            var (code, response) = InvokeLudusavi(new Invocation(Mode.Backups).Path(settings.BackupPath));
+            if (response?.Games != null)
+            {
+                this.backups = response?.Games.ToDictionary(pair => pair.Key, pair => pair.Value.Backups);
             }
 
             if (this.settings.TagGamesWithBackups)
             {
                 TagGamesWithBackups();
+            }
+        }
+
+        public void RefreshLudusaviGames()
+        {
+            if (!this.appVersion.supportsManifestShow())
+            {
+                return;
+            }
+
+            var (code, stdout) = InvokeLudusaviDirect(new Invocation(Mode.ManifestShow));
+            if (code == 0 && stdout != null)
+            {
+                var manifest = JsonConvert.DeserializeObject<Dictionary<string, object>>(stdout);
+                this.manifestGames = manifest.Keys.ToList();
             }
         }
 
@@ -592,22 +682,25 @@ namespace LudusaviPlaynite
             }
         }
 
-        private (int, ApiResponse?) InvokeLudusavi(Invocation invocation)
+        private (int, string) InvokeLudusaviDirect(Invocation invocation)
         {
             var fullArgs = invocation.Render(settings, appVersion);
             logger.Debug(string.Format("Running Ludusavi: {0}", fullArgs));
 
-            int code;
-            string stdout;
             try
             {
-                (code, stdout) = RunCommand(settings.ExecutablePath.Trim(), fullArgs);
+                return RunCommand(settings.ExecutablePath.Trim(), fullArgs);
             }
             catch (Exception e)
             {
                 logger.Debug(e, "Ludusavi could not be executed");
                 return (-1, null);
             }
+        }
+
+        private (int, ApiResponse?) InvokeLudusavi(Invocation invocation)
+        {
+            var (code, stdout) = InvokeLudusaviDirect(invocation);
 
             ApiResponse? response;
             try
@@ -711,6 +804,24 @@ namespace LudusaviPlaynite
             }
         }
 
+        string GetGameNameWithAlt(Game game)
+        {
+            var alt = AlternativeTitle(game);
+            if (alt != null)
+            {
+                return alt;
+            }
+            else
+            {
+                return GetGameName(game);
+            }
+        }
+
+        private string AlternativeTitle(Game game)
+        {
+            return GetDictValue(settings.AlternativeTitles, game.Name, null);
+        }
+
         bool IsOnSteam(Game game)
         {
             return game.Source?.Name == "Steam"
@@ -740,17 +851,20 @@ namespace LudusaviPlaynite
             }
 
             var invocation = new Invocation(Mode.Find).Path(settings.BackupPath).Game(name);
+
             if (mode == Mode.Backup)
             {
                 invocation.FindBackup();
             }
-            if (!criteria.ByPlatform)
+            if (!criteria.ByPlatform && AlternativeTitle(game) == null)
             {
+                // There can't be an alt title because the Steam ID/etc would take priority over it.
+
                 if (IsOnSteam(game) && int.TryParse(game.GameId, out var id))
                 {
                     invocation.SteamId(id);
                 }
-                if (!IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
+                if (!IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix)
                 {
                     invocation.AddGame(game.Name);
                 }
@@ -785,8 +899,8 @@ namespace LudusaviPlaynite
         private void BackUpOneGame(Game game, OperationTiming timing, BackupCriteria criteria)
         {
             pendingOperation = true;
-            var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameName(game);
-            var displayName = name;
+            var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameNameWithAlt(game);
+            var displayName = game.Name;
             var refresh = true;
 
             if (this.appVersion.supportsFindCommand())
@@ -808,13 +922,13 @@ namespace LudusaviPlaynite
 
             var (code, response) = InvokeLudusavi(invocation);
 
-            if (!this.appVersion.supportsFindCommand() && !criteria.ByPlatform)
+            if (!this.appVersion.supportsFindCommand() && !criteria.ByPlatform && AlternativeTitle(game) == null)
             {
                 if (response?.Errors.UnknownGames != null && IsOnSteam(game))
                 {
                     (code, response) = InvokeLudusavi(invocation.BySteamId(game.GameId));
                 }
-                if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
+                if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix)
                 {
                     (code, response) = InvokeLudusavi(invocation.Game(game.Name));
                 }
@@ -928,8 +1042,8 @@ namespace LudusaviPlaynite
                 Empty = false,
             };
             pendingOperation = true;
-            var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameName(game);
-            var displayName = name;
+            var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameNameWithAlt(game);
+            var displayName = game.Name;
 
             if (this.appVersion.supportsFindCommand())
             {
@@ -952,13 +1066,13 @@ namespace LudusaviPlaynite
             var invocation = new Invocation(Mode.Restore).Path(settings.BackupPath).Game(name).Backup(backup);
 
             var (code, response) = InvokeLudusavi(invocation);
-            if (!this.appVersion.supportsFindCommand() && !criteria.ByPlatform)
+            if (!this.appVersion.supportsFindCommand() && !criteria.ByPlatform && AlternativeTitle(game) == null)
             {
                 if (response?.Errors.UnknownGames != null && IsOnSteam(game) && this.appVersion.supportsRestoreBySteamId())
                 {
                     (code, response) = InvokeLudusavi(invocation.BySteamId(game.GameId));
                 }
-                if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix && name != game.Name)
+                if (response?.Errors.UnknownGames != null && !IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix)
                 {
                     (code, response) = InvokeLudusavi(invocation.Game(game.Name));
                 }
@@ -1100,7 +1214,7 @@ namespace LudusaviPlaynite
         {
             foreach (var game in PlayniteApi.Database.Games)
             {
-                if (this.backups.ContainsKey(game.Name))
+                if (IsBackedUp(game))
                 {
                     AddTag(game, TAG_BACKED_UP);
                 }
@@ -1160,6 +1274,52 @@ namespace LudusaviPlaynite
             };
 
             return prefs;
+        }
+
+        private bool IsBackedUp(Game game)
+        {
+            return GetBackups(game).Count > 0;
+        }
+
+        private List<ApiBackup> GetBackups(Game game)
+        {
+            var alt = AlternativeTitle(game);
+
+            if (alt != null)
+            {
+                return GetDictValue(this.backups, alt, new List<ApiBackup>());
+            }
+            else
+            {
+                return GetDictValue(
+                    this.backups,
+                    GetGameName(game),
+                    GetDictValue(
+                        this.backups,
+                        game.Name,
+                        new List<ApiBackup>()
+                    )
+                );
+            }
+        }
+
+        private V GetDictValue<K, V>(Dictionary<K, V> dict, K key, V fallback)
+        {
+            if (dict == null)
+            {
+                return fallback;
+            }
+
+            V result;
+            var found = dict.TryGetValue(key, out result);
+            if (found)
+            {
+                return result;
+            }
+            else
+            {
+                return fallback;
+            }
         }
     }
 }

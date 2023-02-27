@@ -46,6 +46,8 @@ namespace LudusaviPlaynite
         public bool MigratedTags { get; set; } = false;
         public string SuggestedUpgradeTo { get; set; } = "0.0.0";
 
+        public Dictionary<string, string> AlternativeTitles { get; set; } = new Dictionary<string, string>();
+
         [JsonIgnore]
         public string BrowseButton_Label { get; set; }
         [JsonIgnore]
@@ -203,6 +205,7 @@ namespace LudusaviPlaynite
             {
                 MigratedTags = savedSettings.MigratedTags;
                 SuggestedUpgradeTo = savedSettings.SuggestedUpgradeTo;
+                AlternativeTitles = savedSettings.AlternativeTitles;
 
                 ExecutablePath = savedSettings.ExecutablePath;
                 BackupPath = savedSettings.BackupPath;

@@ -17,6 +17,7 @@ namespace LudusaviPlaynite
         Backups,
         Find,
         Restore,
+        ManifestShow,
     }
 
     public class Invocation
@@ -106,6 +107,9 @@ namespace LudusaviPlaynite
                     break;
                 case Mode.Restore:
                     rendered += "restore --force";
+                    break;
+                case Mode.ManifestShow:
+                    rendered += "manifest show";
                     break;
             }
 
@@ -281,6 +285,11 @@ namespace LudusaviPlaynite
         public bool supportsCustomizingBackupFormat()
         {
             return this.version >= new Version(0, 14, 0);
+        }
+
+        public bool supportsManifestShow()
+        {
+            return this.version >= new Version(0, 16, 0);
         }
     }
 

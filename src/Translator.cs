@@ -661,5 +661,16 @@ namespace LudusaviPlaynite
         {
             return Translate("cannot-open-folder");
         }
+
+        public string LookUpAsOtherTitle(string renamed)
+        {
+            var suffix = renamed == null ? "" : " - " + renamed;
+            return Translate("look-up-as-other-title") + suffix;
+        }
+
+        public string LookUpAsNormalTitle()
+        {
+            return Translate("look-up-as-normal-title");
+        }
     }
 }

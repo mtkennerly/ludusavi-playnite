@@ -1,7 +1,12 @@
 ## Unreleased
 
 * Added:
-  * An option to automatically tag games with backups.
+  * An option to automatically tag games with backups. This requires Ludusavi 0.14.0 or newer.
+  * An option to look up games under a different name.
+    This allows you to resolve Playnite/Ludusavi naming discrepancies without creating a custom entry in Ludusavi.
+
+    Right now, this is simply a text box where you can enter the desired lookup name.
+    Once Ludusavi 0.16.0 is released, it will allow the plugin to show a searchable list of Ludusavi's known titles.
 * Fixed:
   * Games could not be backed up if they had Unicode characters in their title (e.g., "Ninja Gaiden Σ").
   * With older versions of Ludusavi, the plugin would report that there was nothing new to back up,
