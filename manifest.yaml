@@ -1,5 +1,22 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.12.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2023-02-28
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.12.0/ludusavi-playnite-v0.12.0.pext
+    Changelog:
+      - >-
+        Added: An option to automatically tag games with backups. This requires Ludusavi 0.14.0 or newer.
+      - >-
+        Added: An option to look up games under a different name.
+        This allows you to resolve Playnite/Ludusavi naming discrepancies without creating a custom entry in Ludusavi.
+        Right now, this is simply a text box where you can enter the desired lookup name.
+        Once Ludusavi 0.16.0 is released, it will allow the plugin to show a searchable list of Ludusavi's known titles.
+      - >-
+        Fixed: Games could not be backed up if they had Unicode characters in their title (e.g., "Ninja Gaiden Σ").
+      - >-
+        Fixed: With older versions of Ludusavi, the plugin would report that there was nothing new to back up,
+        even if it did make a new backup.
   - Version: 0.11.1
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2022-11-16

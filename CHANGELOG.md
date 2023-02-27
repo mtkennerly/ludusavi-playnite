@@ -1,4 +1,4 @@
-## Unreleased
+## v0.12.0 (2023-02-28)
 
 * Added:
   * An option to automatically tag games with backups. This requires Ludusavi 0.14.0 or newer.
