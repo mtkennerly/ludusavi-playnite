@@ -2,6 +2,8 @@
 
 * Fixed:
   * Games could not be backed up if they had Unicode characters in their title (e.g., "Ninja Gaiden Σ").
+  * With older versions of Ludusavi, the plugin would report that there was nothing new to back up,
+    even if it did make a new backup.
 
 ## v0.11.1 (2022-11-16)
 

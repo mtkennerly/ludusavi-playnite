@@ -824,7 +824,7 @@ namespace LudusaviPlaynite
                 {
                     if (response?.Overall.TotalGames > 0)
                     {
-                        if (response?.Overall.ChangedGames?.Same == 0)
+                        if ((response?.Overall.ChangedGames?.Same ?? 0) == 0)
                         {
                             NotifyInfo(translator.BackUpOneGame_Success(result), timing);
                         }
@@ -967,7 +967,7 @@ namespace LudusaviPlaynite
                 var result = new OperationResult { Name = displayName, Response = (ApiResponse)response };
                 if (code == 0)
                 {
-                    if (response?.Overall.ChangedGames?.Same == 0)
+                    if ((response?.Overall.ChangedGames?.Same ?? 0) == 0)
                     {
                         NotifyInfo(translator.RestoreOneGame_Success(result));
                     }
