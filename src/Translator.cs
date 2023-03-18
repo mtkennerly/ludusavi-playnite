@@ -71,16 +71,6 @@ namespace LudusaviPlaynite
             this.bundle.AddResourceOverriding(target);
         }
 
-        private int TotalCustomGames(bool needsCustomEntry)
-        {
-            return needsCustomEntry ? 1 : 0;
-        }
-
-        private int TotalCustomGames(List<(string, bool)> games)
-        {
-            return games.Where(x => x.Item2).Count();
-        }
-
         private string Translate(string id, FluentArgs args = null)
         {
             return this.bundle.GetAttrMessage(id, args);
@@ -151,16 +141,6 @@ namespace LudusaviPlaynite
             );
         }
 
-        private string NeedsCustomEntry_Appended(bool needed)
-        {
-            return needed ? " " + NeedsCustomEntry(1) : "";
-        }
-
-        private string NeedsCustomEntry_Appended(List<(string, bool)> games)
-        {
-            return TotalCustomGames(games) > 0 ? " " + NeedsCustomEntry(games.Count) : "";
-        }
-
         private string ChangeSummary(OperationResult result)
         {
             var totalNew = result.Response.Overall.ChangedGames?.New ?? 0;
@@ -168,14 +148,14 @@ namespace LudusaviPlaynite
             return $" [+{totalNew}, Δ{totalDiff}]";
         }
 
-        public string BackUpOneGame_Confirm(string gameName, bool needsCustomEntry)
+        public string BackUpOneGame_Confirm(string gameName)
         {
             return Translate(
                 "back-up-specific-game.confirm",
                 new FluentArgs() {
                     {GAME, (FluentString)gameName},
                 }
-            ) + NeedsCustomEntry_Appended(needsCustomEntry);
+            );
         }
 
         public string BackUpAllGames_Label()
@@ -202,18 +182,17 @@ namespace LudusaviPlaynite
             return "";
         }
 
-        // games: (name, requiresCustomEntry)
-        public string BackUpSelectedGames_Confirm(List<(string, bool)> games)
+        public string BackUpSelectedGames_Confirm(List<string> games)
         {
             var count = games.Count();
-            var formattedNames = GetSelectionFormattedNames(games.Select(x => x.Item1));
+            var formattedNames = GetSelectionFormattedNames(games);
 
             return Translate(
                 "back-up-selected-games.confirm",
                 new FluentArgs() {
                     {TOTAL_GAMES, (FluentNumber)count},
                 }
-            ) + NeedsCustomEntry_Appended(games) + formattedNames;
+            ) + formattedNames;
         }
 
         public string RestoreLastGame_Label()
@@ -221,14 +200,14 @@ namespace LudusaviPlaynite
             return Translate("restore-last-game");
         }
 
-        public string RestoreOneGame_Confirm(string gameName, bool needsCustomEntry)
+        public string RestoreOneGame_Confirm(string gameName)
         {
             return Translate(
                 "restore-specific-game.confirm",
                 new FluentArgs() {
                     {GAME, (FluentString)gameName},
                 }
-            ) + NeedsCustomEntry_Appended(needsCustomEntry);
+            );
         }
 
         public string RestoreAllGames_Label()
@@ -246,18 +225,17 @@ namespace LudusaviPlaynite
             return Translate("restore-selected-games");
         }
 
-        // games: (name, requiresCustomEntry)
-        public string RestoreSelectedGames_Confirm(List<(string, bool)> games)
+        public string RestoreSelectedGames_Confirm(List<string> games)
         {
             var count = games.Count();
-            var formattedNames = GetSelectionFormattedNames(games.Select(x => x.Item1));
+            var formattedNames = GetSelectionFormattedNames(games);
 
             return Translate(
                 "restore-selected-games.confirm",
                 new FluentArgs() {
                     {TOTAL_GAMES, (FluentNumber)count},
                 }
-            ) + NeedsCustomEntry_Appended(games) + formattedNames;
+            );
         }
 
         public string AddTagForSelectedGames_Label(string tag)
@@ -326,7 +304,7 @@ namespace LudusaviPlaynite
                 new FluentArgs() {
                     {GAME, (FluentString)name},
                 }
-            );
+            ) + "\n\n" + this.NeedsCustomEntry(1);
         }
 
         public string BackUpOneGame_Success(OperationResult result)

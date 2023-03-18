@@ -8,6 +8,10 @@
   * When distinguishing PC and non-PC games,
     the plugin only considered the first platform listed in the game details.
     It now considers all platforms listed.
+  * On confirmation prompts, the plugin would preemptively say
+    "this game requires a matching custom entry" for non-PC games.
+    However, that assumption isn't always true.
+    Now, the plugin just adds this message onto the error notification when Ludusavi doesn't recognize a game.
 * Changed:
   * The recommended version of Ludusavi is now 0.16.0. You can download the latest release here:
     https://github.com/mtkennerly/ludusavi/releases
