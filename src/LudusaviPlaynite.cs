@@ -100,14 +100,7 @@ namespace LudusaviPlaynite
                     Description = translator.BackUpLastGame_Label(),
                     MenuSection = "@" + translator.Ludusavi(),
                     Action = async args => {
-                        if (!CanPerformOperationOnLastGamePlayed())
-                        {
-                            return;
-                        }
-                        if (UserConsents(translator.BackUpOneGame_Confirm(GetGameName(lastGamePlayed), RequiresCustomEntry(lastGamePlayed))))
-                        {
-                            await Task.Run(() => BackUpOneGame(lastGamePlayed, OperationTiming.Free));
-                        }
+                        await InitiateOperation(null, Operation.Backup, OperationTiming.Free, BackupCriteria.Game);
                     }
                 },
                 new MainMenuItem
@@ -130,14 +123,7 @@ namespace LudusaviPlaynite
                     Description = translator.RestoreLastGame_Label(),
                     MenuSection = "@" + translator.Ludusavi(),
                     Action = async args => {
-                        if (!CanPerformOperationOnLastGamePlayed())
-                        {
-                            return;
-                        }
-                        if (UserConsents(translator.RestoreOneGame_Confirm(GetGameName(lastGamePlayed), RequiresCustomEntry(lastGamePlayed))))
-                        {
-                            await Task.Run(() => RestoreOneGame(lastGamePlayed));
-                        }
+                        await InitiateOperation(null, Operation.Restore, OperationTiming.Free, BackupCriteria.Game);
                     }
                 },
                 new MainMenuItem
@@ -167,16 +153,23 @@ namespace LudusaviPlaynite
                     Description = translator.BackUpSelectedGames_Label(),
                     MenuSection = translator.Ludusavi(),
                     Action = async args => {
-                        if (!CanPerformOperation())
+                        if (args.Games.Count == 1)
                         {
-                            return;
+                            await InitiateOperation(args.Games[0], Operation.Backup, OperationTiming.Free, BackupCriteria.Game);
                         }
-                        if (UserConsents(translator.BackUpSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
+                        else
                         {
-                            foreach (var game in args.Games)
+                            if (!CanPerformOperation())
                             {
+                                return;
+                            }
+                            if (UserConsents(translator.BackUpSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
+                            {
+                                foreach (var game in args.Games)
                                 {
-                                    await Task.Run(() => BackUpOneGame(game, OperationTiming.Free));
+                                    {
+                                        await Task.Run(() => BackUpOneGame(game, OperationTiming.Free, BackupCriteria.Game));
+                                    }
                                 }
                             }
                         }
@@ -196,14 +189,7 @@ namespace LudusaviPlaynite
                             MenuSection = string.Format("{0} | {1}", translator.Ludusavi(), translator.RestoreSelectedGames_Label()),
                             Action = async args =>
                             {
-                                if (!CanPerformOperation())
-                                {
-                                    return;
-                                }
-                                if (UserConsents(translator.RestoreSelectedGames_Confirm(args.Games.Select(x => (GetGameName(x), RequiresCustomEntry(x))).ToList())))
-                                {
-                                    await Task.Run(() => RestoreOneGame(game, backup.Name));
-                                }
+                                await InitiateOperation(game, Operation.Restore, OperationTiming.Free, BackupCriteria.Game, backup);
                             }
                         }
                     );
@@ -227,7 +213,7 @@ namespace LudusaviPlaynite
                                 foreach (var game in args.Games)
                                 {
                                     {
-                                        await Task.Run(() => RestoreOneGame(game));
+                                        await Task.Run(() => RestoreOneGame(game, null, BackupCriteria.Game));
                                     }
                                 }
                             }
@@ -438,22 +424,12 @@ namespace LudusaviPlaynite
 
             if (prefs.Game.Restore.Do)
             {
-                var choice = Choice.No;
-                if (!prefs.Game.Restore.Ask || (choice = AskUser(translator.RestoreOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game)))).Accepted())
-                {
-                    gameError = RestoreOneGame(game);
-                }
-                UpdateTagsForChoice(game, choice, TAG_GAME_BACKUP_AND_RESTORE, TAG_GAME_NO_RESTORE, TAG_GAME_BACKUP);
+                var _task = InitiateOperation(game, Operation.Restore, OperationTiming.BeforePlay, BackupCriteria.Game);
             }
 
             if (prefs.Platform.Restore.Do)
             {
-                var choice = Choice.No;
-                if (!prefs.Platform.Restore.Ask || (choice = AskUser(translator.RestoreOneGame_Confirm(game.Platforms[0].Name, true))).Accepted())
-                {
-                    platformError = RestoreOneGame(game, null, BackupCriteria.Platform);
-                }
-                UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP_AND_RESTORE, TAG_PLATFORM_NO_RESTORE, TAG_PLATFORM_BACKUP);
+                var _task = InitiateOperation(game, Operation.Restore, OperationTiming.BeforePlay, BackupCriteria.Platform);
             }
 
             if (!String.IsNullOrEmpty(gameError.Message) && !gameError.Empty)
@@ -500,22 +476,12 @@ namespace LudusaviPlaynite
 
             if (prefs.Game.Backup.Do)
             {
-                var choice = Choice.No;
-                if (!prefs.Game.Backup.Ask || (choice = AskUser(translator.BackUpOneGame_Confirm(GetGameName(game), RequiresCustomEntry(game)))).Accepted())
-                {
-                    Task.Run(() => BackUpOneGame(game, OperationTiming.AfterPlay));
-                }
-                UpdateTagsForChoice(game, choice, TAG_GAME_BACKUP, TAG_GAME_NO_BACKUP);
+                var _task = InitiateOperation(game, Operation.Backup, OperationTiming.AfterPlay, BackupCriteria.Game);
             }
 
             if (prefs.Platform.Backup.Do)
             {
-                var choice = Choice.No;
-                if (!prefs.Platform.Backup.Ask || (choice = AskUser(translator.BackUpOneGame_Confirm(game.Platforms[0].Name, true))).Accepted())
-                {
-                    Task.Run(() => BackUpOneGame(game, OperationTiming.AfterPlay, BackupCriteria.Platform));
-                }
-                UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP, TAG_PLATFORM_NO_BACKUP);
+                var _task = InitiateOperation(game, Operation.Backup, OperationTiming.AfterPlay, BackupCriteria.Platform);
             }
         }
 
@@ -822,6 +788,24 @@ namespace LudusaviPlaynite
             return GetDictValue(settings.AlternativeTitles, game.Name, null);
         }
 
+        private string GetGamePlatform(Game game)
+        {
+            return game?.Platforms?.ElementAtOrDefault(0)?.Name ?? "<unknown>";
+        }
+
+        private string GetDisplayName(Game game, BackupCriteria criteria)
+        {
+            switch (criteria)
+            {
+                case BackupCriteria.Game:
+                    return GetGameName(game);
+                case BackupCriteria.Platform:
+                    return GetGamePlatform(game);
+                default:
+                    throw new InvalidOperationException(String.Format("GetDisplayName got unexpected criteria: {0}", criteria));
+            }
+        }
+
         bool IsOnSteam(Game game)
         {
             return game.Source?.Name == "Steam"
@@ -891,9 +875,105 @@ namespace LudusaviPlaynite
             return officialName;
         }
 
-        private void BackUpOneGame(Game game, OperationTiming timing)
+        private async Task InitiateOperation(Game game, Operation operation, OperationTiming timing, BackupCriteria criteria, ApiBackup? backup = null)
         {
-            this.BackUpOneGame(game, timing, BackupCriteria.Game);
+            if (game == null)
+            {
+                if (!CanPerformOperationOnLastGamePlayed())
+                {
+                    return;
+                }
+                game = this.lastGamePlayed;
+            }
+            else
+            {
+                if (!CanPerformOperation())
+                {
+                    return;
+                }
+            }
+
+            var prefs = GetPlayPreferences(game);
+            var ask = prefs.ShouldAsk(timing, criteria, operation);
+            var displayName = GetDisplayName(game, criteria);
+            var needsCustomEntry = criteria.ByGame() ? RequiresCustomEntry(game) : true;
+            var consented = !ask;
+
+            if (ask)
+            {
+                if (timing == OperationTiming.Free)
+                {
+                    switch (operation)
+                    {
+                        case Operation.Backup:
+                            consented = UserConsents(translator.BackUpOneGame_Confirm(displayName, needsCustomEntry));
+                            break;
+                        case Operation.Restore:
+                            consented = UserConsents(translator.RestoreOneGame_Confirm(displayName, needsCustomEntry));
+                            break;
+                    }
+                }
+                else
+                {
+                    var choice = Choice.No;
+                    switch (operation)
+                    {
+                        case Operation.Backup:
+                            choice = AskUser(translator.BackUpOneGame_Confirm(displayName, needsCustomEntry));
+                            break;
+                        case Operation.Restore:
+                            choice = AskUser(translator.RestoreOneGame_Confirm(displayName, needsCustomEntry));
+                            break;
+                    }
+
+                    consented = choice.Accepted();
+
+                    switch (operation)
+                    {
+                        case Operation.Backup:
+                            switch (criteria)
+                            {
+                                case BackupCriteria.Game:
+                                    UpdateTagsForChoice(game, choice, TAG_GAME_BACKUP, TAG_GAME_NO_BACKUP);
+                                    break;
+                                case BackupCriteria.Platform:
+                                    UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP, TAG_PLATFORM_NO_BACKUP);
+                                    break;
+                            }
+                            break;
+                        case Operation.Restore:
+                            switch (criteria)
+                            {
+                                case BackupCriteria.Game:
+                                    UpdateTagsForChoice(game, choice, TAG_GAME_BACKUP_AND_RESTORE, TAG_GAME_NO_RESTORE, TAG_GAME_BACKUP);
+                                    break;
+                                case BackupCriteria.Platform:
+                                    UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP_AND_RESTORE, TAG_PLATFORM_NO_RESTORE, TAG_PLATFORM_BACKUP);
+                                    break;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            if (!consented)
+            {
+                return;
+            }
+
+            switch (operation)
+            {
+                case Operation.Backup:
+                    await Task.Run(() => BackUpOneGame(game, timing, criteria));
+                    break;
+                case Operation.Restore:
+                    var error = await Task.Run(() => RestoreOneGame(game, backup, criteria));
+                    if (timing == OperationTiming.BeforePlay && !String.IsNullOrEmpty(error.Message) && !error.Empty)
+                    {
+                        ShowError(error.Message);
+                    }
+                    break;
+            }
         }
 
         private void BackUpOneGame(Game game, OperationTiming timing, BackupCriteria criteria)
@@ -1015,7 +1095,7 @@ namespace LudusaviPlaynite
 
             if (prefs.Game.Backup.Do && !prefs.Game.Backup.Ask && settings.DoBackupDuringPlay)
             {
-                Task.Run(() => BackUpOneGame(game, OperationTiming.DuringPlay));
+                Task.Run(() => BackUpOneGame(game, OperationTiming.DuringPlay, BackupCriteria.Game));
             }
 
             if (prefs.Platform.Backup.Do && !prefs.Platform.Backup.Ask && settings.DoBackupDuringPlay)
@@ -1024,17 +1104,7 @@ namespace LudusaviPlaynite
             }
         }
 
-        private RestorationError RestoreOneGame(Game game)
-        {
-            return this.RestoreOneGame(game, null);
-        }
-
-        private RestorationError RestoreOneGame(Game game, string backup)
-        {
-            return this.RestoreOneGame(game, backup, BackupCriteria.Game);
-        }
-
-        private RestorationError RestoreOneGame(Game game, string backup, BackupCriteria criteria)
+        private RestorationError RestoreOneGame(Game game, ApiBackup? backup, BackupCriteria criteria)
         {
             RestorationError error = new RestorationError
             {
@@ -1063,7 +1133,7 @@ namespace LudusaviPlaynite
                 }
             }
 
-            var invocation = new Invocation(Mode.Restore).Path(settings.BackupPath).Game(name).Backup(backup);
+            var invocation = new Invocation(Mode.Restore).Path(settings.BackupPath).Game(name).Backup(backup?.Name);
 
             var (code, response) = InvokeLudusavi(invocation);
             if (!this.appVersion.supportsFindCommand() && criteria.ByGame() && AlternativeTitle(game) == null)

@@ -206,11 +206,6 @@ namespace LudusaviPlaynite
         public string BackUpSelectedGames_Confirm(List<(string, bool)> games)
         {
             var count = games.Count();
-            if (count == 1)
-            {
-                return BackUpOneGame_Confirm(games[0].Item1, games[0].Item2);
-            }
-
             var formattedNames = GetSelectionFormattedNames(games.Select(x => x.Item1));
 
             return Translate(
@@ -255,12 +250,8 @@ namespace LudusaviPlaynite
         public string RestoreSelectedGames_Confirm(List<(string, bool)> games)
         {
             var count = games.Count();
-            if (count == 1)
-            {
-                return RestoreOneGame_Confirm(games[0].Item1, games[0].Item2);
-            }
-
             var formattedNames = GetSelectionFormattedNames(games.Select(x => x.Item1));
+
             return Translate(
                 "restore-selected-games.confirm",
                 new FluentArgs() {

@@ -11,6 +11,12 @@ namespace LudusaviPlaynite
         public DateTime when;
     }
 
+    public enum Operation
+    {
+        Backup,
+        Restore,
+    }
+
     public enum Mode
     {
         Backup,
@@ -230,6 +236,53 @@ namespace LudusaviPlaynite
     {
         public OperationPreferences Game;
         public OperationPreferences Platform;
+    }
+
+    public static class PlayPreferencesExt
+    {
+        public static bool ShouldAsk(this PlayPreferences prefs, OperationTiming timing, BackupCriteria criteria, Operation operation)
+        {
+            var byPref = false;
+            switch (criteria)
+            {
+                case BackupCriteria.Game:
+                    switch (operation)
+                    {
+                        case Operation.Backup:
+                            byPref = prefs.Game.Backup.Ask;
+                            break;
+                        case Operation.Restore:
+                            byPref = prefs.Game.Restore.Ask;
+                            break;
+                    }
+                    break;
+                case BackupCriteria.Platform:
+                    switch (operation)
+                    {
+                        case Operation.Backup:
+                            byPref = prefs.Platform.Backup.Ask;
+                            break;
+                        case Operation.Restore:
+                            byPref = prefs.Platform.Restore.Ask;
+                            break;
+                    }
+                    break;
+            }
+
+            switch (timing)
+            {
+                case OperationTiming.Free:
+                    return true;
+                case OperationTiming.BeforePlay:
+                    return byPref;
+                case OperationTiming.DuringPlay:
+                    return false;
+                case OperationTiming.AfterPlay:
+                    return byPref;
+                default:
+                    return false;
+            }
+        }
     }
 
     public struct OperationResult
