@@ -1,6 +1,8 @@
 ## Unreleased
 
 * Changed:
+  * The recommended version of Ludusavi is now 0.16.0. You can download the latest release here:
+    https://github.com/mtkennerly/ludusavi/releases
   * Updated translations.
     (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
 

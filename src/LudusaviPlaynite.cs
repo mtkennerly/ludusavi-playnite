@@ -19,7 +19,7 @@ namespace LudusaviPlaynite
 {
     public class LudusaviPlaynite : GenericPlugin
     {
-        private readonly Version RECOMMENDED_APP_VERSION = new Version(0, 15, 2);
+        private readonly Version RECOMMENDED_APP_VERSION = new Version(0, 16, 0);
 
         private const string TAG_PREFIX = "[Ludusavi] ";
 

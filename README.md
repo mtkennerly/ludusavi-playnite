@@ -20,7 +20,7 @@ If you'd like to help translate this plugin into other languages,
 ### Ludusavi
 Refer to the [Ludusavi project](https://github.com/mtkennerly/ludusavi)
 for instructions on how to install Ludusavi itself.
-Ludusavi 0.14.0 or newer is recommended for full functionality,
+Ludusavi 0.16.0 or newer is recommended for full functionality,
 but version 0.7.0 or newer will work (albeit without some features enabled).
 
 By default, the plugin will look for the Ludusavi executable in your `PATH`
