@@ -75,7 +75,7 @@ remove-tag-for-selected-games = Tag: "{ $tag }" - Rimuovi per i giochi seleziona
 operation-still-pending = { ludusavi } sta ancora lavorando su una richiesta precedente. Si prega di riprovare quando vedi la notifica che è finita.
 no-game-played-yet = Non hai ancora giocato nulla in questa sessione.
 unable-to-run-ludusavi = Impossibile avviare { ludusavi }.
-cannot-open-folder = Cannot open folder.
+cannot-open-folder = Impossibile aprire la cartella.
 
 ## Settings
 
@@ -98,6 +98,7 @@ config-do-platform-restore-on-non-pc-game-starting = Ripristina anche i dati di 
 config-ask-platform-backup-on-non-pc-game-stopped = Chiedi prima invece di farlo automaticamente
 config-do-backup-during-play = Effettua il backup dei giochi in un intervallo durante la partita, anche se il backup sarebbe stato effettuato dopo la partita senza chiedere
 config-ignore-benign-notifications = Mostra solo le notifiche in caso di fallimento
+config-tag-games-with-backups = Etichetta automaticamente i giochi con i backup come "{ $tag }"
 label-minutes = Minuti:
 option-simple = Semplice
 option-none = Nessuna
@@ -106,3 +107,5 @@ option-none = Nessuna
 
 upgrade-prompt = Installa Ludusavi { $version } o più recente per la migliore esperienza. Clicca per vedere l'ultima versione.
 unrecognized-game = Ludusavi non riconosce { $game }
+look-up-as-other-title = Cerca con un altro titolo
+look-up-as-normal-title = Cerca con il titolo predefinito

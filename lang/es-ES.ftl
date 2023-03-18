@@ -98,6 +98,7 @@ config-do-platform-restore-on-non-pc-game-starting = Restaurar también los dato
 config-ask-platform-backup-on-non-pc-game-stopped = Preguntar primero en lugar de hacerlo automáticamente
 config-do-backup-during-play = Respaldar juegos en un intervalo mientras se juega, si también serían respaldadas después del juego sin preguntar
 config-ignore-benign-notifications = Mostrar sólo notificaciones por fallo
+config-tag-games-with-backups = Automatically tag games with backups as "{ $tag }"
 label-minutes = Minutos:
 option-simple = Simple
 option-none = None
@@ -106,3 +107,5 @@ option-none = None
 
 upgrade-prompt = Install Ludusavi { $version } or newer for the best experience. Click to view the latest release.
 unrecognized-game = Ludusavi does not recognize { $game }
+look-up-as-other-title = Look up with another title
+look-up-as-normal-title = Look up with default title

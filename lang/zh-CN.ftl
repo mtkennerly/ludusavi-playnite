@@ -90,6 +90,7 @@ config-do-platform-restore-on-non-pc-game-starting = 在游玩非 PC 游戏前�
 config-ask-platform-backup-on-non-pc-game-stopped = “先奏后斩”
 config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
 config-ignore-benign-notifications = 仅在失败时显示通知
+config-tag-games-with-backups = Automatically tag games with backups as "{ $tag }"
 label-minutes = Minutes:
 option-simple = Simple
 option-none = None
@@ -98,3 +99,5 @@ option-none = None
 
 upgrade-prompt = Install Ludusavi { $version } or newer for the best experience. Click to view the latest release.
 unrecognized-game = Ludusavi does not recognize { $game }
+look-up-as-other-title = Look up with another title
+look-up-as-normal-title = Look up with default title
