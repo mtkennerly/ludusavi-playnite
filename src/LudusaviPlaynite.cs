@@ -451,7 +451,7 @@ namespace LudusaviPlaynite
                 var choice = Choice.No;
                 if (!prefs.Platform.Restore.Ask || (choice = AskUser(translator.RestoreOneGame_Confirm(game.Platforms[0].Name, true))).Accepted())
                 {
-                    platformError = RestoreOneGame(game, null, new BackupCriteria { ByPlatform = true });
+                    platformError = RestoreOneGame(game, null, BackupCriteria.Platform);
                 }
                 UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP_AND_RESTORE, TAG_PLATFORM_NO_RESTORE, TAG_PLATFORM_BACKUP);
             }
@@ -513,7 +513,7 @@ namespace LudusaviPlaynite
                 var choice = Choice.No;
                 if (!prefs.Platform.Backup.Ask || (choice = AskUser(translator.BackUpOneGame_Confirm(game.Platforms[0].Name, true))).Accepted())
                 {
-                    Task.Run(() => BackUpOneGame(game, OperationTiming.AfterPlay, new BackupCriteria { ByPlatform = true }));
+                    Task.Run(() => BackUpOneGame(game, OperationTiming.AfterPlay, BackupCriteria.Platform));
                 }
                 UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP, TAG_PLATFORM_NO_BACKUP);
             }
@@ -856,7 +856,7 @@ namespace LudusaviPlaynite
             {
                 invocation.FindBackup();
             }
-            if (!criteria.ByPlatform && AlternativeTitle(game) == null)
+            if (criteria.ByGame() && AlternativeTitle(game) == null)
             {
                 // There can't be an alt title because the Steam ID/etc would take priority over it.
 
@@ -893,13 +893,13 @@ namespace LudusaviPlaynite
 
         private void BackUpOneGame(Game game, OperationTiming timing)
         {
-            this.BackUpOneGame(game, timing, new BackupCriteria { ByPlatform = false });
+            this.BackUpOneGame(game, timing, BackupCriteria.Game);
         }
 
         private void BackUpOneGame(Game game, OperationTiming timing, BackupCriteria criteria)
         {
             pendingOperation = true;
-            var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameNameWithAlt(game);
+            var name = criteria.ByPlatform() ? game.Platforms[0].Name : GetGameNameWithAlt(game);
             var displayName = game.Name;
             var refresh = true;
 
@@ -922,7 +922,7 @@ namespace LudusaviPlaynite
 
             var (code, response) = InvokeLudusavi(invocation);
 
-            if (!this.appVersion.supportsFindCommand() && !criteria.ByPlatform && AlternativeTitle(game) == null)
+            if (!this.appVersion.supportsFindCommand() && criteria.ByGame() && AlternativeTitle(game) == null)
             {
                 if (response?.Errors.UnknownGames != null && IsOnSteam(game))
                 {
@@ -1020,7 +1020,7 @@ namespace LudusaviPlaynite
 
             if (prefs.Platform.Backup.Do && !prefs.Platform.Backup.Ask && settings.DoBackupDuringPlay)
             {
-                Task.Run(() => BackUpOneGame(game, OperationTiming.DuringPlay, new BackupCriteria { ByPlatform = true }));
+                Task.Run(() => BackUpOneGame(game, OperationTiming.DuringPlay, BackupCriteria.Platform));
             }
         }
 
@@ -1031,7 +1031,7 @@ namespace LudusaviPlaynite
 
         private RestorationError RestoreOneGame(Game game, string backup)
         {
-            return this.RestoreOneGame(game, backup, new BackupCriteria { ByPlatform = false });
+            return this.RestoreOneGame(game, backup, BackupCriteria.Game);
         }
 
         private RestorationError RestoreOneGame(Game game, string backup, BackupCriteria criteria)
@@ -1042,7 +1042,7 @@ namespace LudusaviPlaynite
                 Empty = false,
             };
             pendingOperation = true;
-            var name = criteria.ByPlatform ? game.Platforms[0].Name : GetGameNameWithAlt(game);
+            var name = criteria.ByPlatform() ? game.Platforms[0].Name : GetGameNameWithAlt(game);
             var displayName = game.Name;
 
             if (this.appVersion.supportsFindCommand())
@@ -1066,7 +1066,7 @@ namespace LudusaviPlaynite
             var invocation = new Invocation(Mode.Restore).Path(settings.BackupPath).Game(name).Backup(backup);
 
             var (code, response) = InvokeLudusavi(invocation);
-            if (!this.appVersion.supportsFindCommand() && !criteria.ByPlatform && AlternativeTitle(game) == null)
+            if (!this.appVersion.supportsFindCommand() && criteria.ByGame() && AlternativeTitle(game) == null)
             {
                 if (response?.Errors.UnknownGames != null && IsOnSteam(game) && this.appVersion.supportsRestoreBySteamId())
                 {

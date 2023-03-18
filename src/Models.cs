@@ -238,9 +238,23 @@ namespace LudusaviPlaynite
         public ApiResponse Response;
     }
 
-    public struct BackupCriteria
+    public enum BackupCriteria
     {
-        public bool ByPlatform;
+        Game,
+        Platform,
+    }
+
+    public static class BackupCriteriaExt
+    {
+        public static bool ByGame(this BackupCriteria criteria)
+        {
+            return criteria == BackupCriteria.Game;
+        }
+
+        public static bool ByPlatform(this BackupCriteria criteria)
+        {
+            return criteria == BackupCriteria.Platform;
+        }
     }
 
     public enum OperationTiming
