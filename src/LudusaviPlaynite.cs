@@ -818,8 +818,8 @@ namespace LudusaviPlaynite
             var pcNames = new List<string> { "Macintosh", "PC", "PC (DOS)", "PC (Linux)", "PC (Windows)" };
             return game.Platforms == null
                 || game.Platforms.Count == 0
-                || pcSpecs.Any(x => x == game.Platforms[0].SpecificationId)
-                || pcNames.Any(x => x == game.Platforms[0].Name);
+                || game.Platforms.Any(x => pcSpecs.Contains(x.SpecificationId))
+                || game.Platforms.Any(x => pcNames.Contains(x.Name));
         }
 
         bool RequiresCustomEntry(Game game)

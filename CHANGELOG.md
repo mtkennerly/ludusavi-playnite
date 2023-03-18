@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Fixed:
+  * When distinguishing PC and non-PC games,
+    the plugin only considered the first platform listed in the game details.
+    It now considers all platforms listed.
 * Changed:
   * The recommended version of Ludusavi is now 0.16.0. You can download the latest release here:
     https://github.com/mtkennerly/ludusavi/releases
