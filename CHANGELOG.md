@@ -1,6 +1,10 @@
 ## Unreleased
 
 * Fixed:
+  * If a game had multiple platforms listed in its metadata,
+    then it would not trigger any automatic backups before/during/after play
+    (manual backups worked as expected).
+    The plugin now properly handles games with multiple platforms.
   * When distinguishing PC and non-PC games,
     the plugin only considered the first platform listed in the game details.
     It now considers all platforms listed.

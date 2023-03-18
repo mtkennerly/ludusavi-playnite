@@ -755,7 +755,7 @@ namespace LudusaviPlaynite
 
         private bool ShouldSkipGame(Game game)
         {
-            return HasTag(game, TAG_SKIP) || (game.Platforms != null && game.Platforms.Count > 1);
+            return HasTag(game, TAG_SKIP);
         }
 
         string GetGameName(Game game)
@@ -788,9 +788,9 @@ namespace LudusaviPlaynite
             return GetDictValue(settings.AlternativeTitles, game.Name, null);
         }
 
-        private string GetGamePlatform(Game game)
+        private Platform GetGamePlatform(Game game)
         {
-            return game?.Platforms?.ElementAtOrDefault(0)?.Name ?? "<unknown>";
+            return game?.Platforms?.ElementAtOrDefault(0);
         }
 
         private string GetDisplayName(Game game, BackupCriteria criteria)
@@ -800,7 +800,7 @@ namespace LudusaviPlaynite
                 case BackupCriteria.Game:
                     return GetGameName(game);
                 case BackupCriteria.Platform:
-                    return GetGamePlatform(game);
+                    return GetGamePlatform(game)?.Name ?? "unknown platform";
                 default:
                     throw new InvalidOperationException(String.Format("GetDisplayName got unexpected criteria: {0}", criteria));
             }
@@ -891,6 +891,11 @@ namespace LudusaviPlaynite
                 {
                     return;
                 }
+            }
+
+            if (criteria.ByPlatform() && GetGamePlatform(game) == null)
+            {
+                return;
             }
 
             var prefs = GetPlayPreferences(game);
@@ -1111,6 +1116,7 @@ namespace LudusaviPlaynite
                 Message = null,
                 Empty = false,
             };
+
             pendingOperation = true;
             var name = criteria.ByPlatform() ? game.Platforms[0].Name : GetGameNameWithAlt(game);
             var displayName = game.Name;
@@ -1307,7 +1313,8 @@ namespace LudusaviPlaynite
                 && (IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc || HasTag(game, TAG_GAME_BACKUP) || HasTag(game, TAG_GAME_BACKUP_AND_RESTORE));
             var platformBackupDo = (settings.DoPlatformBackupOnNonPcGameStopped || HasTag(game, TAG_PLATFORM_BACKUP) || HasTag(game, TAG_PLATFORM_BACKUP_AND_RESTORE))
                 && !HasTag(game, TAG_PLATFORM_NO_BACKUP)
-                && !IsOnPc(game);
+                && !IsOnPc(game)
+                && GetGamePlatform(game) != null;
 
             var prefs = new PlayPreferences
             {
