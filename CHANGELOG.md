@@ -1,4 +1,4 @@
-## Unreleased
+## v0.12.1 (2023-03-19)
 
 * Fixed:
   * If a game had multiple platforms listed in its metadata,

@@ -1,5 +1,35 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.12.1
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2023-03-19
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.12.1/ludusavi-playnite-v0.12.1.pext
+    Changelog:
+      - >-
+        Fixed: If a game had multiple platforms listed in its metadata,
+        then it would not trigger any automatic backups before/during/after play
+        (manual backups worked as expected).
+        The plugin now properly handles games with multiple platforms.
+      - >-
+        Fixed: When distinguishing PC and non-PC games,
+        the plugin only considered the first platform listed in the game details.
+        It now considers all platforms listed.
+      - >-
+        Fixed: On confirmation prompts, the plugin would preemptively say
+        "this game requires a matching custom entry" for non-PC games.
+        However, that assumption isn't always true.
+        Now, the plugin just adds this message onto the error notification when Ludusavi doesn't recognize a game.
+      - >-
+        Fixed: If you had both game- and platform-based automatic backups enabled after play,
+        then the game backup might not be done yet when the platform backup was attempted,
+        resulting in the platform backup aborting.
+        The plugin now waits until the game backup is done before attempting the platform backup.
+      - >-
+        Changed: The recommended version of Ludusavi is now 0.16.0. You can download the latest release here:
+        https://github.com/mtkennerly/ludusavi/releases
+      - >-
+        Changed: Updated translations.
+        (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
   - Version: 0.12.0
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2023-02-28
