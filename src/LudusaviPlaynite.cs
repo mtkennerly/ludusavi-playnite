@@ -413,12 +413,12 @@ namespace LudusaviPlaynite
 
             if (prefs.Game.Restore.Do)
             {
-                var _task = InitiateOperation(game, Operation.Restore, OperationTiming.BeforePlay, BackupCriteria.Game);
+                InitiateOperationSync(game, Operation.Restore, OperationTiming.BeforePlay, BackupCriteria.Game);
             }
 
             if (prefs.Platform.Restore.Do)
             {
-                var _task = InitiateOperation(game, Operation.Restore, OperationTiming.BeforePlay, BackupCriteria.Platform);
+                InitiateOperationSync(game, Operation.Restore, OperationTiming.BeforePlay, BackupCriteria.Platform);
             }
 
             if (settings.DoBackupDuringPlay)
@@ -454,15 +454,18 @@ namespace LudusaviPlaynite
                 }
             }
 
-            if (prefs.Game.Backup.Do)
+            Task.Run(async () =>
             {
-                var _task = InitiateOperation(game, Operation.Backup, OperationTiming.AfterPlay, BackupCriteria.Game);
-            }
+                if (prefs.Game.Backup.Do)
+                {
+                    await InitiateOperation(game, Operation.Backup, OperationTiming.AfterPlay, BackupCriteria.Game);
+                }
 
-            if (prefs.Platform.Backup.Do)
-            {
-                var _task = InitiateOperation(game, Operation.Backup, OperationTiming.AfterPlay, BackupCriteria.Platform);
-            }
+                if (prefs.Platform.Backup.Do)
+                {
+                    await InitiateOperation(game, Operation.Backup, OperationTiming.AfterPlay, BackupCriteria.Platform);
+                }
+            });
         }
 
         public override ISettings GetSettings(bool firstRunSettings)
@@ -850,7 +853,7 @@ namespace LudusaviPlaynite
             return officialName;
         }
 
-        private async Task InitiateOperation(Game game, Operation operation, OperationTiming timing, BackupCriteria criteria, ApiBackup? backup = null)
+        private void InitiateOperationSync(Game game, Operation operation, OperationTiming timing, BackupCriteria criteria, ApiBackup? backup = null)
         {
             if (game == null)
             {
@@ -943,16 +946,21 @@ namespace LudusaviPlaynite
             switch (operation)
             {
                 case Operation.Backup:
-                    await Task.Run(() => BackUpOneGame(game, timing, criteria));
+                    BackUpOneGame(game, timing, criteria);
                     break;
                 case Operation.Restore:
-                    var error = await Task.Run(() => RestoreOneGame(game, backup, criteria));
+                    var error = RestoreOneGame(game, backup, criteria);
                     if (timing == OperationTiming.BeforePlay && !String.IsNullOrEmpty(error.Message) && !error.Empty)
                     {
                         ShowError(error.Message);
                     }
                     break;
             }
+        }
+
+        private async Task InitiateOperation(Game game, Operation operation, OperationTiming timing, BackupCriteria criteria, ApiBackup? backup = null)
+        {
+            await Task.Run(() => InitiateOperationSync(game, operation, timing, criteria, backup));
         }
 
         private void BackUpOneGame(Game game, OperationTiming timing, BackupCriteria criteria)
@@ -1071,16 +1079,18 @@ namespace LudusaviPlaynite
         private void BackUpOneGameDuringPlay(Game game)
         {
             var prefs = GetPlayPreferences(game);
-
-            if (prefs.Game.Backup.Do && !prefs.Game.Backup.Ask && settings.DoBackupDuringPlay)
+            Task.Run(() =>
             {
-                Task.Run(() => BackUpOneGame(game, OperationTiming.DuringPlay, BackupCriteria.Game));
-            }
+                if (prefs.Game.Backup.Do && !prefs.Game.Backup.Ask && settings.DoBackupDuringPlay)
+                {
+                    BackUpOneGame(game, OperationTiming.DuringPlay, BackupCriteria.Game);
+                }
 
-            if (prefs.Platform.Backup.Do && !prefs.Platform.Backup.Ask && settings.DoBackupDuringPlay)
-            {
-                Task.Run(() => BackUpOneGame(game, OperationTiming.DuringPlay, BackupCriteria.Platform));
-            }
+                if (prefs.Platform.Backup.Do && !prefs.Platform.Backup.Ask && settings.DoBackupDuringPlay)
+                {
+                    BackUpOneGame(game, OperationTiming.DuringPlay, BackupCriteria.Platform);
+                }
+            });
         }
 
         private RestorationError RestoreOneGame(Game game, ApiBackup? backup, BackupCriteria criteria)

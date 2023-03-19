@@ -12,6 +12,10 @@
     "this game requires a matching custom entry" for non-PC games.
     However, that assumption isn't always true.
     Now, the plugin just adds this message onto the error notification when Ludusavi doesn't recognize a game.
+  * If you had both game- and platform-based automatic backups enabled after play,
+    then the game backup might not be done yet when the platform backup was attempted,
+    resulting in the platform backup aborting.
+    The plugin now waits until the game backup is done before attempting the platform backup.
 * Changed:
   * The recommended version of Ludusavi is now 0.16.0. You can download the latest release here:
     https://github.com/mtkennerly/ludusavi/releases
