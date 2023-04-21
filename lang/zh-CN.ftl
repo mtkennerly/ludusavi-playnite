@@ -1,4 +1,4 @@
-ludusavi = 录读加一-Ludusavi
+ludusavi = Ludusavi
 file-filter-executable = 可执行文件
 button-browse = 浏览
 button-open = 打开
@@ -20,7 +20,7 @@ needs-custom-entry =
 back-up-specific-game =
     .confirm = 要备份 { $game } 的存档数据吗？
     .on-success = 已备份 { $game } 的存档数据。（{ $processed-size }）
-    .on-unchanged = Nothing new to back up for { $game }
+    .on-unchanged =  { $game } 存档无变化，无需备份
     .on-empty = 没有找到可以备份的 { $game } 的存档数据
     .on-failure = 已备份 { $game } 的存档（{ $total-size } 中的 { $processed-size }），但有些存档失败了
 # Defers to `back-up-specific-game.*`.
@@ -33,15 +33,15 @@ back-up-all-games = 为所有游戏备份存档
     .confirm = 要备份录读加一能找到的所有游戏的存档吗？
     .on-success = 已备份 { $processed-games } 游戏的存档（{ $processed-size }）；点击查看完整列表
     .on-failure = 已备份 { $total-games } 中的 { $processed-games } 游戏的存档（{ $total-size } 中的 { $processed-size }），但有些失败了；点击查看完整列表
-back-up-during-play-on-success = Triggered { $total-backups } backups while playing { $game }
-back-up-during-play-on-failure = Triggered { $total-backups } backups while playing { $game }, of which { $failed-backups } failed
+back-up-during-play-on-success = 在游玩 { $game } 的时候触发了 { $total-backups } 备份，备份成功!
+back-up-during-play-on-failure = 在游玩 { $game } 的时候触发了 { $total-backups } 备份, 但 { $failed-backups } 备份失败了!
 
 ## Restore
 
 restore-specific-game =
     .confirm = 要恢复 { $game } 的存档数据吗？
     .on-success = 已恢复 { $game } 的存档数据。（{ $processed-size }）
-    .on-unchanged = Nothing new to restore for { $game }
+    .on-unchanged = { $game } 已是最新存档，无需恢复
     .on-empty = 没有找到可以恢复的 { $game } 的存档数据
     .on-failure = 已恢复 { $game } 的存档（{ $total-size } 中的 { $processed-size }），但有些存档失败了
 # Defers to `restore-specific-game.*`.
@@ -51,7 +51,7 @@ restore-last-game = 为最近游玩的游戏恢复存档
 restore-selected-games = 为所选游戏恢复存档
     .confirm = 要恢复 { $total-games } 所选游戏的存档数据吗？
 restore-all-games = 为所有游戏恢复存档
-    .confirm = 要恢复录读加一能找到的所有游戏的存档吗？
+    .confirm = 要恢复Ludusavi能找到的所有游戏的存档吗？
     .on-success = 已恢复 { $processed-games } 游戏的存档（{ $processed-size }）；点击查看完整列表
     .on-failure = 已恢复 { $total-games } 中的 { $processed-games } 游戏的存档（{ $total-size } 中的 { $processed-size }），但有些失败了；点击查看完整列表
 
@@ -64,17 +64,17 @@ remove-tag-for-selected-games = 标签："{ $tag }" - 从所选游戏移除
 
 ## Generic errors
 
-operation-still-pending = { ludusavi } 仍在处理前一请求。请在看到它已完成的通知后再试。
+operation-still-pending = { ludusavi } 仍在处理前一个请求。请在看到它已完成的通知后再试。
 no-game-played-yet = 您还未在此次会话中玩任何东西。
 unable-to-run-ludusavi = 无法运行 { ludusavi }。
-cannot-open-folder = Cannot open folder.
+cannot-open-folder = 无法打开目录.
 
 ## Settings
 
-config-executable-path = 录读加一可执行文件的名称或完整路径：
-config-backup-path = 存储备份的目录的完整路径：
-config-override-backup-format = Override backup format.
-config-override-backup-compression = Override backup compression.
+config-executable-path = Ludusavi可执行文件的名称或完整路径：
+config-backup-path = 备份文件存放目录的完整路径：
+config-override-backup-format = 修改备份文件格式
+config-override-backup-compression = 修改备份文件的压缩方案
 config-override-backup-retention = Override backup retention.
 config-full-backup-limit = Max full backups per game:
 config-differential-backup-limit = Max differential backups per full backup:
