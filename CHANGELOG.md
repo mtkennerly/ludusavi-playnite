@@ -1,3 +1,9 @@
+## Unreleased
+
+* Changed:
+  * Updated translations, including new translations for Japanese and Russian.
+    (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
+
 ## v0.12.1 (2023-03-19)
 
 * Fixed:

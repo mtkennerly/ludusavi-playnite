@@ -11,8 +11,8 @@ badge-failed = 已失败
 badge-ignored = 已忽略
 needs-custom-entry =
     { $total-games ->
-         [one] 该游戏需要的
-        *[other] 某些游戏需要的
+        [one] 该游戏需要的
+       *[other] 某些游戏需要的
     } 某个匹配的自定义条目于 { ludusavi }.
 
 ## Backup
@@ -20,7 +20,7 @@ needs-custom-entry =
 back-up-specific-game =
     .confirm = 要备份 { $game } 的存档数据吗？
     .on-success = 已备份 { $game } 的存档数据。（{ $processed-size }）
-    .on-unchanged =  { $game } 存档无变化，无需备份
+    .on-unchanged = { $game } 存档无变化，无需备份
     .on-empty = 没有找到 { $game } 可以备份的存档数据
     .on-failure = 已备份 { $game } 的存档（{ $total-size } 中的 { $processed-size }），但有些存档失败了
 # Defers to `back-up-specific-game.*`.
