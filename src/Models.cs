@@ -486,4 +486,23 @@ namespace LudusaviPlaynite
         [JsonProperty("games")]
         public Dictionary<string, ApiGame> Games;
     }
+
+    public class Manifest : Dictionary<string, ManifestGame>
+    { }
+
+    public struct ManifestGame
+    {
+        [JsonProperty("files")]
+        public Dictionary<string, object> Files;
+        [JsonProperty("registry")]
+        public Dictionary<string, object> Registry;
+        [JsonProperty("steam")]
+        public ManifestSteam Steam;
+    }
+
+    public class ManifestSteam
+    {
+        [JsonProperty("id")]
+        public int? Id;
+    }
 }

@@ -67,7 +67,10 @@ However, the game will still be included when doing a full backup of all games f
 `[Ludusavi] Skip` takes precedence over the other tags,
 and the `no` tags take precedence over their positive counterparts.
 
-The `[Ludusavi] Backed up` tag is only informational and does not have special behavior.
+The following tags are only informational and do not have special behavior:
+
+* `[Ludusavi] Backed up`
+* `[Ludusavi] Unknown save data`
 
 ## Screenshots
 ### Prompt after exiting a game

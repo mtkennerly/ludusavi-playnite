@@ -39,6 +39,7 @@ namespace LudusaviPlaynite
         private const string TAG_PLATFORM_NO_RESTORE = TAG_PREFIX + "Platform: no restore";
 
         public const string TAG_BACKED_UP = TAG_PREFIX + "Backed up";
+        public const string TAG_UNKNOWN_SAVE_DATA = TAG_PREFIX + "Unknown save data";
 
         // Format: {new tag, {conflicting tags}}
         private readonly Dictionary<string, string[]> TAGS_AND_CONFLICTS = new Dictionary<string, string[]> {
@@ -69,6 +70,8 @@ namespace LudusaviPlaynite
         private LudusaviVersion appVersion { get; set; } = new LudusaviVersion(new Version(0, 0, 0));
         private Dictionary<string, List<ApiBackup>> backups { get; set; } = new Dictionary<string, List<ApiBackup>>();
         private List<string> manifestGames { get; set; } = new List<string>();
+        private List<string> manifestGamesWithSaveDataByTitle { get; set; } = new List<string>();
+        private List<int> manifestGamesWithSaveDataBySteamId { get; set; } = new List<int>();
         private Timer duringPlayBackupTimer { get; set; }
         private int duringPlayBackupTotal { get; set; }
         private int duringPlayBackupFailed { get; set; }
@@ -512,8 +515,30 @@ namespace LudusaviPlaynite
             var (code, stdout) = InvokeLudusaviDirect(new Invocation(Mode.ManifestShow), true);
             if (code == 0 && stdout != null)
             {
-                var manifest = JsonConvert.DeserializeObject<Dictionary<string, object>>(stdout);
+                var manifest = JsonConvert.DeserializeObject<Manifest>(stdout);
                 this.manifestGames = manifest.Keys.ToList();
+
+                this.manifestGamesWithSaveDataByTitle = new List<string>();
+                this.manifestGamesWithSaveDataBySteamId = new List<int>();
+                foreach (var game in manifest)
+                {
+                    var files = game.Value.Files != null && game.Value.Files.Count > 0;
+                    var registry = game.Value.Registry != null && game.Value.Registry.Count > 0;
+                    var steamId = game.Value.Steam?.Id ?? 0;
+                    if (files || registry)
+                    {
+                        this.manifestGamesWithSaveDataByTitle.Add(game.Key);
+                        if (steamId != 0)
+                        {
+                            this.manifestGamesWithSaveDataBySteamId.Add(steamId);
+                        }
+                    }
+                }
+
+                if (this.settings.TagGamesWithUnknownSaveData)
+                {
+                    TagGamesWithUnknownSaveData();
+                }
             }
         }
 
@@ -1319,6 +1344,21 @@ namespace LudusaviPlaynite
             }
         }
 
+        private void TagGamesWithUnknownSaveData()
+        {
+            foreach (var game in PlayniteApi.Database.Games)
+            {
+                if (!GameHasKnownSaveData(game))
+                {
+                    AddTag(game, TAG_UNKNOWN_SAVE_DATA);
+                }
+                else
+                {
+                    RemoveTag(game, TAG_UNKNOWN_SAVE_DATA);
+                }
+            }
+        }
+
         private PlayPreferences GetPlayPreferences(Game game)
         {
             if (ShouldSkipGame(game))
@@ -1374,6 +1414,24 @@ namespace LudusaviPlaynite
         private bool IsBackedUp(Game game)
         {
             return GetBackups(game).Count > 0;
+        }
+
+        private bool GameHasKnownSaveData(Game game)
+        {
+            // Ideally, we would use the `find` command, but that's too slow to run in bulk.
+            var title = AlternativeTitle(game) ?? GetGameName(game);
+
+            if (this.manifestGamesWithSaveDataByTitle.Contains(title))
+            {
+                return true;
+            }
+
+            if (IsOnSteam(game) && int.TryParse(game.GameId, out var id) && this.manifestGamesWithSaveDataBySteamId.Contains(id))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private List<ApiBackup> GetBackups(Game game)

@@ -606,6 +606,16 @@ namespace LudusaviPlaynite
             );
         }
 
+        public string TagGamesWithUnknownSaveData_Label()
+        {
+            return Translate(
+                "config-tag-games-with-unknown-save-data",
+                new FluentArgs() {
+                    {TAG, (FluentString)LudusaviPlaynite.TAG_UNKNOWN_SAVE_DATA},
+                }
+            );
+        }
+
         public string OptionSimple()
         {
             return Translate("option-simple");
