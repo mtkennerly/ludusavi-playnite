@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Added:
+  * You can now choose not to override the backup directory and defer to Ludusavi's own configuration.
   * Ludusavi 0.18.0+: The plugin will show a notification if cloud sync fails or has a conflict.
 * Changed:
   * Ludusavi 0.18.0+: The plugin no longer sets the `--merge` flag, since it has been deprecated.

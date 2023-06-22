@@ -16,15 +16,13 @@
             </StackPanel>
 
             <StackPanel Margin="15">
-                <TextBlock Text="{Binding BackupPath_Label}" />
-                <TextBox Margin="0,2,0,0" Text="{Binding BackupPath}" />
-                <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                <CheckBox IsChecked="{Binding OverrideBackupPath}" Content="{Binding BackupPath_Label}" />
+                <TextBox Margin="25,2,0,0" Text="{Binding BackupPath}" />
+                <StackPanel Margin="25,2,0,0" Orientation="Horizontal">
                     <Button Content="{Binding BrowseButton_Label}" Click="OnBrowseBackupPath" />
                     <Button Margin="10,0,0,0" Content="{Binding OpenButton_Label}" Click="OnOpenBackupPath" />
                 </StackPanel>
-            </StackPanel>
 
-            <StackPanel Margin="15">
                 <StackPanel Orientation="Horizontal">
                     <CheckBox IsChecked="{Binding OverrideBackupFormat}" Content="{Binding OverrideBackupFormat_Label}" />
                     <ComboBox Margin="10,0,0,0" ItemsSource="{Binding Path=BackupFormatOptions}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=BackupFormat, Mode=TwoWay}" />

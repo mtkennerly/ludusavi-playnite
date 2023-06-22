@@ -490,7 +490,7 @@ namespace LudusaviPlaynite
                 return;
             }
 
-            var (code, response) = InvokeLudusavi(new Invocation(Mode.Backups).Path(settings.BackupPath));
+            var (code, response) = InvokeLudusavi(new Invocation(Mode.Backups).PathIf(settings.BackupPath, settings.OverrideBackupPath));
             if (response?.Games != null)
             {
                 this.backups = response?.Games.ToDictionary(pair => pair.Key, pair => pair.Value.Backups);
@@ -833,7 +833,7 @@ namespace LudusaviPlaynite
                 return null;
             }
 
-            var invocation = new Invocation(Mode.Find).Path(settings.BackupPath).Game(name);
+            var invocation = new Invocation(Mode.Find).PathIf(settings.BackupPath, settings.OverrideBackupPath).Game(name);
 
             if (mode == Mode.Backup)
             {
@@ -1006,7 +1006,7 @@ namespace LudusaviPlaynite
                 }
             }
 
-            var invocation = new Invocation(Mode.Backup).Path(settings.BackupPath).Game(name);
+            var invocation = new Invocation(Mode.Backup).PathIf(settings.BackupPath, settings.OverrideBackupPath).Game(name);
 
             var (code, response) = InvokeLudusavi(invocation);
 
@@ -1074,7 +1074,7 @@ namespace LudusaviPlaynite
         private void BackUpAllGames()
         {
             pendingOperation = true;
-            var (code, response) = InvokeLudusavi(new Invocation(Mode.Backup).Path(settings.BackupPath));
+            var (code, response) = InvokeLudusavi(new Invocation(Mode.Backup).PathIf(settings.BackupPath, settings.OverrideBackupPath));
 
             if (response == null)
             {
@@ -1149,7 +1149,7 @@ namespace LudusaviPlaynite
                 }
             }
 
-            var invocation = new Invocation(Mode.Restore).Path(settings.BackupPath).Game(name).Backup(backup?.Name);
+            var invocation = new Invocation(Mode.Restore).PathIf(settings.BackupPath, settings.OverrideBackupPath).Game(name).Backup(backup?.Name);
 
             var (code, response) = InvokeLudusavi(invocation);
             if (!this.appVersion.supportsFindCommand() && criteria.ByGame() && AlternativeTitle(game) == null)
@@ -1207,7 +1207,7 @@ namespace LudusaviPlaynite
         private void RestoreAllGames()
         {
             pendingOperation = true;
-            var (code, response) = InvokeLudusavi(new Invocation(Mode.Restore).Path(settings.BackupPath));
+            var (code, response) = InvokeLudusavi(new Invocation(Mode.Restore).PathIf(settings.BackupPath, settings.OverrideBackupPath));
 
             if (response == null)
             {

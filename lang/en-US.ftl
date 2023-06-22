@@ -91,7 +91,7 @@ cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open 
 ## Settings
 
 config-executable-path = Name or full path of the Ludusavi executable:
-config-backup-path = Full path to directory for storing backups:
+config-backup-path = Override full path to directory for storing backups:
 config-override-backup-format = Override backup format.
 config-override-backup-compression = Override backup compression.
 config-override-backup-retention = Override backup retention.

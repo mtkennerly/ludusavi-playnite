@@ -58,6 +58,8 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string ExecutablePath_Label { get; set; }
 
+        public bool OverrideBackupPath { get; set; } = true;
+
         private string backupPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "ludusavi-playnite");
         public string BackupPath { get { return backupPath; } set { backupPath = value; NotifyPropertyChanged("BackupPath"); } }
         [JsonIgnore]
@@ -208,6 +210,7 @@ namespace LudusaviPlaynite
                 AlternativeTitles = savedSettings.AlternativeTitles;
 
                 ExecutablePath = savedSettings.ExecutablePath;
+                OverrideBackupPath = savedSettings.OverrideBackupPath;
                 BackupPath = savedSettings.BackupPath;
 
                 OverrideBackupFormat = savedSettings.OverrideBackupFormat;
@@ -233,6 +236,10 @@ namespace LudusaviPlaynite
                 TagGamesWithBackups = savedSettings.TagGamesWithBackups;
                 BackupDuringPlayInterval = savedSettings.BackupDuringPlayInterval;
                 IgnoreBenignNotifications = savedSettings.IgnoreBenignNotifications;
+            }
+            else
+            {
+                OverrideBackupPath = false;
             }
         }
 

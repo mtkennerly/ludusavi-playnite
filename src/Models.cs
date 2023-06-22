@@ -44,9 +44,12 @@ namespace LudusaviPlaynite
             this.steamId = null;
         }
 
-        public Invocation Path(string value)
+        public Invocation PathIf(string value, bool condition)
         {
-            this.path = value;
+            if (condition)
+            {
+                this.path = value;
+            }
             return this;
         }
 
