@@ -1,5 +1,26 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.13.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2023-06-22
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.13.0/ludusavi-playnite-v0.13.0.pext
+    Changelog:
+      - >-
+        Added: Ludusavi 0.18.0+: The plugin will show a notification if cloud sync fails or has a conflict.
+      - >-
+        Added: You can now choose not to override the backup directory and defer to Ludusavi's own configuration.
+      - >-
+        Added: There is an option to automatically tag games with unknown save data.
+      - >-
+        Changed: Ludusavi 0.18.0+: The plugin no longer sets the `--merge` flag, since it has been deprecated.
+        It is still set for older Ludusavi versions.
+      - >-
+        Changed: Ludusavi 0.18.0+: The plugin now sets `--try-manifest-update` instead of `--try-update`.
+      - >-
+        Changed: Updated translations, including new translations for Japanese and Russian.
+        (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
+      - >-
+        Fixed: The during-play backup feature did not check if a backup was already running before starting a new one.
   - Version: 0.12.1
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2023-03-19

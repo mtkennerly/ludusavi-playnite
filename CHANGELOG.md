@@ -1,4 +1,4 @@
-## Unreleased
+## v0.13.0 (2023-06-22)
 
 * Added:
   * Ludusavi 0.18.0+: The plugin will show a notification if cloud sync fails or has a conflict.
