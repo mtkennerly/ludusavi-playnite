@@ -82,8 +82,8 @@ cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open 
 ## Settings
 
 config-executable-path = Ludusavi 実行ファイルの名前またはフルパス:
-config-backup-path = バックアップを保存するディレクトリへのフルパス:
-config-override-backup-format = バックアップ形式を選択。
+config-backup-path = バックアップを保存するディレクトリへのフルパスを選択する:
+config-override-backup-format = バックアップ形式を選択する。
 config-override-backup-compression = バックアップの圧縮形式を選択する。
 config-override-backup-retention = バックアップの保持を有効にする。
 config-full-backup-limit = ゲームごとの最大バックアップ数:
@@ -101,6 +101,7 @@ config-ask-platform-backup-on-non-pc-game-stopped = 自動で実行する前に�
 config-do-backup-during-play = プレイ中もセーブデータをバックアップし、プレイ後も自動でバックアップする
 config-ignore-benign-notifications = 失敗の通知のみ表示
 config-tag-games-with-backups = バックアップしたゲームに "{$tag}" のタグを自動的に付ける
+config-tag-games-with-unknown-save-data = Automatically tag games with unknown save data as "{ $tag }"
 label-minutes = 分:
 option-simple = Simple
 option-none = None

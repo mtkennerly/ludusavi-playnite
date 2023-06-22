@@ -74,7 +74,7 @@ cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open 
 ## Settings
 
 config-executable-path = Ludusavi可执行文件的名称或完整路径：
-config-backup-path = 备份文件存放目录的完整路径：
+config-backup-path = 修改备份文件存放目录的完整路径：
 config-override-backup-format = 修改备份文件格式
 config-override-backup-compression = 修改备份文件的压缩方式
 config-override-backup-retention = 修改备份文件选项:
@@ -93,6 +93,7 @@ config-ask-platform-backup-on-non-pc-game-stopped = 在非PC游戏结束时选�
 config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
 config-ignore-benign-notifications = 仅在失败时显示通知
 config-tag-games-with-backups = 自动给游戏存档备份打上标签 "{ $tag }"
+config-tag-games-with-unknown-save-data = Automatically tag games with unknown save data as "{ $tag }"
 label-minutes = 分钟:
 option-simple = 简单
 option-none = 默认

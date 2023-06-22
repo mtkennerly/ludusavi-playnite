@@ -82,7 +82,7 @@ cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open 
 ## Settings
 
 config-executable-path = Имя или полный путь к исполняемому файлу Ludusavi:
-config-backup-path = Полный путь к каталогу для хранения резервных копий:
+config-backup-path = Переопределить полный путь к каталогу для хранения резервных копий:
 config-override-backup-format = Переопределить формат резервной копии.
 config-override-backup-compression = Переопределить сжатие резервной копии.
 config-override-backup-retention = Override backup retention.
@@ -101,6 +101,7 @@ config-ask-platform-backup-on-non-pc-game-stopped = Спросить снача�
 config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
 config-ignore-benign-notifications = Показывать уведомления только при ошибке
 config-tag-games-with-backups = Автоматически помечать игры с резервными копиями как "{ $tag }"
+config-tag-games-with-unknown-save-data = Automatically tag games with unknown save data as "{ $tag }"
 label-minutes = Минут(ы):
 option-simple = Простой
 option-none = Нет
