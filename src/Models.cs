@@ -397,12 +397,19 @@ namespace LudusaviPlaynite
         }
     }
 
+    public struct ApiEmptyConcern
+    { }
+
     public struct ApiErrors
     {
         [JsonProperty("someGamesFailed")]
         public bool SomeGamesFailed;
         [JsonProperty("unknownGames")]
         public List<string> UnknownGames;
+        [JsonProperty("cloudConflict")]
+        public ApiEmptyConcern? CloudConflict;
+        [JsonProperty("cloudSyncFailed")]
+        public ApiEmptyConcern? CloudSyncFailed;
     }
 
     public struct ApiOverall

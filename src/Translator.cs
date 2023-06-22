@@ -631,6 +631,16 @@ namespace LudusaviPlaynite
             return Translate("cannot-open-folder");
         }
 
+        public string CloudSyncFailed()
+        {
+            return Translate("unable-to-synchronize-with-cloud");
+        }
+
+        public string CloudConflict()
+        {
+            return Translate("cloud-synchronize-conflict");
+        }
+
         public string LookUpAsOtherTitle(string renamed)
         {
             var suffix = renamed == null ? "" : " - " + renamed;

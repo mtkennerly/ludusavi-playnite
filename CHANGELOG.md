@@ -1,7 +1,10 @@
 ## Unreleased
 
+* Added:
+  * Ludusavi 0.18.0+: The plugin will show a notification if cloud sync fails or has a conflict.
 * Changed:
   * Ludusavi 0.18.0+: The plugin no longer sets the `--merge` flag, since it has been deprecated.
+    It is still set for older Ludusavi versions.
   * Ludusavi 0.18.0+: The plugin now sets `--try-manifest-update` instead of `--try-update`.
   * Updated translations, including new translations for Japanese and Russian.
     (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))

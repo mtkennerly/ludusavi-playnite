@@ -571,6 +571,22 @@ namespace LudusaviPlaynite
             PlayniteApi.Dialogs.ShowErrorMessage(message, translator.Ludusavi());
         }
 
+        public void NotifyResponseErrors(ApiResponse? response)
+        {
+            if (response?.Errors.CloudSyncFailed != null)
+            {
+                var prefix = translator.Ludusavi();
+                var error = translator.CloudSyncFailed();
+                NotifyError($"{prefix}: {error}");
+            }
+            if (response?.Errors.CloudConflict != null)
+            {
+                var prefix = translator.Ludusavi();
+                var error = translator.CloudConflict();
+                NotifyError($"{prefix}: {error}", () => LaunchLudusavi());
+            }
+        }
+
         private void ShowFullResults(ApiResponse response)
         {
             var tempFile = Path.GetTempPath() + Guid.NewGuid().ToString() + ".html";
@@ -1042,6 +1058,7 @@ namespace LudusaviPlaynite
                 }
             }
 
+            NotifyResponseErrors(response);
             if (refresh)
             {
                 RefreshLudusaviBackups();
@@ -1072,6 +1089,7 @@ namespace LudusaviPlaynite
                 }
             }
 
+            NotifyResponseErrors(response);
             RefreshLudusaviBackups();
             pendingOperation = false;
         }
@@ -1172,6 +1190,7 @@ namespace LudusaviPlaynite
                 }
             }
 
+            NotifyResponseErrors(response);
             pendingOperation = false;
             return error;
         }
@@ -1197,8 +1216,10 @@ namespace LudusaviPlaynite
                 {
                     NotifyError(translator.RestoreAllGames_Failure(result), () => ShowFullResults(result.Response));
                 }
+
             }
 
+            NotifyResponseErrors(response);
             pendingOperation = false;
         }
 

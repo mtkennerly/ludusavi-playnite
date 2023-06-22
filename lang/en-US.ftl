@@ -85,6 +85,8 @@ operation-still-pending = {ludusavi} is still working on a previous request. Ple
 no-game-played-yet = You haven't played anything yet in this session.
 unable-to-run-ludusavi = Unable to run {ludusavi}.
 cannot-open-folder = Cannot open folder.
+unable-to-synchronize-with-cloud = Unable to synchronize with cloud.
+cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open Ludusavi and perform an upload or download to resolve this.
 
 ## Settings
 
