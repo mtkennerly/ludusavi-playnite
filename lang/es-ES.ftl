@@ -20,7 +20,7 @@ needs-custom-entry =
 back-up-specific-game =
     .confirm = ¿Respaldar datos guardados para { $game }?
     .on-success = Se han respaldado los datos de salvado para { $game } ({ $processed-size })
-    .on-unchanged = Nothing new to back up for { $game }
+    .on-unchanged = No hay nada nuevo que guardar para { $game }
     .on-empty = No se encontraron datos de guardado para respaldar de { $game }
     .on-failure = Se respaldaron los datos de guardado de { $game } ({ $processed-size } de { $total-size }), pero hubo errores en algunos respaldos
 # Defers to `back-up-specific-game.*`.
@@ -41,7 +41,7 @@ back-up-during-play-on-failure = Se han activado { $total-backups } copias de se
 restore-specific-game =
     .confirm = ¿Respaldar datos guardados de { $game }?
     .on-success = Se restauraron datos de guardado de { $game } ({ $processed-size })
-    .on-unchanged = Nothing new to restore for { $game }
+    .on-unchanged = Nada nuevo para restaurar para { $game }
     .on-empty = No se encontraron datos de guardado para respaldar de { $game }
     .on-failure = Se restauraron datos de guardado de { $game } ({ $processed-size } de { $total-size }), pero algunos respaldos fallaron
 # Defers to `restore-specific-game.*`.
@@ -75,22 +75,24 @@ remove-tag-for-selected-games = Etiqueta: "{ $tag }" - Quitar de los juegos sele
 operation-still-pending = { ludusavi } todavía está trabajando en una solicitud anterior. Por favor, inténtalo de nuevo cuando veas la notificación de que ha terminado.
 no-game-played-yet = Aún no has jugado nada en esta sesión.
 unable-to-run-ludusavi = No se ha podido ejecutar { ludusavi }.
-cannot-open-folder = Cannot open folder.
+cannot-open-folder = No se puede abrir la carpeta.
+unable-to-synchronize-with-cloud = Unable to synchronize with cloud.
+cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open Ludusavi and perform an upload or download to resolve this.
 
 ## Settings
 
 config-executable-path = Nombre o ruta completa del ejecutable de Ludusavi:
 config-backup-path = Ruta completa del directorio para almacenar los respaldos:
-config-override-backup-format = Override backup format.
-config-override-backup-compression = Override backup compression.
-config-override-backup-retention = Override backup retention.
-config-full-backup-limit = Max full backups per game:
-config-differential-backup-limit = Max differential backups per full backup:
+config-override-backup-format = Reemplazar formato de copia de seguridad.
+config-override-backup-compression = Reemplazar la compresión de copia de seguridad.
+config-override-backup-retention = Reemplazar retención de copia de seguridad.
+config-full-backup-limit = Máximas copias de seguridad completas por juego:
+config-differential-backup-limit = Máximas copias de seguridad diferenciales por copia de seguridad:
 config-do-backup-on-game-stopped = Respaldar los datos guardados de un juego después de jugar
 config-do-restore-on-game-starting = También restaurar datos guardados para un juego antes de jugar
 config-ask-backup-on-game-stopped = Preguntar primero en lugar de hacerlo automáticamente
 config-only-backup-on-game-stopped-if-pc = Solo hacer esto para juegos de PC
-config-retry-unrecognized-game-with-normalization = If not found, retry by normalizing the title
+config-retry-unrecognized-game-with-normalization = Si no se encuentra, vuelva a intentarlo normalizando el título
 config-add-suffix-for-non-pc-game-names = Buscar juegos que no sean de PC añadiendo este sufijo a sus nombres (requiere entrada personalizada):
 config-retry-non-pc-games-without-suffix = Si no se encuentra con el sufijo, entonces inténtelo de nuevo sin él
 config-do-platform-backup-on-non-pc-game-stopped = Respaldar datos guardados por nombre de plataforma después de jugar juegos que no sean de PC (requiere entrada personalizada)
@@ -98,14 +100,14 @@ config-do-platform-restore-on-non-pc-game-starting = Restaurar también los dato
 config-ask-platform-backup-on-non-pc-game-stopped = Preguntar primero en lugar de hacerlo automáticamente
 config-do-backup-during-play = Respaldar juegos en un intervalo mientras se juega, si también serían respaldadas después del juego sin preguntar
 config-ignore-benign-notifications = Mostrar sólo notificaciones por fallo
-config-tag-games-with-backups = Automatically tag games with backups as "{ $tag }"
+config-tag-games-with-backups = Etiquetar automáticamente juegos con copias de seguridad como "{ $tag }"
 label-minutes = Minutos:
 option-simple = Simple
-option-none = None
+option-none = Ninguno
 
 ## Miscellaneous
 
-upgrade-prompt = Install Ludusavi { $version } or newer for the best experience. Click to view the latest release.
-unrecognized-game = Ludusavi does not recognize { $game }
-look-up-as-other-title = Look up with another title
-look-up-as-normal-title = Look up with default title
+upgrade-prompt = Instala Ludusavi { $version } o más reciente para obtener la mejor experiencia. Haz clic para ver la última versión.
+unrecognized-game = Ludusavi no reconoce { $game }
+look-up-as-other-title = Buscar con otro título
+look-up-as-normal-title = Buscar con el título por defecto

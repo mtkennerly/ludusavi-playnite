@@ -45,15 +45,15 @@ restore-specific-game =
     .on-empty = Не найдено данных для восстановления у { $game }
     .on-failure = Восстановлены сохранения для { $game } ({ $processed-size } из { $total-size }), но некоторые сохранения не удалось
 # Defers to `restore-specific-game.*`.
-restore-last-game = Restore save data for last game played
+restore-last-game = Восстановить сохранённые данные для последней игры
 # Defers to `restore-specific-game.*` for each game individually.
 # In `.confirm`, there will always be more than one game.
-restore-selected-games = Restore save data for selected games
-    .confirm = Restore save data for { $total-games } selected games?
-restore-all-games = Restore save data for all games
-    .confirm = Restore save data for all games that Ludusavi can find?
-    .on-success = Restored saves for { $processed-games } games ({ $processed-size }); click for full list
-    .on-failure = Restored saves for { $processed-games } of { $total-games } games ({ $processed-size } of { $total-size }), but some failed; click for full list
+restore-selected-games = Восстановить сохраненные данные для выбранных игр
+    .confirm = Восстановить сохранённые данные для { $total-games } выбранных игр?
+restore-all-games = Восстановить сохраненные данные для всех игр
+    .confirm = Восстановить данные для всех игр, которые Ludusavi сможет найти?
+    .on-success = Восстановленные сохранения для { $processed-games } игр ({ $processed-size }); нажмите для просмотра полного списка
+    .on-failure = Восстановлены сохранения для { $processed-games } из { $total-games } игр ({ $processed-size } из { $total-size }), но некоторые из них не восстановились; нажмите для просмотра полного списка
 
 ## Tags
 
@@ -63,12 +63,12 @@ add-tag-for-selected-games = Тег: "{ $tag }" - Добавить для выб
             [one] игры
            *[other] игр
         } и удалить любые конфликтующие теги?
-remove-tag-for-selected-games = Tag: "{ $tag }" - Remove for selected games
+remove-tag-for-selected-games = Тег: "{ $tag }" - Удалить для выбранных игр
     .confirm =
-        Remove "{ $tag }" tag for { $total-games } selected { $total-games ->
-            [one] game
-           *[other] games
-        } and remove any conflicting tags?
+        Убрать тег "{ $tag }" для { $total-games } выбранных { $total-games ->
+            [one] игры
+           *[other] игр
+        } и удалить любые конфликтующие теги?
 
 ## Generic errors
 
@@ -76,6 +76,8 @@ operation-still-pending = { ludusavi } все еще работает над п�
 no-game-played-yet = Вы еще не играли ни во что в этой сессии.
 unable-to-run-ludusavi = Не удается запустить { ludusavi }.
 cannot-open-folder = Не удается открыть папку.
+unable-to-synchronize-with-cloud = Unable to synchronize with cloud.
+cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open Ludusavi and perform an upload or download to resolve this.
 
 ## Settings
 
@@ -84,7 +86,7 @@ config-backup-path = Полный путь к каталогу для хране
 config-override-backup-format = Переопределить формат резервной копии.
 config-override-backup-compression = Переопределить сжатие резервной копии.
 config-override-backup-retention = Override backup retention.
-config-full-backup-limit = Max full backups per game:
+config-full-backup-limit = Макс. кол-во резервных копий к игре:
 config-differential-backup-limit = Max differential backups per full backup:
 config-do-backup-on-game-stopped = Сохранять резервные копии после игры
 config-do-restore-on-game-starting = Также восстановить данные для игры перед игрой
@@ -95,17 +97,17 @@ config-add-suffix-for-non-pc-game-names = Look up non-PC games by adding this su
 config-retry-non-pc-games-without-suffix = If not found with the suffix, then try again without it
 config-do-platform-backup-on-non-pc-game-stopped = Back up save data by platform name after playing non-PC games (requires custom entry)
 config-do-platform-restore-on-non-pc-game-starting = Also restore save data by platform name before playing non-PC games
-config-ask-platform-backup-on-non-pc-game-stopped = Ask first instead of doing it automatically
+config-ask-platform-backup-on-non-pc-game-stopped = Спросить сначала вместо автоматического выполнения
 config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
-config-ignore-benign-notifications = Only show notifications on failure
-config-tag-games-with-backups = Automatically tag games with backups as "{ $tag }"
+config-ignore-benign-notifications = Показывать уведомления только при ошибке
+config-tag-games-with-backups = Автоматически помечать игры с резервными копиями как "{ $tag }"
 label-minutes = Минут(ы):
-option-simple = Simple
+option-simple = Простой
 option-none = Нет
 
 ## Miscellaneous
 
-upgrade-prompt = Install Ludusavi { $version } or newer for the best experience. Click to view the latest release.
-unrecognized-game = Ludusavi does not recognize { $game }
+upgrade-prompt = Установите Ludusavi { $version } или новее для лучшей работы. Нажмите для просмотра последней версии.
+unrecognized-game = Ludusavi не распознает { $game }
 look-up-as-other-title = Look up with another title
 look-up-as-normal-title = Look up with default title
