@@ -1,6 +1,8 @@
 ## Unreleased
 
 * Changed:
+  * Ludusavi 0.18.0+: The plugin no longer sets the `--merge` flag, since it has been deprecated.
+  * Ludusavi 0.18.0+: The plugin now sets `--try-manifest-update` instead of `--try-update`.
   * Updated translations, including new translations for Japanese and Russian.
     (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
 

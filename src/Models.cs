@@ -96,111 +96,138 @@ namespace LudusaviPlaynite
             return this;
         }
 
+        private string Quote(string text)
+        {
+            return string.Format("\"{0}\"", text);
+        }
+
         public string Render(LudusaviPlayniteSettings settings, LudusaviVersion version)
         {
-            var rendered = "";
+            var parts = new List<String>();
+
+            if (version.hasGlobalManifestUpdateFlag())
+            {
+                parts.Add("--try-manifest-update");
+            }
 
             switch (this.mode)
             {
                 case Mode.Backup:
-                    rendered += "backup --force --merge --try-update";
+                    parts.Add("backup");
+                    parts.Add("--force");
+                    if (version.requiresMergeFlag())
+                    {
+                        parts.Add("--merge");
+                    }
+                    if (!version.hasGlobalManifestUpdateFlag())
+                    {
+                        parts.Add("--try-update");
+                    }
                     break;
                 case Mode.Backups:
-                    rendered += "backups";
+                    parts.Add("backups");
                     break;
                 case Mode.Find:
-                    rendered += "find";
+                    parts.Add("find");
                     break;
                 case Mode.Restore:
-                    rendered += "restore --force";
+                    parts.Add("restore");
+                    parts.Add("--force");
                     break;
                 case Mode.ManifestShow:
-                    rendered += "manifest show";
+                    parts.Add("manifest");
+                    parts.Add("show");
                     break;
             }
 
-            rendered += " --api";
+            parts.Add("--api");
 
             if (this.path != null && this.path != "")
             {
-                rendered += string.Format(" --path \"{0}\"", this.path);
+                parts.Add("--path");
+                parts.Add(Quote(this.path));
             }
 
             if (this.bySteamId)
             {
-                rendered += " --by-steam-id";
+                parts.Add("--by-steam-id");
             }
 
             if (this.steamId != null)
             {
-                rendered += string.Format(" --steam-id {0}", this.steamId);
+                parts.Add("--steam-id");
+                parts.Add(this.steamId.ToString());
             }
 
             if (this.backup != null)
             {
-                rendered += string.Format(" --backup \"{0}\"", this.backup);
+                parts.Add("--backup");
+                parts.Add(Quote(this.backup));
             }
 
             if (this.findBackup)
             {
-                rendered += " --backup";
+                parts.Add("--backup");
             }
 
             if (this.normalized)
             {
-                rendered += " --normalized";
+                parts.Add("--normalized");
             }
 
             if (this.mode == Mode.Backup && version.supportsCustomizingBackupFormat())
             {
                 if (settings.OverrideBackupFormat)
                 {
-                    rendered += " --format";
+                    parts.Add("--format");
                     switch (settings.BackupFormat)
                     {
                         case BackupFormatType.Simple:
-                            rendered += " simple";
+                            parts.Add("simple");
                             break;
                         case BackupFormatType.Zip:
-                            rendered += " zip";
+                            parts.Add("zip");
                             break;
                     }
                 }
                 if (settings.OverrideBackupCompression)
                 {
-                    rendered += " --compression";
+                    parts.Add("--compression");
                     switch (settings.BackupCompression)
                     {
                         case BackupCompressionType.None:
-                            rendered += " none";
+                            parts.Add("none");
                             break;
                         case BackupCompressionType.Deflate:
-                            rendered += " deflate";
+                            parts.Add("deflate");
                             break;
                         case BackupCompressionType.Bzip2:
-                            rendered += " bzip2";
+                            parts.Add("bzip2");
                             break;
                         case BackupCompressionType.Zstd:
-                            rendered += " zstd";
+                            parts.Add("zstd");
                             break;
                     }
                 }
                 if (settings.OverrideBackupRetention)
                 {
-                    rendered += $" --full-limit {settings.FullBackupLimit} --differential-limit {settings.DifferentialBackupLimit}";
+                    parts.Add("--full-limit");
+                    parts.Add(settings.FullBackupLimit.ToString());
+                    parts.Add("--differential-limit");
+                    parts.Add(settings.DifferentialBackupLimit.ToString());
                 }
             }
 
             if (this.games.Count > 0)
             {
-                rendered += " --";
+                parts.Add("--");
                 foreach (var game in this.games)
                 {
-                    rendered += string.Format(" \"{0}\"", game.Replace("\"", "\"\""));
+                    parts.Add(Quote(game.Replace("\"", "\"\"")));
                 }
             }
 
-            return rendered;
+            return String.Join(" ", parts);
         }
     }
 
@@ -357,6 +384,16 @@ namespace LudusaviPlaynite
         public bool supportsManifestShow()
         {
             return this.version >= new Version(0, 16, 0);
+        }
+
+        public bool requiresMergeFlag()
+        {
+            return this.version < new Version(0, 18, 0);
+        }
+
+        public bool hasGlobalManifestUpdateFlag()
+        {
+            return this.version >= new Version(0, 18, 0);
         }
     }
 
