@@ -509,7 +509,7 @@ namespace LudusaviPlaynite
                 return;
             }
 
-            var (code, stdout) = InvokeLudusaviDirect(new Invocation(Mode.ManifestShow));
+            var (code, stdout) = InvokeLudusaviDirect(new Invocation(Mode.ManifestShow), true);
             if (code == 0 && stdout != null)
             {
                 var manifest = JsonConvert.DeserializeObject<Dictionary<string, object>>(stdout);
@@ -647,14 +647,19 @@ namespace LudusaviPlaynite
             }
         }
 
-        private (int, string) InvokeLudusaviDirect(Invocation invocation)
+        private (int, string) InvokeLudusaviDirect(Invocation invocation, bool standalone = false)
         {
             var fullArgs = invocation.Render(settings, appVersion);
             logger.Debug(string.Format("Running Ludusavi: {0}", fullArgs));
 
             try
             {
-                return RunCommand(settings.ExecutablePath.Trim(), fullArgs);
+                var (code, stdout) = RunCommand(settings.ExecutablePath.Trim(), fullArgs);
+                if (standalone)
+                {
+                    logger.Debug(string.Format("Ludusavi exited with {0}", code));
+                }
+                return (code, stdout);
             }
             catch (Exception e)
             {
