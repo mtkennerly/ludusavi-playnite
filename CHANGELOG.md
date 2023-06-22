@@ -8,6 +8,8 @@
   * Ludusavi 0.18.0+: The plugin now sets `--try-manifest-update` instead of `--try-update`.
   * Updated translations, including new translations for Japanese and Russian.
     (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
+* Fixed:
+  * The during-play backup feature did not check if a backup was already running before starting a new one.
 
 ## v0.12.1 (2023-03-19)
 

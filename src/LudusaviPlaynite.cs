@@ -700,6 +700,11 @@ namespace LudusaviPlaynite
             return true;
         }
 
+        private bool CanPerformOperationSuppressed()
+        {
+            return !pendingOperation;
+        }
+
         private bool CanPerformOperationOnLastGamePlayed()
         {
             if (!playedSomething)
@@ -1096,6 +1101,10 @@ namespace LudusaviPlaynite
 
         private void BackUpOneGameDuringPlay(Game game)
         {
+            if (!CanPerformOperationSuppressed())
+            {
+                return;
+            }
             var prefs = GetPlayPreferences(game);
             Task.Run(() =>
             {
