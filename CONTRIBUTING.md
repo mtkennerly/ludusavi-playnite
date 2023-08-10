@@ -28,3 +28,8 @@ pre-commit install
   * Custom location (`<custom-folder>/Ludusavi`): `invoke deploy --target <custom-folder>`
 
 You can chain `invoke` commands, such as: `invoke build deploy`.
+
+### Release preparation
+* Add release entry in `manifest.yaml`.
+* Update version in `extension.yaml`.
+* Update version in `CHANGELOG.md`.
