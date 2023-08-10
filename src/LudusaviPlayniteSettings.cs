@@ -211,12 +211,24 @@ namespace LudusaviPlaynite
             if (savedSettings != null)
             {
                 MigratedTags = savedSettings.MigratedTags;
-                SuggestedUpgradeTo = savedSettings.SuggestedUpgradeTo;
-                AlternativeTitles = savedSettings.AlternativeTitles;
+                if (savedSettings.SuggestedUpgradeTo != null)
+                {
+                    SuggestedUpgradeTo = savedSettings.SuggestedUpgradeTo;
+                }
+                if (savedSettings.AlternativeTitles != null)
+                {
+                    AlternativeTitles = savedSettings.AlternativeTitles;
+                }
 
-                ExecutablePath = savedSettings.ExecutablePath;
+                if (savedSettings.ExecutablePath != null)
+                {
+                    ExecutablePath = savedSettings.ExecutablePath;
+                }
                 OverrideBackupPath = savedSettings.OverrideBackupPath;
-                BackupPath = savedSettings.BackupPath;
+                if (savedSettings.BackupPath != null)
+                {
+                    BackupPath = savedSettings.BackupPath;
+                }
 
                 OverrideBackupFormat = savedSettings.OverrideBackupFormat;
                 BackupFormat = savedSettings.BackupFormat;
@@ -232,7 +244,10 @@ namespace LudusaviPlaynite
                 OnlyBackupOnGameStoppedIfPc = savedSettings.OnlyBackupOnGameStoppedIfPc;
                 RetryUnrecognizedGameWithNormalization = savedSettings.RetryUnrecognizedGameWithNormalization;
                 AddSuffixForNonPcGameNames = savedSettings.AddSuffixForNonPcGameNames;
-                SuffixForNonPcGameNames = savedSettings.SuffixForNonPcGameNames;
+                if (savedSettings.SuffixForNonPcGameNames != null)
+                {
+                    SuffixForNonPcGameNames = savedSettings.SuffixForNonPcGameNames;
+                }
                 RetryNonPcGamesWithoutSuffix = savedSettings.RetryNonPcGamesWithoutSuffix;
                 DoPlatformRestoreOnNonPcGameStarting = savedSettings.DoPlatformRestoreOnNonPcGameStarting;
                 DoPlatformBackupOnNonPcGameStopped = savedSettings.DoPlatformBackupOnNonPcGameStopped;

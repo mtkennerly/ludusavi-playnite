@@ -1,3 +1,8 @@
+## Unreleased
+
+* Fixed:
+  * Possible crash when saving plugin settings.
+
 ## v0.13.0 (2023-06-22)
 
 * Added:
