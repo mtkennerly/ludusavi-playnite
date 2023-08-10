@@ -33,8 +33,8 @@ back-up-all-games = Резервное копирование данных дл�
     .confirm = Резервные копии данных для всех игр, которые Ludusavi может найти?
     .on-success = Резервное копирование сохранений для { $processed-games } игр ({ $processed-size }); нажмите для просмотра списка
     .on-failure = Резервированы сохранения { $processed-games } из { $total-games } игр ({ $processed-size } из { $total-size }), но некоторые из них не удались; нажмите на кнопку для просмотра списка
-back-up-during-play-on-success = Triggered { $total-backups } backups while playing { $game }
-back-up-during-play-on-failure = Triggered { $total-backups } backups while playing { $game }, of which { $failed-backups } failed
+back-up-during-play-on-success = Запущено { $total-backups } резервных копий во время игры в { $game }
+back-up-during-play-on-failure = Запущено { $total-backups } резервных копий во время игры в { $game }, из которых { $failed-backups } не удались
 
 ## Restore
 
@@ -76,8 +76,8 @@ operation-still-pending = { ludusavi } все еще работает над п�
 no-game-played-yet = Вы еще не играли ни во что в этой сессии.
 unable-to-run-ludusavi = Не удается запустить { ludusavi }.
 cannot-open-folder = Не удается открыть папку.
-unable-to-synchronize-with-cloud = Unable to synchronize with cloud.
-cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open Ludusavi and perform an upload or download to resolve this.
+unable-to-synchronize-with-cloud = Не удалось синхронизировать с облаком.
+cloud-synchronize-conflict = Ваши локальные и облачные резервные копии конфликтуют. Выполните закачку или загрузку, чтобы исправить это.
 
 ## Settings
 
@@ -87,21 +87,21 @@ config-override-backup-format = Переопределить формат рез
 config-override-backup-compression = Переопределить сжатие резервной копии.
 config-override-backup-retention = Override backup retention.
 config-full-backup-limit = Макс. кол-во резервных копий к игре:
-config-differential-backup-limit = Max differential backups per full backup:
+config-differential-backup-limit = Максимальное количество дифференциальных резервных копий за полную резервную копию:
 config-do-backup-on-game-stopped = Сохранять резервные копии после игры
 config-do-restore-on-game-starting = Также восстановить данные для игры перед игрой
 config-ask-backup-on-game-stopped = Спросить сначала вместо автоматического выполнения
 config-only-backup-on-game-stopped-if-pc = Сделать это только для ПК игр
-config-retry-unrecognized-game-with-normalization = If not found, retry by normalizing the title
-config-add-suffix-for-non-pc-game-names = Look up non-PC games by adding this suffix to their names (requires custom entry):
-config-retry-non-pc-games-without-suffix = If not found with the suffix, then try again without it
-config-do-platform-backup-on-non-pc-game-stopped = Back up save data by platform name after playing non-PC games (requires custom entry)
-config-do-platform-restore-on-non-pc-game-starting = Also restore save data by platform name before playing non-PC games
+config-retry-unrecognized-game-with-normalization = Если не найдено, попробуйте нормализировать заголовок
+config-add-suffix-for-non-pc-game-names = Искать не-ПК, добавив этот суффикс к их именам (требует пользовательской записи):
+config-retry-non-pc-games-without-suffix = Если не найден с суффиксом, попробуйте снова без него
+config-do-platform-backup-on-non-pc-game-stopped = Резервное копирование данных по названию платформы после воспроизведения не-PC игр (требуется пользовательская запись)
+config-do-platform-restore-on-non-pc-game-starting = Восстановить данные по названию платформы перед проигрыванием не-PC игр
 config-ask-platform-backup-on-non-pc-game-stopped = Спросить сначала вместо автоматического выполнения
-config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
+config-do-backup-during-play = Резервное копирование игр с интервалом во время игры, если бы они также были скопированы после воспроизведения без запроса
 config-ignore-benign-notifications = Показывать уведомления только при ошибке
 config-tag-games-with-backups = Автоматически помечать игры с резервными копиями как "{ $tag }"
-config-tag-games-with-unknown-save-data = Automatically tag games with unknown save data as "{ $tag }"
+config-tag-games-with-unknown-save-data = Автоматически помечать игры с неизвестными сохраненными данными как "{ $tag }"
 label-minutes = Минут(ы):
 option-simple = Простой
 option-none = Нет
@@ -110,5 +110,5 @@ option-none = Нет
 
 upgrade-prompt = Установите Ludusavi { $version } или новее для лучшей работы. Нажмите для просмотра последней версии.
 unrecognized-game = Ludusavi не распознает { $game }
-look-up-as-other-title = Look up with another title
-look-up-as-normal-title = Look up with default title
+look-up-as-other-title = Искать с другим заголовком
+look-up-as-normal-title = Искать с названием по умолчанию

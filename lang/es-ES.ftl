@@ -76,8 +76,8 @@ operation-still-pending = { ludusavi } todavía está trabajando en una solicitu
 no-game-played-yet = Aún no has jugado nada en esta sesión.
 unable-to-run-ludusavi = No se ha podido ejecutar { ludusavi }.
 cannot-open-folder = No se puede abrir la carpeta.
-unable-to-synchronize-with-cloud = Unable to synchronize with cloud.
-cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open Ludusavi and perform an upload or download to resolve this.
+unable-to-synchronize-with-cloud = No se ha podido sincronizar con la nube.
+cloud-synchronize-conflict = Tus copias de seguridad locales y en la nube están en conflicto. Abre Ludusavi y realiza una subida o descarga para resolver esto.
 
 ## Settings
 
@@ -101,7 +101,7 @@ config-ask-platform-backup-on-non-pc-game-stopped = Preguntar primero en lugar d
 config-do-backup-during-play = Respaldar juegos en un intervalo mientras se juega, si también serían respaldadas después del juego sin preguntar
 config-ignore-benign-notifications = Mostrar sólo notificaciones por fallo
 config-tag-games-with-backups = Etiquetar automáticamente juegos con copias de seguridad como "{ $tag }"
-config-tag-games-with-unknown-save-data = Automatically tag games with unknown save data as "{ $tag }"
+config-tag-games-with-unknown-save-data = Etiquetar automáticamente juegos con copias de seguridad desconocidas como "{ $tag }"
 label-minutes = Minutos:
 option-simple = Simple
 option-none = Ninguno

@@ -2,6 +2,9 @@
 
 * Fixed:
   * Possible crash when saving plugin settings.
+* Changed:
+  * Updated translations.
+    (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
 
 ## v0.13.0 (2023-06-22)
 
