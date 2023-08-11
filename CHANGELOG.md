@@ -1,3 +1,8 @@
+## Unreleased
+
+* Fixed:
+  * Crash when changing plugin settings if some games had a null name.
+
 ## v0.13.1 (2023-08-10)
 
 * Fixed:

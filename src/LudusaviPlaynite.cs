@@ -1458,7 +1458,7 @@ namespace LudusaviPlaynite
 
         private V GetDictValue<K, V>(Dictionary<K, V> dict, K key, V fallback)
         {
-            if (dict == null)
+            if (dict == null || key == null)
             {
                 return fallback;
             }
