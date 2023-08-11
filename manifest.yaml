@@ -1,12 +1,19 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.13.2
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2023-08-11
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.13.2/ludusavi-playnite-v0.13.2.pext
+    Changelog:
+      - >-
+        Fixed: Crash when changing plugin settings if some games had a null name.
   - Version: 0.13.1
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2023-08-10
     PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.13.1/ludusavi-playnite-v0.13.1.pext
     Changelog:
       - >-
-        Fixed: Possible crash when saving plugin settings.
+        Fixed: Possible crash when saving plugin settings if the config file contained certain null values.
       - >-
         Changed: Updated translations.
         (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))

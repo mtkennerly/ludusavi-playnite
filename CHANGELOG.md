@@ -1,4 +1,4 @@
-## Unreleased
+## v0.13.2 (2023-08-11)
 
 * Fixed:
   * Crash when changing plugin settings if some games had a null name.
@@ -6,7 +6,7 @@
 ## v0.13.1 (2023-08-10)
 
 * Fixed:
-  * Possible crash when saving plugin settings.
+  * Possible crash when saving plugin settings if the config file contained certain null values.
 * Changed:
   * Updated translations.
     (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
