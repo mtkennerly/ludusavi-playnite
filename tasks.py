@@ -7,6 +7,7 @@ import yaml
 from invoke import task
 
 REPO = Path(os.path.dirname(__file__))
+LANG = REPO / "lang"
 
 
 def get_version():
@@ -53,3 +54,22 @@ def deploy(ctx, target="~/AppData/Roaming/Playnite/Extensions"):
 @task
 def style(ctx):
     ctx.run("dotnet format src")
+
+
+@task
+def lang(ctx, jar="/opt/crowdin-cli/crowdin-cli.jar"):
+    ctx.run(f'java -jar "{jar}" pull --export-only-approved')
+
+    mapping = {}
+    for file in LANG.glob("*.ftl"):
+        if "en-US.ftl" in file.name:
+            continue
+        content = file.read_text("utf8")
+        if content not in mapping:
+            mapping[content] = set()
+        mapping[content].add(file)
+
+    for group in mapping.values():
+        if len(group) > 1:
+            for file in group:
+                file.unlink()
