@@ -1204,7 +1204,14 @@ namespace LudusaviPlaynite
                 var result = new OperationResult { Name = displayName, Response = (ApiResponse)response };
                 if (code == 0)
                 {
-                    if ((response?.Overall.ChangedGames?.Same ?? 0) == 0)
+                    if (response?.Overall.TotalGames == 0)
+                    {
+                        // This applies to Ludusavi v0.23.0 and later
+                        error.Message = translator.RestoreOneGame_Empty(result);
+                        error.Empty = true;
+                        NotifyError(error.Message);
+                    }
+                    else if ((response?.Overall.ChangedGames?.Same ?? 0) == 0)
                     {
                         NotifyInfo(translator.RestoreOneGame_Success(result));
                     }
@@ -1217,6 +1224,7 @@ namespace LudusaviPlaynite
                 {
                     if (response?.Errors.UnknownGames != null)
                     {
+                        // This applies to Ludusavi versions before v0.23.0
                         error.Message = translator.RestoreOneGame_Empty(result);
                         error.Empty = true;
                         NotifyError(error.Message);

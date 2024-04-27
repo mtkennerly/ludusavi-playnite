@@ -1,6 +1,8 @@
 ## Unreleased
 
 * Changed:
+  * Updated handling for the `restore` command for Ludusavi v0.23.0+,
+    which no longer returns an error when there is no data to restore.
   * Updated translations, including a new German translation.
     (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
 
