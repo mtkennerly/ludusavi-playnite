@@ -1,5 +1,16 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.14.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2024-04-27
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.14.0/ludusavi-playnite-v0.14.0.pext
+    Changelog:
+      - >-
+        Changed: Updated handling for the `restore` command for Ludusavi v0.23.0+,
+        which no longer returns an error when there is no data to restore.
+      - >-
+        Changed: Updated translations, including a new German translation.
+        (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
   - Version: 0.13.2
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2023-08-11

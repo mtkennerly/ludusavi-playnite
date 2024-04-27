@@ -1,4 +1,4 @@
-## Unreleased
+## v0.14.0 (2024-04-27)
 
 * Changed:
   * Updated handling for the `restore` command for Ludusavi v0.23.0+,
