@@ -1,3 +1,12 @@
+## Unreleased
+
+* Added:
+  * In a game's context menu, backup comments are now displayed,
+    if any have been added in Ludusavi.
+    If a backup is from another OS than Windows, that is also indicated.
+* Changed:
+  * In a game's context menu, backups are now sorted newest to oldest.
+
 ## v0.14.0 (2024-04-27)
 
 * Changed:

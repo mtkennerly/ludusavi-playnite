@@ -188,7 +188,7 @@ namespace LudusaviPlaynite
                     items.Add(
                         new GameMenuItem
                         {
-                            Description = backup.When.ToLocalTime().ToString(),
+                            Description = GetBackupDisplayLine(backup),
                             MenuSection = string.Format("{0} | {1}", translator.Ludusavi(), translator.RestoreSelectedGames_Label()),
                             Action = async args =>
                             {
@@ -1444,15 +1444,16 @@ namespace LudusaviPlaynite
 
         private List<ApiBackup> GetBackups(Game game)
         {
+            var ret = new List<ApiBackup>();
             var alt = AlternativeTitle(game);
 
             if (alt != null)
             {
-                return GetDictValue(this.backups, alt, new List<ApiBackup>());
+                ret = GetDictValue(this.backups, alt, new List<ApiBackup>());
             }
             else
             {
-                return GetDictValue(
+                ret = GetDictValue(
                     this.backups,
                     GetGameName(game),
                     GetDictValue(
@@ -1462,6 +1463,11 @@ namespace LudusaviPlaynite
                     )
                 );
             }
+
+            // Sort newest backups to the top.
+            ret.Sort((x, y) => y.When.CompareTo(x.When));
+
+            return ret;
         }
 
         private V GetDictValue<K, V>(Dictionary<K, V> dict, K key, V fallback)
@@ -1481,6 +1487,41 @@ namespace LudusaviPlaynite
             {
                 return fallback;
             }
+        }
+
+        private string GetBackupDisplayLine(ApiBackup backup)
+        {
+            var ret = backup.When.ToLocalTime().ToString();
+
+            if (!string.IsNullOrEmpty(backup.Os) && backup.Os != "windows")
+            {
+                ret += string.Format(" [{0}]", backup.Os);
+            }
+            if (!string.IsNullOrEmpty(backup.Comment))
+            {
+                var line = "";
+                var parts = backup.Comment.Split();
+
+                foreach (var part in backup.Comment.Split())
+                {
+                    if (line != "")
+                    {
+                        line += " ";
+                    }
+                    line += part;
+                    if (line.Length > 60)
+                    {
+                        ret += string.Format("\n    {0}", line);
+                        line = "";
+                    }
+                }
+                if (line != "")
+                {
+                    ret += string.Format("\n    {0}", line);
+                }
+            }
+
+            return ret;
         }
     }
 }

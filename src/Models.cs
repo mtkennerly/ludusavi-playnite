@@ -461,6 +461,10 @@ namespace LudusaviPlaynite
         public string Name;
         [JsonProperty("when")]
         public DateTime When;
+        [JsonProperty("comment")]
+        public string Comment;
+        [JsonProperty("os")]
+        public string Os;
     }
 
     public struct ApiGame
