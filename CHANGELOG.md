@@ -4,12 +4,14 @@
   * In a game's context menu, backup comments are now displayed,
     if any have been added in Ludusavi.
     If a backup is from another OS than Windows, that is also indicated.
+  * In a game's context menu, you can now open that game's backup directory.
+    This requires Ludusavi v0.24.0 or newer.
 * Fixed:
   * In some cases where Playnite and Ludusavi used different names for a game,
     the game's context menu would not list its backups.
-    This now works properly in more cases if you use Ludusavi 0.24.0 or newer.
+    This now works properly in more cases if you use Ludusavi v0.24.0 or newer.
 * Changed:
-  * The recommended version of Ludusavi is now 0.24.0. You can download the latest release here:
+  * The recommended version of Ludusavi is now v0.24.0. You can download the latest release here:
     https://github.com/mtkennerly/ludusavi/releases
   * In a game's context menu, backups are now sorted newest to oldest.
 

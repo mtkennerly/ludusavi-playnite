@@ -25,18 +25,12 @@ namespace LudusaviPlaynite
     {
         private LudusaviPlaynite plugin;
         private Translator translator;
-        private Regex homeDir = new Regex("^~");
 
         public LudusaviPlayniteSettingsView(LudusaviPlaynite plugin, Translator translator)
         {
             InitializeComponent();
             this.plugin = plugin;
             this.translator = translator;
-        }
-
-        private string NormalizePath(string path)
-        {
-            return homeDir.Replace(path, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)).Replace("/", "\\");
         }
 
         public void OnBrowseExecutablePath(object sender, RoutedEventArgs e)
@@ -59,11 +53,7 @@ namespace LudusaviPlaynite
 
         public void OnOpenBackupPath(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Process.Start(NormalizePath(plugin.settings.BackupPath));
-            }
-            catch
+            if (!Etc.OpenDir(plugin.settings.BackupPath))
             {
                 this.plugin.ShowError(this.translator.CannotOpenFolder());
             }

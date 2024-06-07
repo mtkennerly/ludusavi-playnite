@@ -484,6 +484,8 @@ namespace LudusaviPlaynite
         public Dictionary<string, ApiRegistry> Registry;
         [JsonProperty("backups")]
         public List<ApiBackup> Backups;
+        [JsonProperty("backupPath")]
+        public string BackupPath;
     }
 
     public struct ApiResponse

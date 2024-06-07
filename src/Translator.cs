@@ -661,5 +661,10 @@ namespace LudusaviPlaynite
         {
             return Translate("look-up-as-normal-title");
         }
+
+        public string OpenBackupDirectory()
+        {
+            return Translate("open-backup-directory");
+        }
     }
 }

@@ -70,6 +70,7 @@ namespace LudusaviPlaynite
         private LudusaviVersion appVersion { get; set; } = new LudusaviVersion(new Version(0, 0, 0));
         private Dictionary<string, string> titles { get; set; } = new Dictionary<string, string>();
         private Dictionary<string, List<ApiBackup>> backups { get; set; } = new Dictionary<string, List<ApiBackup>>();
+        private Dictionary<string, string> backupPaths { get; set; } = new Dictionary<string, string>();
         private List<string> manifestGames { get; set; } = new List<string>();
         private List<string> manifestGamesWithSaveDataByTitle { get; set; } = new List<string>();
         private List<int> manifestGamesWithSaveDataBySteamId { get; set; } = new List<int>();
@@ -224,6 +225,28 @@ namespace LudusaviPlaynite
                         }
                     }
                 );
+            }
+
+            if (menuArgs.Games.Count == 1)
+            {
+                var backupPath = GetBackupPath(menuArgs.Games[0]);
+                if (backupPath != null)
+                {
+                    items.Add(
+                        new GameMenuItem
+                        {
+                            Description = translator.OpenBackupDirectory(),
+                            MenuSection = translator.Ludusavi(),
+                            Action = args =>
+                            {
+                                if (!Etc.OpenDir(backupPath))
+                                {
+                                    ShowError(this.translator.CannotOpenFolder());
+                                }
+                            }
+                        }
+                    );
+                }
             }
 
             if (menuArgs.Games.Count == 1)
@@ -500,7 +523,14 @@ namespace LudusaviPlaynite
             var (code, response) = InvokeLudusavi(new Invocation(Mode.Backups).PathIf(settings.BackupPath, settings.OverrideBackupPath));
             if (response?.Games != null)
             {
-                this.backups = response?.Games.ToDictionary(pair => pair.Key, pair => pair.Value.Backups);
+                foreach (var pair in response?.Games)
+                {
+                    this.backups.Add(pair.Key, pair.Value.Backups);
+                    if (!string.IsNullOrEmpty(pair.Value.BackupPath))
+                    {
+                        this.backupPaths.Add(pair.Key, pair.Value.BackupPath);
+                    }
+                }
             }
 
             if (this.settings.TagGamesWithBackups)
@@ -1525,6 +1555,11 @@ namespace LudusaviPlaynite
             ret.Sort((x, y) => y.When.CompareTo(x.When));
 
             return ret;
+        }
+
+        private string GetBackupPath(Game game)
+        {
+            return GetDictValue(this.backupPaths, GetTitle(game) ?? GetGameNameWithAlt(game), null);
         }
 
         private V GetDictValue<K, V>(Dictionary<K, V> dict, K key, V fallback)

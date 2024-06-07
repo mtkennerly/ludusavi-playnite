@@ -2,11 +2,15 @@ using Playnite.SDK.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace LudusaviPlaynite
 {
     public static class Etc
     {
+        private static Regex homeDir = new Regex("^~");
+
         public static bool IsOnSteam(Game game)
         {
             return game.Source?.Name == "Steam"
@@ -21,6 +25,24 @@ namespace LudusaviPlaynite
                 || game.Platforms.Count == 0
                 || game.Platforms.Any(x => pcSpecs.Contains(x.SpecificationId))
                 || game.Platforms.Any(x => pcNames.Contains(x.Name));
+        }
+
+        public static string NormalizePath(string path)
+        {
+            return homeDir.Replace(path, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)).Replace("/", "\\");
+        }
+
+        public static bool OpenDir(string path)
+        {
+            try
+            {
+                Process.Start(NormalizePath(path));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
