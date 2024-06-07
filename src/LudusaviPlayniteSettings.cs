@@ -282,6 +282,7 @@ namespace LudusaviPlaynite
             // This method should save settings made to Option1 and Option2.
             plugin.SavePluginSettings(this);
             this.plugin.RefreshLudusaviVersion();
+            this.plugin.RefreshLudusaviTitles();
             this.plugin.RefreshLudusaviBackups();
         }
 

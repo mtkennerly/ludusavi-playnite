@@ -379,6 +379,11 @@ namespace LudusaviPlaynite
             return this.version >= new Version(0, 14, 0);
         }
 
+        public bool supportsApiCommand()
+        {
+            return this.version >= new Version(0, 24, 0);
+        }
+
         public bool supportsCustomizingBackupFormat()
         {
             return this.version >= new Version(0, 14, 0);
