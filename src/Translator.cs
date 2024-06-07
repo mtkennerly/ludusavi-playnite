@@ -600,7 +600,7 @@ namespace LudusaviPlaynite
             return Translate(
                 "config-tag-games-with-backups",
                 new FluentArgs() {
-                    {TAG, (FluentString)LudusaviPlaynite.TAG_BACKED_UP},
+                    {TAG, (FluentString)Tags.BACKED_UP},
                 }
             );
         }
@@ -610,7 +610,7 @@ namespace LudusaviPlaynite
             return Translate(
                 "config-tag-games-with-unknown-save-data",
                 new FluentArgs() {
-                    {TAG, (FluentString)LudusaviPlaynite.TAG_UNKNOWN_SAVE_DATA},
+                    {TAG, (FluentString)Tags.UNKNOWN_SAVE_DATA},
                 }
             );
         }

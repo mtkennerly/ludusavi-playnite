@@ -18,46 +18,6 @@ namespace LudusaviPlaynite
 {
     public class LudusaviPlaynite : GenericPlugin
     {
-        private readonly Version RECOMMENDED_APP_VERSION = new Version(0, 24, 0);
-
-        private const string TAG_PREFIX = "[Ludusavi] ";
-
-        private const string LEGACY_TAG_SKIP = "ludusavi-skip";
-        private const string TAG_SKIP = TAG_PREFIX + "Skip";
-
-        private const string TAG_GAME_BACKUP = TAG_PREFIX + "Game: backup";
-        private const string TAG_GAME_NO_BACKUP = TAG_PREFIX + "Game: no backup";
-
-        private const string TAG_GAME_BACKUP_AND_RESTORE = TAG_PREFIX + "Game: backup and restore";
-        private const string TAG_GAME_NO_RESTORE = TAG_PREFIX + "Game: no restore";
-
-        private const string TAG_PLATFORM_BACKUP = TAG_PREFIX + "Platform: backup";
-        private const string TAG_PLATFORM_NO_BACKUP = TAG_PREFIX + "Platform: no backup";
-
-        private const string TAG_PLATFORM_BACKUP_AND_RESTORE = TAG_PREFIX + "Platform: backup and restore";
-        private const string TAG_PLATFORM_NO_RESTORE = TAG_PREFIX + "Platform: no restore";
-
-        public const string TAG_BACKED_UP = TAG_PREFIX + "Backed up";
-        public const string TAG_UNKNOWN_SAVE_DATA = TAG_PREFIX + "Unknown save data";
-
-        // Format: {new tag, {conflicting tags}}
-        private readonly Dictionary<string, string[]> TAGS_AND_CONFLICTS = new Dictionary<string, string[]> {
-            {TAG_SKIP, new string[] {}},
-            {TAG_GAME_BACKUP, new string[] {TAG_SKIP, TAG_GAME_NO_BACKUP}},
-            {TAG_GAME_NO_BACKUP, new string[] {TAG_GAME_BACKUP, TAG_GAME_BACKUP_AND_RESTORE}},
-            {TAG_GAME_BACKUP_AND_RESTORE, new string[] {TAG_SKIP, TAG_GAME_BACKUP, TAG_GAME_NO_BACKUP, TAG_GAME_NO_RESTORE}},
-            {TAG_GAME_NO_RESTORE, new string[] {TAG_GAME_BACKUP_AND_RESTORE}},
-            {TAG_PLATFORM_BACKUP, new string[] {TAG_SKIP, TAG_PLATFORM_NO_BACKUP}},
-            {TAG_PLATFORM_NO_BACKUP, new string[] {TAG_PLATFORM_BACKUP, TAG_PLATFORM_BACKUP_AND_RESTORE}},
-            {TAG_PLATFORM_BACKUP_AND_RESTORE, new string[] {TAG_SKIP, TAG_PLATFORM_BACKUP, TAG_PLATFORM_NO_BACKUP, TAG_PLATFORM_NO_RESTORE}},
-            {TAG_PLATFORM_NO_RESTORE, new string[] {TAG_PLATFORM_BACKUP_AND_RESTORE}},
-        };
-        // Format: {(new tag, conflicting tag), conflict replacement}
-        private readonly Dictionary<(string, string), string> TAG_REPLACEMENTS = new Dictionary<(string, string), string> {
-            {(TAG_GAME_NO_RESTORE, TAG_GAME_BACKUP_AND_RESTORE), TAG_GAME_BACKUP},
-            {(TAG_PLATFORM_NO_RESTORE, TAG_PLATFORM_BACKUP_AND_RESTORE), TAG_PLATFORM_BACKUP},
-        };
-
         private static readonly ILogger logger = LogManager.GetLogger();
         public LudusaviPlayniteSettings settings { get; set; }
         public override Guid Id { get; } = Guid.Parse("72e2de43-d859-44d8-914e-4277741c8208");
@@ -321,7 +281,7 @@ namespace LudusaviPlaynite
                 }
             }
 
-            foreach (var entry in TAGS_AND_CONFLICTS)
+            foreach (var entry in Tags.CONFLICTS)
             {
                 var candidate = entry.Key;
                 var conflicts = entry.Value;
@@ -347,7 +307,7 @@ namespace LudusaviPlaynite
                                                 {
                                                     var removed = RemoveTag(game, conflict);
                                                     string replacement;
-                                                    if (removed && TAG_REPLACEMENTS.TryGetValue((candidate, conflict), out replacement))
+                                                    if (removed && Tags.REPLACEMENTS.TryGetValue((candidate, conflict), out replacement))
                                                     {
                                                         AddTag(game, replacement);
                                                     }
@@ -395,11 +355,11 @@ namespace LudusaviPlaynite
         {
             if (!settings.MigratedTags)
             {
-                var oldTag = PlayniteApi.Database.Tags.FirstOrDefault(x => x.Name == LEGACY_TAG_SKIP);
-                var newTagExists = PlayniteApi.Database.Tags.Any(x => x.Name == TAG_SKIP);
+                var oldTag = PlayniteApi.Database.Tags.FirstOrDefault(x => x.Name == Tags.LEGACY_SKIP);
+                var newTagExists = PlayniteApi.Database.Tags.Any(x => x.Name == Tags.SKIP);
                 if (oldTag != null && !newTagExists)
                 {
-                    oldTag.Name = TAG_SKIP;
+                    oldTag.Name = Tags.SKIP;
                     PlayniteApi.Database.Tags.Update(oldTag);
                 }
                 settings.MigratedTags = true;
@@ -413,10 +373,10 @@ namespace LudusaviPlaynite
                 RefreshLudusaviBackups();
                 RefreshLudusaviGames();
 
-                if (appVersion.version < RECOMMENDED_APP_VERSION && new Version(settings.SuggestedUpgradeTo) < RECOMMENDED_APP_VERSION)
+                if (appVersion.version < Etc.RECOMMENDED_APP_VERSION && new Version(settings.SuggestedUpgradeTo) < Etc.RECOMMENDED_APP_VERSION)
                 {
                     NotifyInfo(
-                        translator.UpgradePrompt(RECOMMENDED_APP_VERSION.ToString()),
+                        translator.UpgradePrompt(Etc.RECOMMENDED_APP_VERSION.ToString()),
                         () =>
                         {
                             try
@@ -427,7 +387,7 @@ namespace LudusaviPlaynite
                             { }
                         }
                     );
-                    settings.SuggestedUpgradeTo = RECOMMENDED_APP_VERSION.ToString();
+                    settings.SuggestedUpgradeTo = Etc.RECOMMENDED_APP_VERSION.ToString();
                     SavePluginSettings(settings);
                 }
             });
@@ -853,7 +813,7 @@ namespace LudusaviPlaynite
 
         private bool ShouldSkipGame(Game game)
         {
-            return HasTag(game, TAG_SKIP);
+            return HasTag(game, Tags.SKIP);
         }
 
         string GetTitleId(Game game)
@@ -1034,10 +994,10 @@ namespace LudusaviPlaynite
                             switch (criteria)
                             {
                                 case BackupCriteria.Game:
-                                    UpdateTagsForChoice(game, choice, TAG_GAME_BACKUP, TAG_GAME_NO_BACKUP);
+                                    UpdateTagsForChoice(game, choice, Tags.GAME_BACKUP, Tags.GAME_NO_BACKUP);
                                     break;
                                 case BackupCriteria.Platform:
-                                    UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP, TAG_PLATFORM_NO_BACKUP);
+                                    UpdateTagsForChoice(game, choice, Tags.PLATFORM_BACKUP, Tags.PLATFORM_NO_BACKUP);
                                     break;
                             }
                             break;
@@ -1045,10 +1005,10 @@ namespace LudusaviPlaynite
                             switch (criteria)
                             {
                                 case BackupCriteria.Game:
-                                    UpdateTagsForChoice(game, choice, TAG_GAME_BACKUP_AND_RESTORE, TAG_GAME_NO_RESTORE, TAG_GAME_BACKUP);
+                                    UpdateTagsForChoice(game, choice, Tags.GAME_BACKUP_AND_RESTORE, Tags.GAME_NO_RESTORE, Tags.GAME_BACKUP);
                                     break;
                                 case BackupCriteria.Platform:
-                                    UpdateTagsForChoice(game, choice, TAG_PLATFORM_BACKUP_AND_RESTORE, TAG_PLATFORM_NO_RESTORE, TAG_PLATFORM_BACKUP);
+                                    UpdateTagsForChoice(game, choice, Tags.PLATFORM_BACKUP_AND_RESTORE, Tags.PLATFORM_NO_RESTORE, Tags.PLATFORM_BACKUP);
                                     break;
                             }
                             break;
@@ -1410,11 +1370,11 @@ namespace LudusaviPlaynite
             {
                 if (IsBackedUp(game))
                 {
-                    AddTag(game, TAG_BACKED_UP);
+                    AddTag(game, Tags.BACKED_UP);
                 }
                 else
                 {
-                    RemoveTag(game, TAG_BACKED_UP);
+                    RemoveTag(game, Tags.BACKED_UP);
                 }
             }
         }
@@ -1425,11 +1385,11 @@ namespace LudusaviPlaynite
             {
                 if (!GameHasKnownSaveData(game))
                 {
-                    AddTag(game, TAG_UNKNOWN_SAVE_DATA);
+                    AddTag(game, Tags.UNKNOWN_SAVE_DATA);
                 }
                 else
                 {
-                    RemoveTag(game, TAG_UNKNOWN_SAVE_DATA);
+                    RemoveTag(game, Tags.UNKNOWN_SAVE_DATA);
                 }
             }
         }
@@ -1441,11 +1401,11 @@ namespace LudusaviPlaynite
                 return new PlayPreferences();
             }
 
-            var gameBackupDo = (settings.DoBackupOnGameStopped || HasTag(game, TAG_GAME_BACKUP) || HasTag(game, TAG_GAME_BACKUP_AND_RESTORE))
-                && !HasTag(game, TAG_GAME_NO_BACKUP)
-                && (Etc.IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc || HasTag(game, TAG_GAME_BACKUP) || HasTag(game, TAG_GAME_BACKUP_AND_RESTORE));
-            var platformBackupDo = (settings.DoPlatformBackupOnNonPcGameStopped || HasTag(game, TAG_PLATFORM_BACKUP) || HasTag(game, TAG_PLATFORM_BACKUP_AND_RESTORE))
-                && !HasTag(game, TAG_PLATFORM_NO_BACKUP)
+            var gameBackupDo = (settings.DoBackupOnGameStopped || HasTag(game, Tags.GAME_BACKUP) || HasTag(game, Tags.GAME_BACKUP_AND_RESTORE))
+                && !HasTag(game, Tags.GAME_NO_BACKUP)
+                && (Etc.IsOnPc(game) || !settings.OnlyBackupOnGameStoppedIfPc || HasTag(game, Tags.GAME_BACKUP) || HasTag(game, Tags.GAME_BACKUP_AND_RESTORE));
+            var platformBackupDo = (settings.DoPlatformBackupOnNonPcGameStopped || HasTag(game, Tags.PLATFORM_BACKUP) || HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE))
+                && !HasTag(game, Tags.PLATFORM_NO_BACKUP)
                 && !Etc.IsOnPc(game)
                 && GetGamePlatform(game) != null;
 
@@ -1456,14 +1416,14 @@ namespace LudusaviPlaynite
                     Backup = new OperationPreference
                     {
                         Do = gameBackupDo,
-                        Ask = settings.AskBackupOnGameStopped && !HasTag(game, TAG_GAME_BACKUP) && !HasTag(game, TAG_GAME_BACKUP_AND_RESTORE),
+                        Ask = settings.AskBackupOnGameStopped && !HasTag(game, Tags.GAME_BACKUP) && !HasTag(game, Tags.GAME_BACKUP_AND_RESTORE),
                     },
                     Restore = new OperationPreference
                     {
                         Do = gameBackupDo
-                            && (settings.DoRestoreOnGameStarting || HasTag(game, TAG_GAME_BACKUP_AND_RESTORE))
-                            && !HasTag(game, TAG_GAME_NO_RESTORE),
-                        Ask = settings.AskBackupOnGameStopped && !HasTag(game, TAG_GAME_BACKUP_AND_RESTORE),
+                            && (settings.DoRestoreOnGameStarting || HasTag(game, Tags.GAME_BACKUP_AND_RESTORE))
+                            && !HasTag(game, Tags.GAME_NO_RESTORE),
+                        Ask = settings.AskBackupOnGameStopped && !HasTag(game, Tags.GAME_BACKUP_AND_RESTORE),
                     },
                 },
                 Platform = new OperationPreferences
@@ -1471,14 +1431,14 @@ namespace LudusaviPlaynite
                     Backup = new OperationPreference
                     {
                         Do = platformBackupDo,
-                        Ask = settings.AskPlatformBackupOnNonPcGameStopped && !HasTag(game, TAG_PLATFORM_BACKUP) && !HasTag(game, TAG_PLATFORM_BACKUP_AND_RESTORE),
+                        Ask = settings.AskPlatformBackupOnNonPcGameStopped && !HasTag(game, Tags.PLATFORM_BACKUP) && !HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE),
                     },
                     Restore = new OperationPreference
                     {
                         Do = platformBackupDo
-                            && (settings.DoPlatformRestoreOnNonPcGameStarting || HasTag(game, TAG_PLATFORM_BACKUP_AND_RESTORE))
-                            && !HasTag(game, TAG_PLATFORM_NO_RESTORE),
-                        Ask = settings.AskPlatformBackupOnNonPcGameStopped && !HasTag(game, TAG_PLATFORM_BACKUP_AND_RESTORE),
+                            && (settings.DoPlatformRestoreOnNonPcGameStarting || HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE))
+                            && !HasTag(game, Tags.PLATFORM_NO_RESTORE),
+                        Ask = settings.AskPlatformBackupOnNonPcGameStopped && !HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE),
                     },
                 },
             };
