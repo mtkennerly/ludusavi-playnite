@@ -2,7 +2,6 @@ using ByteSizeLib;
 using Linguini.Bundle;
 using Linguini.Bundle.Builder;
 using Linguini.Shared.Types.Bundle;
-using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
