@@ -59,7 +59,7 @@ namespace LudusaviPlaynite.Api
 
             try
             {
-                var (code, stdout) = RunCommand(settings.ExecutablePath.Trim(), args, json);
+                var (code, stdout) = Etc.RunCommand(settings.ExecutablePath.Trim(), args, json);
                 if (standalone)
                 {
                     logger.Debug(string.Format("Ludusavi exited with {0}", code));
@@ -73,37 +73,9 @@ namespace LudusaviPlaynite.Api
             }
         }
 
-        private (int, string) RunCommand(string command, string args, string stdin)
-        {
-            var p = new Process();
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.RedirectStandardInput = true;
-            p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            p.StartInfo.CreateNoWindow = true;
-            p.StartInfo.FileName = command;
-            p.StartInfo.Arguments = args;
-            p.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-            p.Start();
-
-            p.StandardInput.WriteLine(stdin);
-            p.StandardInput.Close();
-
-            var stdout = p.StandardOutput.ReadToEnd();
-            p.WaitForExit();
-
-            return (p.ExitCode, stdout);
-        }
-
         public void FindTitle(Game game, string name, bool hasAltTitle)
         {
             var names = new List<string> { name };
-
-            int? steamId = null;
-            if (Etc.IsOnSteam(game) && int.TryParse(game.GameId, out var id))
-            {
-                steamId = id;
-            }
 
             if (!Etc.IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix)
             {
@@ -113,7 +85,7 @@ namespace LudusaviPlaynite.Api
             var inner = new Requests.FindTitle
             {
                 names = names,
-                steamId = steamId,
+                steamId = Etc.SteamId(game),
                 normalized = this.settings.RetryUnrecognizedGameWithNormalization,
             };
 

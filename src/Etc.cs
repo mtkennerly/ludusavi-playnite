@@ -12,10 +12,92 @@ namespace LudusaviPlaynite
         public static Version RECOMMENDED_APP_VERSION = new Version(0, 24, 0);
         private static Regex HOME_DIR = new Regex("^~");
 
+        public static V GetDictValue<K, V>(Dictionary<K, V> dict, K key, V fallback)
+        {
+            if (dict == null || key == null)
+            {
+                return fallback;
+            }
+
+            V result;
+            var found = dict.TryGetValue(key, out result);
+            if (found)
+            {
+                return result;
+            }
+            else
+            {
+                return fallback;
+            }
+        }
+
+        public static (int, string) RunCommand(string command, string args)
+        {
+            var p = new Process();
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            p.StartInfo.CreateNoWindow = true;
+            p.StartInfo.FileName = command;
+            p.StartInfo.Arguments = args;
+            p.StartInfo.StandardOutputEncoding = System.Text.Encoding.UTF8;
+            p.Start();
+
+            var stdout = p.StandardOutput.ReadToEnd();
+            p.WaitForExit();
+
+            return (p.ExitCode, stdout);
+        }
+
+        public static (int, string) RunCommand(string command, string args, string stdin)
+        {
+            var p = new Process();
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            p.StartInfo.CreateNoWindow = true;
+            p.StartInfo.FileName = command;
+            p.StartInfo.Arguments = args;
+            p.StartInfo.StandardOutputEncoding = System.Text.Encoding.UTF8;
+            p.Start();
+
+            p.StandardInput.WriteLine(stdin);
+            p.StandardInput.Close();
+
+            var stdout = p.StandardOutput.ReadToEnd();
+            p.WaitForExit();
+
+            return (p.ExitCode, stdout);
+        }
+
         public static bool IsOnSteam(Game game)
         {
             return game.Source?.Name == "Steam"
                 || game.PluginId == Guid.Parse("cb91dfc9-b977-43bf-8e70-55f46e410fab");
+        }
+
+        public static int? SteamId(Game game)
+        {
+            if (IsOnSteam(game) && int.TryParse(game.GameId, out var id))
+            {
+                return id;
+            }
+
+            return null;
+        }
+
+        public static bool TrySteamId(Game game, out int result)
+        {
+            var id = SteamId(game);
+            if (id != null)
+            {
+                result = (int)id;
+                return true;
+            }
+
+            result = 0;
+            return false;
         }
 
         public static bool IsOnPc(Game game)
@@ -26,6 +108,16 @@ namespace LudusaviPlaynite
                 || game.Platforms.Count == 0
                 || game.Platforms.Any(x => pcSpecs.Contains(x.SpecificationId))
                 || game.Platforms.Any(x => pcNames.Contains(x.Name));
+        }
+
+        public static string GetTitleId(Game game)
+        {
+            return string.Format("{0}:{1}", game.PluginId, game.GameId);
+        }
+
+        public static Platform GetGamePlatform(Game game)
+        {
+            return game?.Platforms?.ElementAtOrDefault(0);
         }
 
         public static string NormalizePath(string path)

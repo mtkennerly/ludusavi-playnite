@@ -211,7 +211,7 @@ namespace LudusaviPlaynite
             if (menuArgs.Games.Count == 1)
             {
                 var title = menuArgs.Games[0].Name;
-                string renamed = GetDictValue(settings.AlternativeTitles, title, null);
+                string renamed = Etc.GetDictValue(settings.AlternativeTitles, title, null);
 
                 items.Add(
                     new GameMenuItem
@@ -381,7 +381,7 @@ namespace LudusaviPlaynite
                         {
                             try
                             {
-                                RunCommand("cmd.exe", "/c \"start https://github.com/mtkennerly/ludusavi/releases\"");
+                                Etc.RunCommand("cmd.exe", "/c \"start https://github.com/mtkennerly/ludusavi/releases\"");
                             }
                             catch
                             { }
@@ -521,7 +521,7 @@ namespace LudusaviPlaynite
                 {
                     if (response.findTitle?.titles.Count() == 1)
                     {
-                        this.titles.Add(GetTitleId(games[i]), response.findTitle?.titles[0]);
+                        this.titles.Add(Etc.GetTitleId(games[i]), response.findTitle?.titles[0]);
                     }
 
                     i += 1;
@@ -661,31 +661,13 @@ namespace LudusaviPlaynite
             { }
         }
 
-        private (int, string) RunCommand(string command, string args)
-        {
-            var p = new Process();
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            p.StartInfo.CreateNoWindow = true;
-            p.StartInfo.FileName = command;
-            p.StartInfo.Arguments = args;
-            p.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-            p.Start();
-
-            var stdout = p.StandardOutput.ReadToEnd();
-            p.WaitForExit();
-
-            return (p.ExitCode, stdout);
-        }
-
         private Version GetLudusaviVersion()
         {
             int code;
             string stdout;
             try
             {
-                (code, stdout) = RunCommand(settings.ExecutablePath.Trim(), "--version");
+                (code, stdout) = Etc.RunCommand(settings.ExecutablePath.Trim(), "--version");
                 var version = stdout.Trim().Split(' ').Last();
                 return new Version(version);
             }
@@ -703,7 +685,7 @@ namespace LudusaviPlaynite
 
             try
             {
-                var (code, stdout) = RunCommand(settings.ExecutablePath.Trim(), fullArgs);
+                var (code, stdout) = Etc.RunCommand(settings.ExecutablePath.Trim(), fullArgs);
                 if (standalone)
                 {
                     logger.Debug(string.Format("Ludusavi exited with {0}", code));
@@ -816,14 +798,9 @@ namespace LudusaviPlaynite
             return HasTag(game, Tags.SKIP);
         }
 
-        string GetTitleId(Game game)
-        {
-            return string.Format("{0}:{1}", game.PluginId, game.GameId);
-        }
-
         string GetTitle(Game game)
         {
-            return GetDictValue(this.titles, GetTitleId(game), null);
+            return Etc.GetDictValue(this.titles, Etc.GetTitleId(game), null);
         }
 
         string GetGameName(Game game)
@@ -853,12 +830,7 @@ namespace LudusaviPlaynite
 
         private string AlternativeTitle(Game game)
         {
-            return GetDictValue(settings.AlternativeTitles, game.Name, null);
-        }
-
-        private Platform GetGamePlatform(Game game)
-        {
-            return game?.Platforms?.ElementAtOrDefault(0);
+            return Etc.GetDictValue(settings.AlternativeTitles, game.Name, null);
         }
 
         private string GetDisplayName(Game game, BackupCriteria criteria)
@@ -868,7 +840,7 @@ namespace LudusaviPlaynite
                 case BackupCriteria.Game:
                     return GetGameName(game);
                 case BackupCriteria.Platform:
-                    return GetGamePlatform(game)?.Name ?? "unknown platform";
+                    return Etc.GetGamePlatform(game)?.Name ?? "unknown platform";
                 default:
                     throw new InvalidOperationException(String.Format("GetDisplayName got unexpected criteria: {0}", criteria));
             }
@@ -900,7 +872,7 @@ namespace LudusaviPlaynite
             {
                 // There can't be an alt title because the Steam ID/etc would take priority over it.
 
-                if (Etc.IsOnSteam(game) && int.TryParse(game.GameId, out var id))
+                if (Etc.TrySteamId(game, out var id))
                 {
                     invocation.SteamId(id);
                 }
@@ -949,7 +921,7 @@ namespace LudusaviPlaynite
                 }
             }
 
-            if (criteria.ByPlatform() && GetGamePlatform(game) == null)
+            if (criteria.ByPlatform() && Etc.GetGamePlatform(game) == null)
             {
                 return;
             }
@@ -1407,7 +1379,7 @@ namespace LudusaviPlaynite
             var platformBackupDo = (settings.DoPlatformBackupOnNonPcGameStopped || HasTag(game, Tags.PLATFORM_BACKUP) || HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE))
                 && !HasTag(game, Tags.PLATFORM_NO_BACKUP)
                 && !Etc.IsOnPc(game)
-                && GetGamePlatform(game) != null;
+                && Etc.GetGamePlatform(game) != null;
 
             var prefs = new PlayPreferences
             {
@@ -1469,7 +1441,7 @@ namespace LudusaviPlaynite
                 return true;
             }
 
-            if (Etc.IsOnSteam(game) && int.TryParse(game.GameId, out var id) && this.manifestGamesWithSaveDataBySteamId.Contains(id))
+            if (Etc.TrySteamId(game, out var id) && this.manifestGamesWithSaveDataBySteamId.Contains(id))
             {
                 return true;
             }
@@ -1482,7 +1454,7 @@ namespace LudusaviPlaynite
             if (this.appVersion.supportsApiCommand())
             {
                 var title = GetTitle(game);
-                var backups = GetDictValue(this.backups, title, new List<ApiBackup>());
+                var backups = Etc.GetDictValue(this.backups, title, new List<ApiBackup>());
 
                 // Sort newest backups to the top.
                 backups.Sort((x, y) => y.When.CompareTo(x.When));
@@ -1495,14 +1467,14 @@ namespace LudusaviPlaynite
 
             if (alt != null)
             {
-                ret = GetDictValue(this.backups, alt, new List<ApiBackup>());
+                ret = Etc.GetDictValue(this.backups, alt, new List<ApiBackup>());
             }
             else
             {
-                ret = GetDictValue(
+                ret = Etc.GetDictValue(
                     this.backups,
                     GetGameName(game),
-                    GetDictValue(
+                    Etc.GetDictValue(
                         this.backups,
                         game.Name,
                         new List<ApiBackup>()
@@ -1518,26 +1490,7 @@ namespace LudusaviPlaynite
 
         private string GetBackupPath(Game game)
         {
-            return GetDictValue(this.backupPaths, GetTitle(game) ?? GetGameNameWithAlt(game), null);
-        }
-
-        private V GetDictValue<K, V>(Dictionary<K, V> dict, K key, V fallback)
-        {
-            if (dict == null || key == null)
-            {
-                return fallback;
-            }
-
-            V result;
-            var found = dict.TryGetValue(key, out result);
-            if (found)
-            {
-                return result;
-            }
-            else
-            {
-                return fallback;
-            }
+            return Etc.GetDictValue(this.backupPaths, GetTitle(game) ?? GetGameNameWithAlt(game), null);
         }
 
         private string GetBackupDisplayLine(ApiBackup backup)
