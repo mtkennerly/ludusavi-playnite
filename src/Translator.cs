@@ -463,7 +463,7 @@ namespace LudusaviPlaynite
             ) + ChangeSummary(result);
         }
 
-        public string FullListGameLineItem(string name, ApiGame game)
+        public string FullListGameLineItem(string name, Cli.Output.Game game)
         {
             var size = AdjustedSize(Convert.ToUInt64(game.Files.Sum(x => Convert.ToDecimal(x.Value.Bytes))));
             var failed = game.Files.Any(x => x.Value.Failed) || game.Registry.Any(x => x.Value.Failed);

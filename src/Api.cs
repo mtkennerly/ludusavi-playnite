@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using System.Linq;
-using System.Diagnostics;
-using System.Text;
 
 namespace LudusaviPlaynite.Api
 {
+    /// <summary>
+    /// Used for running Ludusavi's `api` command.
+    /// </summary>
     public class Runner
     {
         ILogger logger;
@@ -73,20 +74,30 @@ namespace LudusaviPlaynite.Api
             }
         }
 
-        public void FindTitle(Game game, string name, bool hasAltTitle)
+        public void FindTitle(Game game)
         {
-            var names = new List<string> { name };
+            var names = new List<string> { settings.GetGameNameWithAlt(game) };
+            int? steamId = null;
+            var normalized = false;
 
-            if (!Etc.IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix)
+            if (settings.AlternativeTitle(game) == null)
             {
-                names.Add(game.Name);
+                // The Steam ID would take priority over an alt title.
+
+                steamId = Etc.SteamId(game);
+                normalized = settings.RetryUnrecognizedGameWithNormalization;
+
+                if (!Etc.IsOnPc(game) && settings.RetryNonPcGamesWithoutSuffix)
+                {
+                    names.Add(game.Name);
+                }
             }
 
             var inner = new Requests.FindTitle
             {
                 names = names,
-                steamId = Etc.SteamId(game),
-                normalized = this.settings.RetryUnrecognizedGameWithNormalization,
+                steamId = steamId,
+                normalized = normalized,
             };
 
             var request = new Request

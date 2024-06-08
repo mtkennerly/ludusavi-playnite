@@ -37,7 +37,7 @@ namespace LudusaviPlaynite
         {
             if (!Etc.OpenDir(plugin.settings.BackupPath))
             {
-                this.plugin.ShowError(this.translator.CannotOpenFolder());
+                this.plugin.interactor.ShowError(this.translator.CannotOpenFolder());
             }
         }
     }

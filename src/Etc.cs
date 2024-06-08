@@ -7,6 +7,9 @@ using System.Text.RegularExpressions;
 
 namespace LudusaviPlaynite
 {
+    /// <summary>
+    /// Miscellaneous utilities.
+    /// </summary>
     public static class Etc
     {
         public static Version RECOMMENDED_APP_VERSION = new Version(0, 24, 0);
@@ -120,6 +123,16 @@ namespace LudusaviPlaynite
             return game?.Platforms?.ElementAtOrDefault(0);
         }
 
+        public static bool ShouldSkipGame(Game game)
+        {
+            return Etc.HasTag(game, Tags.SKIP);
+        }
+
+        public static bool HasTag(Game game, string tagName)
+        {
+            return game.Tags?.Any(tag => tag.Name == tagName) ?? false;
+        }
+
         public static string NormalizePath(string path)
         {
             return HOME_DIR.Replace(path, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)).Replace("/", "\\");
@@ -136,6 +149,41 @@ namespace LudusaviPlaynite
             {
                 return false;
             }
+        }
+
+        public static string GetBackupDisplayLine(Cli.Output.Backup backup)
+        {
+            var ret = backup.When.ToLocalTime().ToString();
+
+            if (!string.IsNullOrEmpty(backup.Os) && backup.Os != "windows")
+            {
+                ret += string.Format(" [{0}]", backup.Os);
+            }
+            if (!string.IsNullOrEmpty(backup.Comment))
+            {
+                var line = "";
+                var parts = backup.Comment.Split();
+
+                foreach (var part in backup.Comment.Split())
+                {
+                    if (line != "")
+                    {
+                        line += " ";
+                    }
+                    line += part;
+                    if (line.Length > 60)
+                    {
+                        ret += string.Format("\n    {0}", line);
+                        line = "";
+                    }
+                }
+                if (line != "")
+                {
+                    ret += string.Format("\n    {0}", line);
+                }
+            }
+
+            return ret;
         }
     }
 

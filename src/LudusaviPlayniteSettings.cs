@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Playnite.SDK;
+using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -278,9 +279,7 @@ namespace LudusaviPlaynite
             // Code executed when user decides to confirm changes made since BeginEdit was called.
             // This method should save settings made to Option1 and Option2.
             plugin.SavePluginSettings(this);
-            this.plugin.RefreshLudusaviVersion();
-            this.plugin.RefreshLudusaviTitles();
-            this.plugin.RefreshLudusaviBackups();
+            this.plugin.Refresh(RefreshContext.EditedConfig);
         }
 
         public bool VerifySettings(out List<string> errors)
@@ -290,6 +289,101 @@ namespace LudusaviPlaynite
             // List of errors is presented to user if verification fails.
             errors = new List<string>();
             return true;
+        }
+
+        public string GetGameName(Game game)
+        {
+            if (!Etc.IsOnPc(game) && this.AddSuffixForNonPcGameNames)
+            {
+                return string.Format("{0}{1}", game.Name, this.SuffixForNonPcGameNames.Replace("<platform>", game.Platforms[0].Name));
+            }
+            else
+            {
+                return game.Name;
+            }
+        }
+
+        public string GetGameNameWithAlt(Game game)
+        {
+            var alt = AlternativeTitle(game);
+            if (alt != null)
+            {
+                return alt;
+            }
+            else
+            {
+                return GetGameName(game);
+            }
+        }
+
+        public string AlternativeTitle(Game game)
+        {
+            return Etc.GetDictValue(this.AlternativeTitles, game.Name, null);
+        }
+
+        public string GetDisplayName(Game game, BackupCriteria criteria)
+        {
+            switch (criteria)
+            {
+                case BackupCriteria.Game:
+                    return GetGameName(game);
+                case BackupCriteria.Platform:
+                    return Etc.GetGamePlatform(game)?.Name ?? "unknown platform";
+                default:
+                    throw new InvalidOperationException(String.Format("GetDisplayName got unexpected criteria: {0}", criteria));
+            }
+        }
+
+        public PlayPreferences GetPlayPreferences(Game game)
+        {
+            if (Etc.ShouldSkipGame(game))
+            {
+                return new PlayPreferences();
+            }
+
+            var gameBackupDo = (this.DoBackupOnGameStopped || Etc.HasTag(game, Tags.GAME_BACKUP) || Etc.HasTag(game, Tags.GAME_BACKUP_AND_RESTORE))
+                && !Etc.HasTag(game, Tags.GAME_NO_BACKUP)
+                && (Etc.IsOnPc(game) || !this.OnlyBackupOnGameStoppedIfPc || Etc.HasTag(game, Tags.GAME_BACKUP) || Etc.HasTag(game, Tags.GAME_BACKUP_AND_RESTORE));
+            var platformBackupDo = (this.DoPlatformBackupOnNonPcGameStopped || Etc.HasTag(game, Tags.PLATFORM_BACKUP) || Etc.HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE))
+                && !Etc.HasTag(game, Tags.PLATFORM_NO_BACKUP)
+                && !Etc.IsOnPc(game)
+                && Etc.GetGamePlatform(game) != null;
+
+            var prefs = new PlayPreferences
+            {
+                Game = new OperationPreferences
+                {
+                    Backup = new OperationPreference
+                    {
+                        Do = gameBackupDo,
+                        Ask = this.AskBackupOnGameStopped && !Etc.HasTag(game, Tags.GAME_BACKUP) && !Etc.HasTag(game, Tags.GAME_BACKUP_AND_RESTORE),
+                    },
+                    Restore = new OperationPreference
+                    {
+                        Do = gameBackupDo
+                            && (this.DoRestoreOnGameStarting || Etc.HasTag(game, Tags.GAME_BACKUP_AND_RESTORE))
+                            && !Etc.HasTag(game, Tags.GAME_NO_RESTORE),
+                        Ask = this.AskBackupOnGameStopped && !Etc.HasTag(game, Tags.GAME_BACKUP_AND_RESTORE),
+                    },
+                },
+                Platform = new OperationPreferences
+                {
+                    Backup = new OperationPreference
+                    {
+                        Do = platformBackupDo,
+                        Ask = this.AskPlatformBackupOnNonPcGameStopped && !Etc.HasTag(game, Tags.PLATFORM_BACKUP) && !Etc.HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE),
+                    },
+                    Restore = new OperationPreference
+                    {
+                        Do = platformBackupDo
+                            && (this.DoPlatformRestoreOnNonPcGameStarting || Etc.HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE))
+                            && !Etc.HasTag(game, Tags.PLATFORM_NO_RESTORE),
+                        Ask = this.AskPlatformBackupOnNonPcGameStopped && !Etc.HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE),
+                    },
+                },
+            };
+
+            return prefs;
         }
     }
 }
