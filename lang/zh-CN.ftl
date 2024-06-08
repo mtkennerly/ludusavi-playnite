@@ -100,7 +100,9 @@ option-none = 默认
 
 ## Miscellaneous
 
+initial-setup-required = Ludusavi does not seem to be installed. Please download it and then follow the plugin setup instructions.
 upgrade-prompt = 安装 Ludusavi { $version } 或者更新的版本已获得更好的体验. 点击查看最新版本.
 unrecognized-game = Ludusavi 不能识别 { $game }
 look-up-as-other-title = 以其他名称查找
 look-up-as-normal-title = 以默认名称查找
+open-backup-directory = Open backup directory

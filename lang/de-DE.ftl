@@ -108,7 +108,9 @@ option-none = Keine
 
 ## Miscellaneous
 
+initial-setup-required = Ludusavi does not seem to be installed. Please download it and then follow the plugin setup instructions.
 upgrade-prompt = Installiere Ludusavi { $version } oder neuer, um die beste Erfahrung zu erzielen. Klicke hier, um die neueste Version anzuzeigen.
 unrecognized-game = Ludusavi erkennt { $game } nicht
 look-up-as-other-title = Look up with another title
 look-up-as-normal-title = Look up with default title
+open-backup-directory = Open backup directory
