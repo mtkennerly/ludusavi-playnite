@@ -13,7 +13,7 @@ needs-custom-entry =
     { $total-games ->
         [one] このゲームには
        *[other] ゲームによっては
-    } { ludusavi } のカスタムエントリが一致する必要があります。
+    } Ludusavi のカスタムエントリが一致する必要があります。
 
 ## Backup
 
@@ -72,9 +72,9 @@ remove-tag-for-selected-games = タグ: "{ $tag }" - 選択したゲームから
 
 ## Generic errors
 
-operation-still-pending = { ludusavi } は実行中です。完了の通知が表示されてから、もう一度お試しください。
+operation-still-pending = Ludusavi は実行中です。完了の通知が表示されてから、もう一度お試しください。
 no-game-played-yet = このセッションではまだ何もプレイしていません。
-unable-to-run-ludusavi = { ludusavi } を実行できません。
+unable-to-run-ludusavi = Ludusavi を実行できません。
 cannot-open-folder = フォルダを開くことができません。
 unable-to-synchronize-with-cloud = Unable to synchronize with cloud.
 cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open Ludusavi and perform an upload or download to resolve this.

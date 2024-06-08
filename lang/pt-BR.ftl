@@ -13,7 +13,7 @@ needs-custom-entry =
     { $total-games ->
         [one] Este jogo requer
         *[other] Alguns jogos requerem
-    } uma entrada personalizada correspondente em { ludusavi }.
+    } uma entrada personalizada correspondente em Ludusavi.
 
 ## Backup
 
@@ -72,9 +72,9 @@ remove-tag-for-selected-games = Tag: "{ $tag }" - Remover para os jogos selecion
 
 ## Generic errors
 
-operation-still-pending = { ludusavi } ainda está trabalhando em um pedido anterior. Por favor, tente novamente quando você ver a notificação de que acabou.
+operation-still-pending = Ludusavi ainda está trabalhando em um pedido anterior. Por favor, tente novamente quando você ver a notificação de que acabou.
 no-game-played-yet = Você não jogou nada ainda nesta sessão.
-unable-to-run-ludusavi = Não foi possível executar { ludusavi }.
+unable-to-run-ludusavi = Não foi possível executar Ludusavi.
 cannot-open-folder = Cannot open folder.
 unable-to-synchronize-with-cloud = Unable to synchronize with cloud.
 cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open Ludusavi and perform an upload or download to resolve this.

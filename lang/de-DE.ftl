@@ -13,7 +13,7 @@ needs-custom-entry =
     { $total-games ->
         [one] Dieses Spiel erfordert
        *[other] Einige Spiele erfordern
-    } einen passenden benutzerdefinierten Eintrag in { ludusavi }.
+    } einen passenden benutzerdefinierten Eintrag in Ludusavi.
 
 ## Backup
 
@@ -72,9 +72,9 @@ remove-tag-for-selected-games = Tag: "{ $tag }" - Für ausgewählte Spiele entfe
 
 ## Generic errors
 
-operation-still-pending = { ludusavi } arbeitet noch an einer vorherigen Anfrage. Bitte versuche es erneut, sobald eine Benachrichtigung erscheint, dass es fertig ist.
+operation-still-pending = Ludusavi arbeitet noch an einer vorherigen Anfrage. Bitte versuche es erneut, sobald eine Benachrichtigung erscheint, dass es fertig ist.
 no-game-played-yet = Du hast noch nichts in dieser Sitzung gespielt.
-unable-to-run-ludusavi = Kann { ludusavi } nicht ausführen.
+unable-to-run-ludusavi = Kann Ludusavi nicht ausführen.
 cannot-open-folder = Ordner kann nicht geöffnet werden.
 unable-to-synchronize-with-cloud = Synchronisierung mit der Cloud nicht möglich.
 cloud-synchronize-conflict = Ihre lokalen und Cloud-Backups befinden sich in Konflikt. Öffnen Sie Ludusavi und führen Sie einen Upload oder Download durch, um dies zu beheben.
@@ -108,9 +108,9 @@ option-none = Keine
 
 ## Miscellaneous
 
-initial-setup-required = Ludusavi does not seem to be installed. Please download it and then follow the plugin setup instructions.
+initial-setup-required = Ludusavi scheint nicht installiert zu sein. Bitte lade es herunter und folge den Anweisungen zur Installation des Plugins.
 upgrade-prompt = Installiere Ludusavi { $version } oder neuer, um die beste Erfahrung zu erzielen. Klicke hier, um die neueste Version anzuzeigen.
 unrecognized-game = Ludusavi erkennt { $game } nicht
 look-up-as-other-title = Look up with another title
 look-up-as-normal-title = Look up with default title
-open-backup-directory = Open backup directory
+open-backup-directory = Back-Up Ordner öffnen

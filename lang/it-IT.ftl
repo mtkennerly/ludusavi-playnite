@@ -13,7 +13,7 @@ needs-custom-entry =
     { $total-games ->
         [one] Questo gioco richiede
         *[other] Alcuni giochi richiedono
-    } una voce personalizzata corrispondente in { ludusavi }.
+    } una voce personalizzata corrispondente in Ludusavi.
 
 ## Backup
 
@@ -72,9 +72,9 @@ remove-tag-for-selected-games = Tag: "{ $tag }" - Rimuovi per i giochi seleziona
 
 ## Generic errors
 
-operation-still-pending = { ludusavi } sta ancora lavorando su una richiesta precedente. Si prega di riprovare quando vedi la notifica che è finita.
+operation-still-pending = Ludusavi sta ancora lavorando su una richiesta precedente. Si prega di riprovare quando vedi la notifica che è finita.
 no-game-played-yet = Non hai ancora giocato nulla in questa sessione.
-unable-to-run-ludusavi = Impossibile avviare { ludusavi }.
+unable-to-run-ludusavi = Impossibile avviare Ludusavi.
 cannot-open-folder = Impossibile aprire la cartella.
 unable-to-synchronize-with-cloud = Impossibile sincronizzare con il cloud.
 cloud-synchronize-conflict = I backup locali e del cloud sono in conflitto. Apri Ludusavi ed esegui un caricamento o un download per risolvere il problema.

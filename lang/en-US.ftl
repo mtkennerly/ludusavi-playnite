@@ -16,7 +16,7 @@ badge-ignored = IGNORED
 needs-custom-entry = {$total-games ->
     [one] This game requires
     *[other] Some games require
-} a matching custom entry in {ludusavi}.
+} a matching custom entry in Ludusavi.
 
 ## Backup
 
@@ -81,9 +81,9 @@ remove-tag-for-selected-games = Tag: "{$tag}" - Remove for selected games
 
 ## Generic errors
 
-operation-still-pending = {ludusavi} is still working on a previous request. Please try again when you see the notification that it's done.
+operation-still-pending = Ludusavi is still working on a previous request. Please try again when you see the notification that it's done.
 no-game-played-yet = You haven't played anything yet in this session.
-unable-to-run-ludusavi = Unable to run {ludusavi}.
+unable-to-run-ludusavi = Unable to run Ludusavi.
 cannot-open-folder = Cannot open folder.
 unable-to-synchronize-with-cloud = Unable to synchronize with cloud.
 cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open Ludusavi and perform an upload or download to resolve this.

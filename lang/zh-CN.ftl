@@ -13,7 +13,7 @@ needs-custom-entry =
     { $total-games ->
         [one] 该游戏需要的
        *[other] 某些游戏需要的
-    } 某个匹配的自定义条目于 { ludusavi }.
+    } 某个匹配的自定义条目于 Ludusavi.
 
 ## Backup
 
@@ -64,9 +64,9 @@ remove-tag-for-selected-games = 标签："{ $tag }" - 从所选游戏移除
 
 ## Generic errors
 
-operation-still-pending = { ludusavi } 仍在处理前一个请求。请在看到它已完成的通知后再试。
+operation-still-pending = Ludusavi 仍在处理前一个请求。请在看到它已完成的通知后再试。
 no-game-played-yet = 您还未在此次会话中游玩任何游戏。
-unable-to-run-ludusavi = 无法运行 { ludusavi }。
+unable-to-run-ludusavi = 无法运行 Ludusavi。
 cannot-open-folder = 无法打开目录.
 unable-to-synchronize-with-cloud = Unable to synchronize with cloud.
 cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open Ludusavi and perform an upload or download to resolve this.
