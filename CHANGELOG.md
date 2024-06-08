@@ -6,6 +6,9 @@
     If a backup is from another OS than Windows, that is also indicated.
   * In a game's context menu, you can now open that game's backup directory.
     This requires Ludusavi v0.24.0 or newer.
+  * On startup, if Ludusavi cannot be found, then an error popup is displayed.
+    This should help users who did not realize they had to install Ludusavi itself
+    and who also missed the error notification.
 * Fixed:
   * In some cases where Playnite and Ludusavi used different names for a game,
     the game's context menu would not list its backups.

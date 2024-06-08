@@ -18,6 +18,8 @@ If you'd like to help translate this plugin into other languages,
 
 ## Setup
 ### Ludusavi
+**You must download and install Ludusavi itself in addition to this plugin.**
+
 Refer to the [Ludusavi project](https://github.com/mtkennerly/ludusavi)
 for instructions on how to install Ludusavi itself.
 Ludusavi 0.16.0 or newer is recommended for full functionality,

@@ -367,12 +367,7 @@ namespace LudusaviPlaynite
                         translator.UpgradePrompt(Etc.RECOMMENDED_APP_VERSION.ToString()),
                         () =>
                         {
-                            try
-                            {
-                                Etc.RunCommand("cmd.exe", "/c \"start https://github.com/mtkennerly/ludusavi/releases\"");
-                            }
-                            catch
-                            { }
+                            Etc.OpenReleasesPage();
                         }
                     );
                     settings.SuggestedUpgradeTo = Etc.RECOMMENDED_APP_VERSION.ToString();
@@ -461,6 +456,13 @@ namespace LudusaviPlaynite
             {
                 case RefreshContext.Startup:
                     app.RefreshVersion();
+
+                    if (!app.IsValid())
+                    {
+                        interactor.ShowError(translator.InitialSetupRequired());
+                        Etc.OpenReleasesPage();
+                    }
+
                     app.RefreshTitles(PlayniteApi.Database.Games.ToList());
                     RefreshBackups();
                     RefreshGames();

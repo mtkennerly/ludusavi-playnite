@@ -625,6 +625,11 @@ namespace LudusaviPlaynite
             return Translate("option-none");
         }
 
+        public string InitialSetupRequired()
+        {
+            return Translate("initial-setup-required");
+        }
+
         public string UpgradePrompt(string version)
         {
             return Translate(

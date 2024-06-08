@@ -30,6 +30,11 @@ namespace LudusaviPlaynite.Cli
             this.settings = settings;
         }
 
+        public bool IsValid()
+        {
+            return version.inner != new Version(0, 0, 0);
+        }
+
         public void Launch()
         {
             var p = new Process();

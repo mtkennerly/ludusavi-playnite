@@ -185,6 +185,16 @@ namespace LudusaviPlaynite
 
             return ret;
         }
+
+        public static void OpenReleasesPage()
+        {
+            try
+            {
+                RunCommand("cmd.exe", "/c \"start https://github.com/mtkennerly/ludusavi/releases\"");
+            }
+            catch
+            { }
+        }
     }
 
     public static class Tags
