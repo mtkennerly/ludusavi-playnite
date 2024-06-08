@@ -367,7 +367,7 @@ namespace LudusaviPlaynite
                         translator.UpgradePrompt(Etc.RECOMMENDED_APP_VERSION.ToString()),
                         () =>
                         {
-                            Etc.OpenReleasesPage();
+                            Etc.OpenLudusaviReleasePage();
                         }
                     );
                     settings.SuggestedUpgradeTo = Etc.RECOMMENDED_APP_VERSION.ToString();
@@ -460,7 +460,7 @@ namespace LudusaviPlaynite
                     if (!app.IsValid())
                     {
                         interactor.ShowError(translator.InitialSetupRequired());
-                        Etc.OpenReleasesPage();
+                        Etc.OpenLudusaviMainPage();
                     }
 
                     app.RefreshTitles(PlayniteApi.Database.Games.ToList());
