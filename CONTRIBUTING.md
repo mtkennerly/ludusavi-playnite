@@ -33,3 +33,16 @@ You can chain `invoke` commands, such as: `invoke build deploy`.
 * Add release entry in `manifest.yaml`.
 * Update version in `extension.yaml`.
 * Update version in `CHANGELOG.md`.
+
+Then run:
+
+```
+export VERSION=...
+git add .
+git commit -m "Release v${VERSION}"
+git tag v${VERSION} -m "Release"
+git push
+git push --tags
+```
+
+Create a release on GitHub and attach the workflow build artifacts.

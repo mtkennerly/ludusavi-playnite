@@ -1,5 +1,30 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.15.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2024-06-08
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.15.0/ludusavi-playnite-v0.15.0.pext
+    Changelog:
+      - >-
+        Added: In a game's context menu, backup comments are now displayed,
+        if any have been added in Ludusavi.
+        If a backup is from another OS than Windows, that is also indicated.
+      - >-
+        Added: In a game's context menu, you can now open that game's backup directory.
+        This requires Ludusavi v0.24.0 or newer.
+      - >-
+        Added: On startup, if Ludusavi cannot be found, then an error popup is displayed.
+        This should help users who did not realize they had to install Ludusavi itself
+        and who also missed the error notification.
+      - >-
+        Fixed: In some cases where Playnite and Ludusavi used different names for a game,
+        the game's context menu would not list its backups.
+        This now works properly in more cases if you use Ludusavi v0.24.0 or newer.
+      - >-
+        Changed: The recommended version of Ludusavi is now v0.24.0. You can download the latest release here:
+        https://github.com/mtkennerly/ludusavi/releases
+      - >-
+        Changed: In a game's context menu, backups are now sorted newest to oldest.
   - Version: 0.14.0
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2024-04-27
