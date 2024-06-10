@@ -150,4 +150,15 @@ namespace LudusaviPlaynite
         public string Message;
         public bool Empty;
     }
+
+    public enum Icon
+    {
+        Download = '\uEF08',
+        UiAdd = '\uEC3E',
+        UiEdit = '\uEC55',
+        UiFolder = '\uEC5B',
+        UiPlay = '\uEC74',
+        UiRemove = '\uEC7E',
+        UploadAlt = '\uF01C',
+    }
 }

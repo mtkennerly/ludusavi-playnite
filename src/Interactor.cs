@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace LudusaviPlaynite
 {
@@ -15,6 +17,8 @@ namespace LudusaviPlaynite
         IPlayniteAPI PlayniteApi;
         LudusaviPlayniteSettings settings;
         Translator translator;
+
+        private static HashSet<string> addedIconResources = new HashSet<string>();
 
         public Interactor(IPlayniteAPI api, LudusaviPlayniteSettings settings, Translator translator)
         {
@@ -178,6 +182,45 @@ namespace LudusaviPlaynite
                 RemoveTag(game, alwaysTag);
                 AddTag(game, neverTag);
             }
+        }
+
+        private void AddIconResource(string key, char character)
+        {
+            AddIconResource(key, character.ToString());
+        }
+
+        private void AddIconResource(string key, string text)
+        {
+            if (addedIconResources.Contains(key))
+            {
+                return;
+            }
+
+            if (Application.Current.Resources.Contains(key))
+            {
+                return;
+            }
+
+            Application.Current.Resources.Add(key, new TextBlock
+            {
+                Text = text,
+                FontSize = 16,
+                FontFamily = ResourceProvider.GetResource("FontIcoFont") as FontFamily
+            });
+
+            addedIconResources.Add(key);
+        }
+
+        private string GetIconResource(char character)
+        {
+            var key = $"IcoFontResource - {character}";
+            AddIconResource(key, character);
+            return key;
+        }
+
+        public string GetIcon(Icon icon)
+        {
+            return GetIconResource((char)icon);
         }
     }
 }
