@@ -179,26 +179,36 @@ namespace LudusaviPlaynite
                 );
             }
 
-            if (menuArgs.Games.Count == 1)
+            var backupPaths = menuArgs.Games.Select(GetBackupPath).Where(x => x != null);
+            if (backupPaths.Any())
             {
-                var backupPath = GetBackupPath(menuArgs.Games[0]);
-                if (backupPath != null)
-                {
-                    items.Add(
-                        new GameMenuItem
+                items.Add(
+                    new GameMenuItem
+                    {
+                        Description = translator.OpenBackupDirectory(),
+                        MenuSection = translator.Ludusavi(),
+                        Action = args =>
                         {
-                            Description = translator.OpenBackupDirectory(),
-                            MenuSection = translator.Ludusavi(),
-                            Action = args =>
+                            var failed = new List<string>();
+
+                            foreach (var backupPath in backupPaths)
                             {
                                 if (!Etc.OpenDir(backupPath))
                                 {
-                                    interactor.ShowError(this.translator.CannotOpenFolder());
+                                    failed.Add(backupPath);
                                 }
                             }
+
+                            if (failed.Any())
+                            {
+                                var message = this.translator.CannotOpenFolder();
+                                var paths = string.Join("\n", failed);
+                                var body = $"{message}\n\n{paths}";
+                                interactor.ShowError(body);
+                            }
                         }
-                    );
-                }
+                    }
+                );
             }
 
             if (menuArgs.Games.Count == 1)
