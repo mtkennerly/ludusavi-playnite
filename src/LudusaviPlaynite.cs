@@ -1024,30 +1024,36 @@ namespace LudusaviPlaynite
 
         private void TagGamesWithBackups()
         {
-            foreach (var game in PlayniteApi.Database.Games)
+            using (PlayniteApi.Database.BufferedUpdate())
             {
-                if (IsBackedUp(game))
+                foreach (var game in PlayniteApi.Database.Games)
                 {
-                    interactor.AddTag(game, Tags.BACKED_UP);
-                }
-                else
-                {
-                    interactor.RemoveTag(game, Tags.BACKED_UP);
+                    if (IsBackedUp(game))
+                    {
+                        interactor.AddTag(game, Tags.BACKED_UP);
+                    }
+                    else
+                    {
+                        interactor.RemoveTag(game, Tags.BACKED_UP);
+                    }
                 }
             }
         }
 
         private void TagGamesWithUnknownSaveData()
         {
-            foreach (var game in PlayniteApi.Database.Games)
+            using (PlayniteApi.Database.BufferedUpdate())
             {
-                if (!GameHasKnownSaveData(game))
+                foreach (var game in PlayniteApi.Database.Games)
                 {
-                    interactor.AddTag(game, Tags.UNKNOWN_SAVE_DATA);
-                }
-                else
-                {
-                    interactor.RemoveTag(game, Tags.UNKNOWN_SAVE_DATA);
+                    if (!GameHasKnownSaveData(game))
+                    {
+                        interactor.AddTag(game, Tags.UNKNOWN_SAVE_DATA);
+                    }
+                    else
+                    {
+                        interactor.RemoveTag(game, Tags.UNKNOWN_SAVE_DATA);
+                    }
                 }
             }
         }
