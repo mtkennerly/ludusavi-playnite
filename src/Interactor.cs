@@ -136,7 +136,8 @@ namespace LudusaviPlaynite
                 dbGame.TagIds = new List<Guid>();
             }
             var added = dbGame.TagIds.AddMissing(dbTag.Id);
-            PlayniteApi.Database.Games.Update(dbGame);
+            if (added)
+                PlayniteApi.Database.Games.Update(dbGame);
             return added;
         }
 
@@ -158,9 +159,10 @@ namespace LudusaviPlaynite
             {
                 return false;
             }
-            var removed = dbGame.TagIds.RemoveAll(id => id == dbTag.Id);
-            PlayniteApi.Database.Games.Update(dbGame);
-            return removed > 0;
+            var removed = dbGame.TagIds.RemoveAll(id => id == dbTag.Id) > 0;
+            if (removed)
+                PlayniteApi.Database.Games.Update(dbGame);
+            return removed;
         }
 
         public void UpdateTagsForChoice(Game game, Choice choice, string alwaysTag, string neverTag, string fallbackTag = null)
