@@ -2,6 +2,10 @@
 
 * Added:
   * You can now open the backup directories for multiple selected games at once.
+* Fixed:
+  * The plugin now uses a buffered update when changing tags.
+    This should avoid issues where other plugins may respond to each tag change individually.
+    ([Contributed by Jeshibu](https://github.com/mtkennerly/ludusavi-playnite/pull/80))
 
 ## v0.15.0 (2024-06-08)
 

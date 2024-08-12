@@ -137,7 +137,9 @@ namespace LudusaviPlaynite
             }
             var added = dbGame.TagIds.AddMissing(dbTag.Id);
             if (added)
+            {
                 PlayniteApi.Database.Games.Update(dbGame);
+            }
             return added;
         }
 
@@ -161,7 +163,9 @@ namespace LudusaviPlaynite
             }
             var removed = dbGame.TagIds.RemoveAll(id => id == dbTag.Id) > 0;
             if (removed)
+            {
                 PlayniteApi.Database.Games.Update(dbGame);
+            }
             return removed;
         }
 

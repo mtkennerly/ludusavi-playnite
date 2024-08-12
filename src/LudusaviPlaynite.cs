@@ -298,22 +298,25 @@ namespace LudusaviPlaynite
                             {
                                 if (interactor.UserConsents(translator.AddTagForSelectedGames_Confirm(candidate, args.Games.Select(x => x.Name))))
                                 {
-                                    foreach (var game in args.Games)
+                                    using (PlayniteApi.Database.BufferedUpdate())
                                     {
+                                        foreach (var game in args.Games)
                                         {
-                                            await Task.Run(() =>
                                             {
-                                                interactor.AddTag(game, candidate);
-                                                foreach (var conflict in conflicts)
+                                                await Task.Run(() =>
                                                 {
-                                                    var removed = interactor.RemoveTag(game, conflict);
-                                                    string replacement;
-                                                    if (removed && Tags.REPLACEMENTS.TryGetValue((candidate, conflict), out replacement))
+                                                    interactor.AddTag(game, candidate);
+                                                    foreach (var conflict in conflicts)
                                                     {
-                                                        interactor.AddTag(game, replacement);
+                                                        var removed = interactor.RemoveTag(game, conflict);
+                                                        string replacement;
+                                                        if (removed && Tags.REPLACEMENTS.TryGetValue((candidate, conflict), out replacement))
+                                                        {
+                                                            interactor.AddTag(game, replacement);
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
+                                            }
                                         }
                                     }
                                 }
@@ -333,13 +336,16 @@ namespace LudusaviPlaynite
                             {
                                 if (interactor.UserConsents(translator.RemoveTagForSelectedGames_Confirm(candidate, args.Games.Select(x => x.Name))))
                                 {
-                                    foreach (var game in args.Games)
+                                    using (PlayniteApi.Database.BufferedUpdate())
                                     {
+                                        foreach (var game in args.Games)
                                         {
-                                            await Task.Run(() =>
                                             {
-                                                interactor.RemoveTag(game, candidate);
-                                            });
+                                                await Task.Run(() =>
+                                                {
+                                                    interactor.RemoveTag(game, candidate);
+                                                });
+                                            }
                                         }
                                     }
                                 }
