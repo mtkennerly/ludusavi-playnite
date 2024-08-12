@@ -6,6 +6,9 @@
   * The plugin now uses a buffered update when changing tags.
     This should avoid issues where other plugins may respond to each tag change individually.
     ([Contributed by Jeshibu](https://github.com/mtkennerly/ludusavi-playnite/pull/80))
+* Changed:
+  * Updated translations, including a new partial Norwegian translation.
+    (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
 
 ## v0.15.0 (2024-06-08)
 
