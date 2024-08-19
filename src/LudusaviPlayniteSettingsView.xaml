@@ -78,6 +78,7 @@
 
             <StackPanel Margin="15">
                 <CheckBox IsChecked="{Binding IgnoreBenignNotifications}" Content="{Binding IgnoreBenignNotifications_Label}" />
+                <CheckBox Margin="0,2,0,0" IsChecked="{Binding CheckAppUpdate}" Content="{Binding CheckAppUpdate_Label}" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

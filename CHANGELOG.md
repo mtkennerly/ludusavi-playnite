@@ -2,6 +2,9 @@
 
 * Added:
   * You can now open the backup directories for multiple selected games at once.
+  * The plugin will notify you when an update for Ludusavi is available.
+    This requires Ludusavi v0.25.0 or newer.
+    The check occurs at most once per 24 hours.
 * Fixed:
   * The plugin now uses a buffered update when changing tags.
     This should avoid issues where other plugins may respond to each tag change individually.

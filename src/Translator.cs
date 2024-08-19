@@ -615,6 +615,11 @@ namespace LudusaviPlaynite
             );
         }
 
+        public string CheckAppUpdate_Label()
+        {
+            return Translate("config-check-app-update");
+        }
+
         public string OptionSimple()
         {
             return Translate("option-simple");
@@ -634,6 +639,16 @@ namespace LudusaviPlaynite
         {
             return Translate(
                 "upgrade-prompt",
+                new FluentArgs() {
+                    { VERSION, (FluentString)version },
+                }
+            );
+        }
+
+        public string UpgradeAvailable(string version)
+        {
+            return Translate(
+                "upgrade-available",
                 new FluentArgs() {
                     { VERSION, (FluentString)version },
                 }

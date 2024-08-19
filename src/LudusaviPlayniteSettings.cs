@@ -44,6 +44,9 @@ namespace LudusaviPlaynite
         public bool MigratedTags { get; set; } = false;
         public string SuggestedUpgradeTo { get; set; } = "0.0.0";
 
+        public DateTime CheckedAppUpdate { get; set; } = DateTime.UtcNow;
+        public string PresentedAppUpdate { get; set; } = "0.0.0";
+
         public Dictionary<string, string> AlternativeTitles { get; set; } = new Dictionary<string, string>();
 
         [JsonIgnore]
@@ -149,6 +152,10 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string IgnoreBenignNotifications_Label { get; set; }
 
+        public bool CheckAppUpdate { get; set; } = true;
+        [JsonIgnore]
+        public string CheckAppUpdate_Label { get; set; }
+
         // Parameterless constructor must exist if you want to use LoadPluginSettings method.
         public LudusaviPlayniteSettings()
         {
@@ -194,6 +201,7 @@ namespace LudusaviPlaynite
             TagGamesWithUnknownSaveData_Label = translator.TagGamesWithUnknownSaveData_Label();
             BackupDuringPlayInterval_Label = translator.BackupDuringPlayInterval_Label();
             IgnoreBenignNotifications_Label = translator.IgnoreBenignNotifications_Label();
+            CheckAppUpdate_Label = translator.CheckAppUpdate_Label();
 
             // Injecting your plugin instance is required for Save/Load method because Playnite saves data to a location based on what plugin requested the operation.
             this.plugin = plugin;
@@ -212,6 +220,14 @@ namespace LudusaviPlaynite
                 if (savedSettings.SuggestedUpgradeTo != null)
                 {
                     SuggestedUpgradeTo = savedSettings.SuggestedUpgradeTo;
+                }
+                if (savedSettings.CheckedAppUpdate != null)
+                {
+                    CheckedAppUpdate = savedSettings.CheckedAppUpdate;
+                }
+                if (savedSettings.PresentedAppUpdate != null)
+                {
+                    PresentedAppUpdate = savedSettings.PresentedAppUpdate;
                 }
                 if (savedSettings.AlternativeTitles != null)
                 {
@@ -255,6 +271,7 @@ namespace LudusaviPlaynite
                 TagGamesWithUnknownSaveData = savedSettings.TagGamesWithUnknownSaveData;
                 BackupDuringPlayInterval = savedSettings.BackupDuringPlayInterval;
                 IgnoreBenignNotifications = savedSettings.IgnoreBenignNotifications;
+                CheckAppUpdate = savedSettings.CheckAppUpdate;
             }
             else
             {

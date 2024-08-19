@@ -52,11 +52,14 @@ namespace LudusaviPlaynite.Api
 
         public (int, string) InvokeDirect(bool standalone = false)
         {
-            var countFindTitle = this.input.requests.Select(r => r.findTitle != null).Count();
-
             var json = JsonConvert.SerializeObject(this.input);
             var args = "api";
-            logger.Debug(string.Format("Running Ludusavi API with {0} requests (findTitle: {1})", this.input.requests.Count, countFindTitle));
+            logger.Debug(string.Format(
+                "Running Ludusavi API with {0} requests (findTitle: {1}, checkAppUpdate: {2})",
+                this.input.requests.Count,
+                this.input.requests.Count(r => r.findTitle != null),
+                this.input.requests.Count(r => r.checkAppUpdate != null)
+            ));
 
             try
             {
@@ -106,6 +109,17 @@ namespace LudusaviPlaynite.Api
             };
             this.input.requests.Add(request);
         }
+
+        public void CheckAppUpdate()
+        {
+            var inner = new Requests.CheckAppUpdate { };
+
+            var request = new Request
+            {
+                checkAppUpdate = inner,
+            };
+            this.input.requests.Add(request);
+        }
     }
 
     public struct Input
@@ -122,7 +136,10 @@ namespace LudusaviPlaynite.Api
 
     public struct Request
     {
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Requests.FindTitle? findTitle;
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Requests.CheckAppUpdate? checkAppUpdate;
     }
 
     public struct Output
@@ -134,6 +151,7 @@ namespace LudusaviPlaynite.Api
     {
         public Responses.Error? error;
         public Responses.FindTitle? findTitle;
+        public Responses.CheckAppUpdate? checkAppUpdate;
     }
 
     namespace Requests
@@ -144,6 +162,9 @@ namespace LudusaviPlaynite.Api
             public int? steamId;
             public bool normalized;
         }
+
+        public struct CheckAppUpdate
+        { }
     }
 
     namespace Responses
@@ -153,9 +174,20 @@ namespace LudusaviPlaynite.Api
             public string message;
         }
 
+        public struct AppUpdate
+        {
+            public string url;
+            public string version;
+        }
+
         public struct FindTitle
         {
             public List<string> titles;
+        }
+
+        public struct CheckAppUpdate
+        {
+            public AppUpdate? update;
         }
     }
 }

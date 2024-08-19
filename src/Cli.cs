@@ -191,6 +191,33 @@ namespace LudusaviPlaynite.Cli
                 }
             }
         }
+
+        public Api.Responses.AppUpdate? CheckAppUpdate()
+        {
+            if (!(this.version.supportsApiRequestCheckAppUpdate()))
+            {
+                return null;
+            }
+
+            var runner = new Api.Runner(logger, this.settings);
+            runner.CheckAppUpdate();
+
+            var (code, output) = runner.Invoke();
+
+            if (output?.responses != null)
+            {
+                foreach (var response in output?.responses)
+                {
+                    var info = response.checkAppUpdate;
+                    if (info != null)
+                    {
+                        return info?.update;
+                    }
+                }
+            }
+
+            return null;
+        }
     }
 
     public class LudusaviVersion
@@ -221,6 +248,11 @@ namespace LudusaviPlaynite.Cli
         public bool supportsApiCommand()
         {
             return this.inner >= new Version(0, 24, 0);
+        }
+
+        public bool supportsApiRequestCheckAppUpdate()
+        {
+            return this.inner >= new Version(0, 25, 0);
         }
 
         public bool supportsCustomizingBackupFormat()

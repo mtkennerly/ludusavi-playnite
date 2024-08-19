@@ -27,6 +27,7 @@ namespace LudusaviPlaynite
         private Timer duringPlayBackupTimer { get; set; }
         private int duringPlayBackupTotal { get; set; }
         private int duringPlayBackupFailed { get; set; }
+        private Timer checkAppUpdateTimer { get; set; }
 
         public LudusaviPlaynite(IPlayniteAPI api) : base(api)
         {
@@ -38,6 +39,13 @@ namespace LudusaviPlaynite
             {
                 HasSettings = true
             };
+
+            this.checkAppUpdateTimer = new Timer(
+                x => CheckAppUpdate(),
+                null,
+                TimeSpan.FromHours(24.1),
+                TimeSpan.FromHours(24.1)
+            );
         }
 
         public override IEnumerable<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs menuArgs)
@@ -482,6 +490,7 @@ namespace LudusaviPlaynite
                     app.RefreshTitles(PlayniteApi.Database.Games.ToList());
                     RefreshBackups();
                     RefreshGames();
+                    CheckAppUpdate();
                     break;
                 case RefreshContext.EditedConfig:
                     app.RefreshVersion();
@@ -524,6 +533,36 @@ namespace LudusaviPlaynite
             {
                 TagGamesWithBackups();
             }
+        }
+
+        private void CheckAppUpdate()
+        {
+            if (!(settings.CheckAppUpdate))
+            {
+                return;
+            }
+
+            if ((DateTime.UtcNow - settings.CheckedAppUpdate).TotalHours < 24)
+            {
+                return;
+            }
+
+            settings.CheckedAppUpdate = DateTime.UtcNow;
+
+            var update = app.CheckAppUpdate();
+            if (update != null && update?.version != settings.PresentedAppUpdate && update?.version != app.version.inner.ToString())
+            {
+                settings.PresentedAppUpdate = update?.version;
+                interactor.NotifyInfo(
+                    translator.UpgradeAvailable(update?.version),
+                    () =>
+                    {
+                        Etc.OpenUrl(update?.url);
+                    }
+                );
+            }
+
+            SavePluginSettings(settings);
         }
 
         public void NotifyResponseErrors(Cli.Output.Response? response)

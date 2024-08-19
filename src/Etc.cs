@@ -186,24 +186,24 @@ namespace LudusaviPlaynite
             return ret;
         }
 
-        public static void OpenLudusaviMainPage()
+        public static void OpenUrl(string url)
         {
             try
             {
-                RunCommand("cmd.exe", "/c \"start https://github.com/mtkennerly/ludusavi\"");
+                RunCommand("cmd.exe", $"/c \"start {url}\"");
             }
             catch
             { }
         }
 
+        public static void OpenLudusaviMainPage()
+        {
+            OpenUrl("https://github.com/mtkennerly/ludusavi");
+        }
+
         public static void OpenLudusaviReleasePage()
         {
-            try
-            {
-                RunCommand("cmd.exe", "/c \"start https://github.com/mtkennerly/ludusavi/releases\"");
-            }
-            catch
-            { }
+            OpenUrl("https://github.com/mtkennerly/ludusavi/releases");
         }
     }
 
