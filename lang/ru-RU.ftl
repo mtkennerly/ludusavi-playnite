@@ -102,6 +102,7 @@ config-do-backup-during-play = Резервное копирование игр 
 config-ignore-benign-notifications = Показывать уведомления только при ошибке
 config-tag-games-with-backups = Автоматически помечать игры с резервными копиями как "{ $tag }"
 config-tag-games-with-unknown-save-data = Автоматически помечать игры с неизвестными сохраненными данными как "{ $tag }"
+config-check-app-update = Проверять обновления Ludusavi автоматически
 label-minutes = Минут(ы):
 option-simple = Простой
 option-none = Нет
@@ -110,6 +111,7 @@ option-none = Нет
 
 initial-setup-required = Ludusavi does not seem to be installed. Please download it and then follow the plugin setup instructions.
 upgrade-prompt = Установите Ludusavi { $version } или новее для лучшей работы. Нажмите для просмотра последней версии.
+upgrade-available = Ludusavi { $version } доступен. Нажмите, чтобы посмотреть список изменений.
 unrecognized-game = Ludusavi не распознает { $game }
 look-up-as-other-title = Искать с другим заголовком
 look-up-as-normal-title = Искать с названием по умолчанию

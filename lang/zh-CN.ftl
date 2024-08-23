@@ -94,6 +94,7 @@ config-do-backup-during-play = 在游戏过程中每隔一段时间备份游戏�
 config-ignore-benign-notifications = 仅在失败时显示通知
 config-tag-games-with-backups = 自动给游戏存档备份打上标签 "{ $tag }"
 config-tag-games-with-unknown-save-data = Automatically tag games with unknown save data as "{ $tag }"
+config-check-app-update = Check for Ludusavi updates automatically
 label-minutes = 分钟:
 option-simple = 简单
 option-none = 默认
@@ -102,6 +103,7 @@ option-none = 默认
 
 initial-setup-required = Ludusavi does not seem to be installed. Please download it and then follow the plugin setup instructions.
 upgrade-prompt = 安装 Ludusavi { $version } 或者更新的版本已获得更好的体验. 点击查看最新版本.
+upgrade-available = Ludusavi { $version } is now available. Click to view the release notes.
 unrecognized-game = Ludusavi 不能识别 { $game }
 look-up-as-other-title = 以其他名称查找
 look-up-as-normal-title = 以默认名称查找

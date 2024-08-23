@@ -102,6 +102,7 @@ config-do-backup-during-play = Effettua il backup dei giochi in un intervallo du
 config-ignore-benign-notifications = Mostra solo le notifiche in caso di fallimento
 config-tag-games-with-backups = Etichetta automaticamente i giochi con i backup come "{ $tag }"
 config-tag-games-with-unknown-save-data = Etichetta automaticamente i giochi con dati sconosciuti come "{ $tag }"
+config-check-app-update = Controlla automaticamente gli aggiornamenti di Ludusavi
 label-minutes = Minuti:
 option-simple = Semplice
 option-none = Nessuna
@@ -110,6 +111,7 @@ option-none = Nessuna
 
 initial-setup-required = Ludusavi non sembra essere installato. Si prega di scaricarlo e seguire le istruzioni di configurazione del plugin.
 upgrade-prompt = Installa Ludusavi { $version } o più recente per la migliore esperienza. Clicca per vedere l'ultima versione.
+upgrade-available = Ludusavi { $version } è ora disponibile. Clicca per visualizzare le note di rilascio.
 unrecognized-game = Ludusavi non riconosce { $game }
 look-up-as-other-title = Cerca con un altro titolo
 look-up-as-normal-title = Cerca con il titolo predefinito

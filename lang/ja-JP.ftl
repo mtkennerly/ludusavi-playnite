@@ -102,6 +102,7 @@ config-do-backup-during-play = プレイ中もセーブデータをバックア�
 config-ignore-benign-notifications = 失敗の通知のみ表示
 config-tag-games-with-backups = バックアップしたゲームに "{$tag}" のタグを自動的に付ける
 config-tag-games-with-unknown-save-data = Automatically tag games with unknown save data as "{ $tag }"
+config-check-app-update = Check for Ludusavi updates automatically
 label-minutes = 分:
 option-simple = Simple
 option-none = None
@@ -110,6 +111,7 @@ option-none = None
 
 initial-setup-required = Ludusavi does not seem to be installed. Please download it and then follow the plugin setup instructions.
 upgrade-prompt = 最新のLudesavi {$version} が利用可能です。 クリックすると最新のリリースが表示されます。
+upgrade-available = Ludusavi { $version } is now available. Click to view the release notes.
 unrecognized-game = Ludusaviは {$game} を認識していません
 look-up-as-other-title = 別のタイトルで検索
 look-up-as-normal-title = デフォルトのタイトルで検索
