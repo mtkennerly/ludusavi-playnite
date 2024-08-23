@@ -1,4 +1,4 @@
-## Unreleased
+## v0.16.0 (2024-08-23)
 
 * Added:
   * You can now open the backup directories for multiple selected games at once.

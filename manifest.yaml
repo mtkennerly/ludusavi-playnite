@@ -1,5 +1,23 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.16.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2024-08-23
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.16.0/ludusavi-playnite-v0.16.0.pext
+    Changelog:
+      - >-
+        Added: You can now open the backup directories for multiple selected games at once.
+      - >-
+        Added: The plugin will notify you when an update for Ludusavi is available.
+        This requires Ludusavi v0.25.0 or newer.
+        The check occurs at most once per 24 hours.
+      - >-
+        Fixed: The plugin now uses a buffered update when changing tags.
+        This should avoid issues where other plugins may respond to each tag change individually.
+        ([Contributed by Jeshibu](https://github.com/mtkennerly/ludusavi-playnite/pull/80))
+      - >-
+        Changed: Updated translations, including a new partial Norwegian translation.
+        (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
   - Version: 0.15.0
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2024-06-08
