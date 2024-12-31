@@ -20,14 +20,14 @@ needs-custom-entry =
 back-up-specific-game =
     .confirm = Sikkerhetskopier spill-lagringsdata for { $game }?
     .on-success = Sikkerhetskopierte spill-lagringsdata for { $game } ({ $processed-size })
-    .on-unchanged = Nothing new to back up for { $game }
-    .on-empty = No save data found to back up for { $game }
-    .on-failure = Backed up saves for { $game } ({ $processed-size } of { $total-size }), but some saves failed
+    .on-unchanged = Ingenting nytt å sikkerhetskopiere for { $game }
+    .on-empty = Ingen lagringsdata å sikkerhetskopiere ble funnet for { $game }
+    .on-failure = Sikkerhetskopierte lagringsdata for { $game } ({ $processed-size } av { $total-size }), men noen filer feilet
 # Defers to `back-up-specific-game.*`.
-back-up-last-game = Back up save data for last game played
+back-up-last-game = Sikkerhetskopier lagringsdata for siste spill som ble spilt
 # Defers to `back-up-specific-game.*` for each game individually.
 # In `.confirm`, there will always be more than one game.
-back-up-selected-games = Back up save data for selected games
+back-up-selected-games = Sikkerhetskopier lagringsdata for valgte spill
     .confirm = Back up save data for { $total-games } selected games?
 back-up-all-games = Back up save data for all games
     .confirm = Back up save data for all games that Ludusavi can find?

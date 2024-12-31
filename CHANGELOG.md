@@ -1,3 +1,9 @@
+## Unreleased
+
+* Changed:
+  * Updated translations, including a new partial translation for Indonesian.
+    (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
+
 ## v0.16.0 (2024-08-23)
 
 * Added:

@@ -109,10 +109,10 @@ option-none = Нет
 
 ## Miscellaneous
 
-initial-setup-required = Ludusavi does not seem to be installed. Please download it and then follow the plugin setup instructions.
+initial-setup-required = Ludusavi не установлен. Пожалуйста, загрузите его и следуйте инструкциям по установке плагина.
 upgrade-prompt = Установите Ludusavi { $version } или новее для лучшей работы. Нажмите для просмотра последней версии.
 upgrade-available = Ludusavi { $version } доступен. Нажмите, чтобы посмотреть список изменений.
 unrecognized-game = Ludusavi не распознает { $game }
 look-up-as-other-title = Искать с другим заголовком
 look-up-as-normal-title = Искать с названием по умолчанию
-open-backup-directory = Open backup directory
+open-backup-directory = Открыть каталог для резервной копий
