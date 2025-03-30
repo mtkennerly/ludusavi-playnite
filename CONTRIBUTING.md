@@ -29,20 +29,11 @@ pre-commit install
 
 You can chain `invoke` commands, such as: `invoke build deploy`.
 
-### Release preparation
+### Release
 * Add release entry in `manifest.yaml`.
-* Update version in `extension.yaml`.
-* Update version in `CHANGELOG.md`.
-
-Then run:
-
-```
-export VERSION=...
-git add .
-git commit -m "Release v${VERSION}"
-git tag v${VERSION} -m "Release"
-git push
-git push --tags
-```
-
-Create a release on GitHub and attach the workflow build artifacts.
+* Run `invoke prerelease`
+  * If you already updated the translations separately,
+    then run `invoke prerelease --no-update-lang`
+* Verify the changes and `git add` them
+* Run `invoke release`
+* Create a release on GitHub for the new tag and attach the workflow build artifacts
