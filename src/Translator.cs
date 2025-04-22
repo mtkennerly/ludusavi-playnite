@@ -595,6 +595,11 @@ namespace LudusaviPlaynite
             return Translate("config-ignore-benign-notifications");
         }
 
+        public string AskWhenMultipleGamesAreRunning_Label()
+        {
+            return Translate("config-ask-when-multiple-games-are-running");
+        }
+
         public string TagGamesWithBackups_Label()
         {
             return Translate(

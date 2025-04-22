@@ -152,6 +152,10 @@ namespace LudusaviPlaynite
         [JsonIgnore]
         public string IgnoreBenignNotifications_Label { get; set; }
 
+        public bool AskWhenMultipleGamesAreRunning { get; set; } = false;
+        [JsonIgnore]
+        public string AskWhenMultipleGamesAreRunning_Label { get; set; }
+
         public bool CheckAppUpdate { get; set; } = true;
         [JsonIgnore]
         public string CheckAppUpdate_Label { get; set; }
@@ -201,6 +205,7 @@ namespace LudusaviPlaynite
             TagGamesWithUnknownSaveData_Label = translator.TagGamesWithUnknownSaveData_Label();
             BackupDuringPlayInterval_Label = translator.BackupDuringPlayInterval_Label();
             IgnoreBenignNotifications_Label = translator.IgnoreBenignNotifications_Label();
+            AskWhenMultipleGamesAreRunning_Label = translator.AskWhenMultipleGamesAreRunning_Label();
             CheckAppUpdate_Label = translator.CheckAppUpdate_Label();
 
             // Injecting your plugin instance is required for Save/Load method because Playnite saves data to a location based on what plugin requested the operation.
@@ -271,6 +276,7 @@ namespace LudusaviPlaynite
                 TagGamesWithUnknownSaveData = savedSettings.TagGamesWithUnknownSaveData;
                 BackupDuringPlayInterval = savedSettings.BackupDuringPlayInterval;
                 IgnoreBenignNotifications = savedSettings.IgnoreBenignNotifications;
+                AskWhenMultipleGamesAreRunning = savedSettings.AskWhenMultipleGamesAreRunning;
                 CheckAppUpdate = savedSettings.CheckAppUpdate;
             }
             else
@@ -351,7 +357,7 @@ namespace LudusaviPlaynite
             }
         }
 
-        public PlayPreferences GetPlayPreferences(Game game)
+        public PlayPreferences GetPlayPreferences(Game game, bool multipleGamesRunning)
         {
             if (Etc.ShouldSkipGame(game))
             {
@@ -366,6 +372,8 @@ namespace LudusaviPlaynite
                 && !Etc.IsOnPc(game)
                 && Etc.GetGamePlatform(game) != null;
 
+            var askMultiple = this.AskWhenMultipleGamesAreRunning && multipleGamesRunning;
+
             var prefs = new PlayPreferences
             {
                 Game = new OperationPreferences
@@ -373,14 +381,14 @@ namespace LudusaviPlaynite
                     Backup = new OperationPreference
                     {
                         Do = gameBackupDo,
-                        Ask = this.AskBackupOnGameStopped && !Etc.HasTag(game, Tags.GAME_BACKUP) && !Etc.HasTag(game, Tags.GAME_BACKUP_AND_RESTORE),
+                        Ask = askMultiple || (this.AskBackupOnGameStopped && !Etc.HasTag(game, Tags.GAME_BACKUP) && !Etc.HasTag(game, Tags.GAME_BACKUP_AND_RESTORE)),
                     },
                     Restore = new OperationPreference
                     {
                         Do = gameBackupDo
                             && (this.DoRestoreOnGameStarting || Etc.HasTag(game, Tags.GAME_BACKUP_AND_RESTORE))
                             && !Etc.HasTag(game, Tags.GAME_NO_RESTORE),
-                        Ask = this.AskBackupOnGameStopped && !Etc.HasTag(game, Tags.GAME_BACKUP_AND_RESTORE),
+                        Ask = askMultiple || (this.AskBackupOnGameStopped && !Etc.HasTag(game, Tags.GAME_BACKUP_AND_RESTORE)),
                     },
                 },
                 Platform = new OperationPreferences
@@ -388,14 +396,14 @@ namespace LudusaviPlaynite
                     Backup = new OperationPreference
                     {
                         Do = platformBackupDo,
-                        Ask = this.AskPlatformBackupOnNonPcGameStopped && !Etc.HasTag(game, Tags.PLATFORM_BACKUP) && !Etc.HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE),
+                        Ask = askMultiple || (this.AskPlatformBackupOnNonPcGameStopped && !Etc.HasTag(game, Tags.PLATFORM_BACKUP) && !Etc.HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE)),
                     },
                     Restore = new OperationPreference
                     {
                         Do = platformBackupDo
                             && (this.DoPlatformRestoreOnNonPcGameStarting || Etc.HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE))
                             && !Etc.HasTag(game, Tags.PLATFORM_NO_RESTORE),
-                        Ask = this.AskPlatformBackupOnNonPcGameStopped && !Etc.HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE),
+                        Ask = askMultiple || (this.AskPlatformBackupOnNonPcGameStopped && !Etc.HasTag(game, Tags.PLATFORM_BACKUP_AND_RESTORE)),
                     },
                 },
             };

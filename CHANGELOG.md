@@ -1,5 +1,10 @@
 ## Unreleased
 
+* Added:
+  * New option: `Require confirmation when multiple games are running`.
+    This can be useful if you play multiple games at the same time that share save data
+    (particularly for platform-based backups),
+    so you can prevent automatic backup/restore when more than one game is running.
 * Fixed:
   * If two games had the same plugin source and game ID,
     then the wrong game could get backed up.

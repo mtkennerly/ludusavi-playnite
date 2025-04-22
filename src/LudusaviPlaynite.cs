@@ -24,6 +24,8 @@ namespace LudusaviPlaynite
         private bool pendingOperation { get; set; }
         private bool playedSomething { get; set; }
         private Game lastGamePlayed { get; set; }
+        private int gamesRunning { get; set; }
+        private bool multipleGamesRunning { get; set; }
         private Timer duringPlayBackupTimer { get; set; }
         private int duringPlayBackupTotal { get; set; }
         private int duringPlayBackupFailed { get; set; }
@@ -404,8 +406,13 @@ namespace LudusaviPlaynite
         {
             playedSomething = true;
             lastGamePlayed = args.Game;
+            gamesRunning += 1;
+            if (gamesRunning > 1)
+            {
+                multipleGamesRunning = true;
+            }
             Game game = args.Game;
-            var prefs = settings.GetPlayPreferences(game);
+            var prefs = settings.GetPlayPreferences(game, multipleGamesRunning);
 
             if (prefs.Game.Restore.Do)
             {
@@ -434,8 +441,13 @@ namespace LudusaviPlaynite
         {
             playedSomething = true;
             lastGamePlayed = arg.Game;
+            gamesRunning -= 1;
+            if (gamesRunning == 0)
+            {
+                multipleGamesRunning = false;
+            }
             Game game = arg.Game;
-            var prefs = settings.GetPlayPreferences(game);
+            var prefs = settings.GetPlayPreferences(game, multipleGamesRunning);
 
             if (this.duringPlayBackupTimer != null)
             {
@@ -718,7 +730,7 @@ namespace LudusaviPlaynite
                 return;
             }
 
-            var prefs = settings.GetPlayPreferences(game);
+            var prefs = settings.GetPlayPreferences(game, multipleGamesRunning);
             var ask = prefs.ShouldAsk(timing, criteria, operation);
             var displayName = settings.GetDisplayName(game, criteria);
             var consented = !ask;
@@ -932,7 +944,7 @@ namespace LudusaviPlaynite
             {
                 return;
             }
-            var prefs = settings.GetPlayPreferences(game);
+            var prefs = settings.GetPlayPreferences(game, multipleGamesRunning);
             Task.Run(() =>
             {
                 if (prefs.Game.Backup.Do && !prefs.Game.Backup.Ask && settings.DoBackupDuringPlay)
