@@ -1,5 +1,21 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.17.0
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2025-04-22
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.17.0/ludusavi-playnite-v0.17.0.pext
+    Changelog:
+      - >-
+        Added: New option: `Require confirmation when multiple games are running`.
+        This can be useful if you play multiple games at the same time that share save data
+        (particularly for platform-based backups),
+        so you can prevent automatic backup/restore when more than one game is running.
+      - >-
+        Fixed: If two games had the same plugin source and game ID,
+        then the wrong game could get backed up.
+      - >-
+        Changed: Updated translations, including a new translation for Arabic and Indonesian.
+        (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
   - Version: 0.16.0
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2024-08-23

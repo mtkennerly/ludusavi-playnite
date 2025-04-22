@@ -96,8 +96,8 @@ def prerelease(ctx, new_version, update_lang=True):
 
     replace_pattern_in_file(
         REPO / "extension.yaml",
-        'Version = .+',
-        f'Version = "{new_version}"',
+        'Version: .+',
+        f'Version: {new_version}',
     )
 
     replace_pattern_in_file(
