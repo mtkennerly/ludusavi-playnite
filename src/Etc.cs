@@ -115,7 +115,7 @@ namespace LudusaviPlaynite
 
         public static string GetTitleId(Game game)
         {
-            return string.Format("{0}:{1}", game.PluginId, game.GameId);
+            return string.Format("{0}:{1}:{2}", game.PluginId, game.GameId, game.Name);
         }
 
         public static Platform GetGamePlatform(Game game)

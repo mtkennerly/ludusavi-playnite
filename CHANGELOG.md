@@ -1,5 +1,8 @@
 ## Unreleased
 
+* Fixed:
+  * If two games had the same plugin source and game ID,
+    then the wrong game could get backed up.
 * Changed:
   * Updated translations, including a new translation for Arabic and Indonesian.
     (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
