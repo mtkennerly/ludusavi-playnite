@@ -103,6 +103,7 @@ config-ignore-benign-notifications = 失敗の通知のみ表示
 config-tag-games-with-backups = バックアップしたゲームに "{$tag}" のタグを自動的に付ける
 config-tag-games-with-unknown-save-data = Automatically tag games with unknown save data as "{ $tag }"
 config-check-app-update = Check for Ludusavi updates automatically
+config-ask-when-multiple-games-are-running = Require confirmation when multiple games are running
 label-minutes = 分:
 option-simple = Simple
 option-none = None

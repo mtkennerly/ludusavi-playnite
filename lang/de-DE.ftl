@@ -103,6 +103,7 @@ config-ignore-benign-notifications = Benachrichtigungen nur bei Fehler
 config-tag-games-with-backups = Spiele mit Backups automatisch als "{ $tag } " markieren
 config-tag-games-with-unknown-save-data = Spiele mit unbekannten Speicherdaten automatisch als "{ $tag } " markieren
 config-check-app-update = Automatisch nach Ludusavi Updates suchen
+config-ask-when-multiple-games-are-running = Require confirmation when multiple games are running
 label-minutes = Minuten:
 option-simple = Einfach
 option-none = Keine

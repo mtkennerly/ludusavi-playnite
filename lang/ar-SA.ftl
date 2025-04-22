@@ -103,6 +103,7 @@ config-ignore-benign-notifications = إظهار الإشعارات فقط عند
 config-tag-games-with-backups = وسم الألعاب تلقائياً مع النسخ الاحتياطي "{ $tag }"
 config-tag-games-with-unknown-save-data = وسم الألعاب تلقائياً مع النسخ الاحتياطي "{ $tag }"
 config-check-app-update = التحقق من وجود تحديثات التطبيق تلقائيا
+config-ask-when-multiple-games-are-running = Require confirmation when multiple games are running
 label-minutes = الدقائق:
 option-simple = بسيط
 option-none = لا شيء
