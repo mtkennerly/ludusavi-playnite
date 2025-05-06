@@ -1,3 +1,9 @@
+## Unreleased
+
+* Changed:
+  * Updated translations, including a new translation for French.
+    (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
+
 ## v0.17.0 (2025-04-22)
 
 * Added:
