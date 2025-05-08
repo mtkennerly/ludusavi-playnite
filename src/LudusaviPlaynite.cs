@@ -24,7 +24,6 @@ namespace LudusaviPlaynite
         private bool pendingOperation { get; set; }
         private bool playedSomething { get; set; }
         private Game lastGamePlayed { get; set; }
-        private int gamesRunning { get; set; }
         private bool multipleGamesRunning { get; set; }
         private Timer duringPlayBackupTimer { get; set; }
         private int duringPlayBackupTotal { get; set; }
@@ -406,8 +405,7 @@ namespace LudusaviPlaynite
         {
             playedSomething = true;
             lastGamePlayed = args.Game;
-            gamesRunning += 1;
-            if (gamesRunning > 1)
+            if (CountGamesRunning() > 0)
             {
                 multipleGamesRunning = true;
             }
@@ -441,8 +439,7 @@ namespace LudusaviPlaynite
         {
             playedSomething = true;
             lastGamePlayed = arg.Game;
-            gamesRunning -= 1;
-            if (gamesRunning == 0)
+            if (CountGamesRunning() == 0)
             {
                 multipleGamesRunning = false;
             }
@@ -755,10 +752,10 @@ namespace LudusaviPlaynite
                     switch (operation)
                     {
                         case Operation.Backup:
-                            choice = interactor.AskUser(translator.BackUpOneGame_Confirm(displayName));
+                            choice = interactor.AskUser(translator.BackUpOneGame_Confirm(displayName), !multipleGamesRunning);
                             break;
                         case Operation.Restore:
-                            choice = interactor.AskUser(translator.RestoreOneGame_Confirm(displayName));
+                            choice = interactor.AskUser(translator.RestoreOneGame_Confirm(displayName), !multipleGamesRunning);
                             break;
                     }
 
@@ -1113,6 +1110,11 @@ namespace LudusaviPlaynite
                     }
                 }
             }
+        }
+
+        private int CountGamesRunning()
+        {
+            return PlayniteApi.Database.Games.Count(x => x.IsRunning);
         }
 
         private bool IsBackedUp(Game game)

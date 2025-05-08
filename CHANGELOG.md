@@ -1,5 +1,12 @@
 ## Unreleased
 
+* Fixed:
+  * With the `Require confirmation when multiple games are running` option enabled,
+    the confirmation dialog contained "always" and "never" options
+    that didn't make sense in context.
+    These are now removed.
+  * With the `Require confirmation when multiple games are running` option enabled,
+    the confirmation could trigger by mistake when other plugins had cancelled a game launch.
 * Changed:
   * Updated translations, including a new translation for French.
     (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))

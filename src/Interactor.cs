@@ -35,16 +35,30 @@ namespace LudusaviPlaynite
 
         public Choice AskUser(string message)
         {
+            return AskUser(message, true);
+        }
+
+        public Choice AskUser(string message, bool showAlwaysNever)
+        {
             var yes = new MessageBoxOption(translator.YesButton(), true, false);
             var always = new MessageBoxOption(translator.YesRememberedButton(), false, false);
             var no = new MessageBoxOption(translator.NoButton(), false, false);
             var never = new MessageBoxOption(translator.NoRememberedButton(), false, false);
 
+            var options = new List<MessageBoxOption>();
+            if (showAlwaysNever)
+            {
+                options.Add(always);
+                options.Add(never);
+            }
+            options.Add(yes);
+            options.Add(no);
+
             var choice = PlayniteApi.Dialogs.ShowMessage(
                 message,
                 "",
                 MessageBoxImage.None,
-                new List<MessageBoxOption> { always, never, yes, no }
+                options
             );
 
             if (choice == yes)
