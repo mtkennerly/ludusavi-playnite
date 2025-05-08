@@ -1,4 +1,4 @@
-## Unreleased
+## v0.17.1 (2025-05-07)
 
 * Fixed:
   * With the `Require confirmation when multiple games are running` option enabled,

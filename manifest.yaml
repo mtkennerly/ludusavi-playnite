@@ -1,5 +1,21 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.17.1
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2025-05-07
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.17.1/ludusavi-playnite-v0.17.1.pext
+    Changelog:
+      - >-
+        Fixed: With the `Require confirmation when multiple games are running` option enabled,
+        the confirmation dialog contained "always" and "never" options
+        that didn't make sense in context.
+        These are now removed.
+      - >-
+        Fixed: With the `Require confirmation when multiple games are running` option enabled,
+        the confirmation could trigger by mistake when other plugins had cancelled a game launch.
+      - >-
+        Changed: Updated translations, including a new translation for French.
+        (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
   - Version: 0.17.0
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2025-04-22
