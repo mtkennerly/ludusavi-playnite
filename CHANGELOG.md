@@ -1,3 +1,9 @@
+## Unreleased
+
+* Added:
+  * The context menu now indicates when a backup is locked.
+    ([Contributed by darklinkpower](https://github.com/mtkennerly/ludusavi-playnite/pull/96))
+
 ## v0.17.1 (2025-05-07)
 
 * Fixed:
