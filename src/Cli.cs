@@ -552,6 +552,8 @@ namespace LudusaviPlaynite.Cli.Output
         public string Comment;
         [JsonProperty("os")]
         public string Os;
+        [JsonProperty("locked")]
+        public bool Locked;
     }
 
     public struct Game
