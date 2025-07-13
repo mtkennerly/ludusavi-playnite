@@ -162,6 +162,11 @@ namespace LudusaviPlaynite
                 retSb.AppendFormat(" [{0}]", backup.Os);
             }
 
+            if (backup.Locked)
+            {
+                retSb.Append(" [🔒]");
+            }
+
             if (!string.IsNullOrEmpty(backup.Comment))
             {
                 var lineSb = new StringBuilder();
