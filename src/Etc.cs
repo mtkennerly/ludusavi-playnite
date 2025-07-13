@@ -4,6 +4,7 @@ using System.Linq;
 using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Text;
 
 namespace LudusaviPlaynite
 {
@@ -153,37 +154,42 @@ namespace LudusaviPlaynite
 
         public static string GetBackupDisplayLine(Cli.Output.Backup backup)
         {
-            var ret = backup.When.ToLocalTime().ToString();
+            var retSb = new StringBuilder();
+            retSb.Append(backup.When.ToLocalTime().ToString());
 
             if (!string.IsNullOrEmpty(backup.Os) && backup.Os != "windows")
             {
-                ret += string.Format(" [{0}]", backup.Os);
+                retSb.AppendFormat(" [{0}]", backup.Os);
             }
+
             if (!string.IsNullOrEmpty(backup.Comment))
             {
-                var line = "";
+                var lineSb = new StringBuilder();
                 var parts = backup.Comment.Split();
 
-                foreach (var part in backup.Comment.Split())
+                foreach (var part in parts)
                 {
-                    if (line != "")
+                    if (lineSb.Length > 0)
                     {
-                        line += " ";
+                        lineSb.Append(" ");
                     }
-                    line += part;
-                    if (line.Length > 60)
+
+                    lineSb.Append(part);
+
+                    if (lineSb.Length > 60)
                     {
-                        ret += string.Format("\n    {0}", line);
-                        line = "";
+                        retSb.AppendFormat("\n    {0}", lineSb);
+                        lineSb.Clear();
                     }
                 }
-                if (line != "")
+
+                if (lineSb.Length > 0)
                 {
-                    ret += string.Format("\n    {0}", line);
+                    retSb.AppendFormat("\n    {0}", lineSb);
                 }
             }
 
-            return ret;
+            return retSb.ToString();
         }
 
         public static void OpenUrl(string url)
