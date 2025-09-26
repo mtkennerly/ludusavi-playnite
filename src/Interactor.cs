@@ -136,6 +136,12 @@ namespace LudusaviPlaynite
             PlayniteApi.Dialogs.ShowErrorMessage(message, translator.Ludusavi());
         }
 
+        public string InputText(string label, string initial)
+        {
+            var result = PlayniteApi.Dialogs.SelectString(label, "", initial);
+            return result.Result ? result.SelectedString : null;
+        }
+
         public bool AddTag(Game game, string tagName)
         {
             var dbTag = PlayniteApi.Database.Tags.FirstOrDefault(tag => tag.Name == tagName);

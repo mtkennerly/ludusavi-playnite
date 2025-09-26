@@ -148,17 +148,67 @@ namespace LudusaviPlaynite
                 var game = menuArgs.Games[0];
                 foreach (var backup in GetBackups(game))
                 {
-                    items.Add(
-                        new GameMenuItem
-                        {
-                            Description = Etc.GetBackupDisplayLine(backup),
-                            MenuSection = string.Format("{0} | {1}", translator.Ludusavi(), translator.RestoreSelectedGames_Label()),
-                            Action = async args =>
+                    if (this.app.version.supportsEditBackup())
+                    {
+                        var section = string.Format("{0} | {1} | {2}", translator.Ludusavi(), translator.RestoreSelectedGames_Label(), Etc.GetBackupDisplayLine(backup));
+
+                        items.Add(
+                            new GameMenuItem
                             {
-                                await InitiateOperation(game, Operation.Restore, OperationTiming.Free, BackupCriteria.Game, backup);
+                                Description = translator.Restore(),
+                                MenuSection = section,
+                                Action = async args =>
+                                {
+                                    await InitiateOperation(game, Operation.Restore, OperationTiming.Free, BackupCriteria.Game, backup);
+                                }
                             }
-                        }
-                    );
+                        );
+
+                        items.Add(
+                            new GameMenuItem
+                            {
+                                Description = backup.Locked ? translator.Unlock() : translator.Lock(),
+                                MenuSection = section,
+                                Action = args =>
+                                {
+                                    var title = GetTitle(game);
+                                    this.app.EditBackup(title, !backup.Locked, null);
+                                    this.RefreshBackups();
+                                }
+                            }
+                        );
+                        items.Add(
+                            new GameMenuItem
+                            {
+                                Description = translator.SetComment(),
+                                MenuSection = section,
+                                Action = args =>
+                                {
+                                    var comment = interactor.InputText(translator.SetComment(), backup.Comment);
+                                    if (comment != null)
+                                    {
+                                        var title = GetTitle(game);
+                                        this.app.EditBackup(title, null, comment);
+                                        this.RefreshBackups();
+                                    }
+                                }
+                            }
+                        );
+                    }
+                    else
+                    {
+                        items.Add(
+                            new GameMenuItem
+                            {
+                                Description = Etc.GetBackupDisplayLine(backup),
+                                MenuSection = string.Format("{0} | {1}", translator.Ludusavi(), translator.RestoreSelectedGames_Label()),
+                                Action = async args =>
+                                {
+                                    await InitiateOperation(game, Operation.Restore, OperationTiming.Free, BackupCriteria.Game, backup);
+                                }
+                            }
+                        );
+                    }
                 }
             }
             else

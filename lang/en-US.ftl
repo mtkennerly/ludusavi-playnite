@@ -45,6 +45,8 @@ back-up-during-play-on-failure = Triggered {$total-backups} backups while playin
 
 ## Restore
 
+restore = Restore
+
 restore-specific-game =
     .confirm = Restore save data for {$game}?
     .on-success = Restored saves for {$game} ({$processed-size})
@@ -131,3 +133,7 @@ look-up-as-normal-title = Look up with default title
 
 open-backup-directory = Open backup directory
 customize-in-ludusavi = Customize in Ludusavi
+
+lock = Lock
+unlock = Unlock
+set-comment = Set comment

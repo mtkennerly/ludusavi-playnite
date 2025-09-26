@@ -236,6 +236,33 @@ namespace LudusaviPlaynite.Cli
             return null;
         }
 
+        public bool EditBackup(string game, bool? locked, string comment)
+        {
+            if (!(this.version.supportsEditBackup()))
+            {
+                return false;
+            }
+
+            var runner = new Api.Runner(logger, this.settings);
+            runner.EditBackup(game, locked, comment);
+
+            var (code, output) = runner.Invoke();
+
+            if (output?.responses != null)
+            {
+                foreach (var response in output?.responses)
+                {
+                    var info = response.editBackup;
+                    if (info != null)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public bool OpenCustomGame(string name)
         {
             if (!this.version.supportsGuiCommand())
@@ -307,6 +334,11 @@ namespace LudusaviPlaynite.Cli
         }
 
         public bool supportsGuiCommand()
+        {
+            return this.inner >= new Version(0, 30, 0);
+        }
+
+        public bool supportsEditBackup()
         {
             return this.inner >= new Version(0, 30, 0);
         }

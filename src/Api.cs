@@ -55,10 +55,11 @@ namespace LudusaviPlaynite.Api
             var json = JsonConvert.SerializeObject(this.input);
             var args = "api";
             logger.Debug(string.Format(
-                "Running Ludusavi API with {0} requests (findTitle: {1}, checkAppUpdate: {2})",
+                "Running Ludusavi API with {0} requests (findTitle: {1}, checkAppUpdate: {2}, editBackup: {3})",
                 this.input.requests.Count,
                 this.input.requests.Count(r => r.findTitle != null),
-                this.input.requests.Count(r => r.checkAppUpdate != null)
+                this.input.requests.Count(r => r.checkAppUpdate != null),
+                this.input.requests.Count(r => r.editBackup != null)
             ));
 
             try
@@ -120,6 +121,22 @@ namespace LudusaviPlaynite.Api
             };
             this.input.requests.Add(request);
         }
+
+        public void EditBackup(string game, bool? locked, string comment)
+        {
+            var inner = new Requests.EditBackup
+            {
+                game = game,
+                locked = locked,
+                comment = comment,
+            };
+
+            var request = new Request
+            {
+                editBackup = inner,
+            };
+            this.input.requests.Add(request);
+        }
     }
 
     public struct Input
@@ -140,6 +157,8 @@ namespace LudusaviPlaynite.Api
         public Requests.FindTitle? findTitle;
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Requests.CheckAppUpdate? checkAppUpdate;
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Requests.EditBackup? editBackup;
     }
 
     public struct Output
@@ -152,6 +171,7 @@ namespace LudusaviPlaynite.Api
         public Responses.Error? error;
         public Responses.FindTitle? findTitle;
         public Responses.CheckAppUpdate? checkAppUpdate;
+        public Responses.EditBackup? editBackup;
     }
 
     namespace Requests
@@ -165,6 +185,13 @@ namespace LudusaviPlaynite.Api
 
         public struct CheckAppUpdate
         { }
+
+        public struct EditBackup
+        {
+            public string game;
+            public bool? locked;
+            public string comment;
+        }
     }
 
     namespace Responses
@@ -189,5 +216,8 @@ namespace LudusaviPlaynite.Api
         {
             public AppUpdate? update;
         }
+
+        public struct EditBackup
+        { }
     }
 }

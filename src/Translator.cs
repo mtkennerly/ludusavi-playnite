@@ -194,6 +194,11 @@ namespace LudusaviPlaynite
             ) + formattedNames;
         }
 
+        public string Restore()
+        {
+            return Translate("restore");
+        }
+
         public string RestoreLastGame_Label()
         {
             return Translate("restore-last-game");
@@ -694,6 +699,21 @@ namespace LudusaviPlaynite
         public string CustomizeInLudusavi()
         {
             return Translate("customize-in-ludusavi");
+        }
+
+        public string Lock()
+        {
+            return Translate("lock");
+        }
+
+        public string Unlock()
+        {
+            return Translate("unlock");
+        }
+
+        public string SetComment()
+        {
+            return Translate("set-comment");
         }
     }
 }
