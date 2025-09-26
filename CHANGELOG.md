@@ -3,6 +3,7 @@
 * Added:
   * The context menu now indicates when a backup is locked.
     ([Contributed by darklinkpower](https://github.com/mtkennerly/ludusavi-playnite/pull/96))
+  * The context menu now lets you open Ludusavi to add/edit a game's custom entry.
   * Updated translations, including a new translation for Turkish.
     (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
 

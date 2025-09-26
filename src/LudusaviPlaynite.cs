@@ -289,6 +289,24 @@ namespace LudusaviPlaynite
                         }
                     );
                 }
+
+                if (this.app.version.supportsGuiCommand())
+                {
+                    items.Add(
+                        new GameMenuItem
+                        {
+                            Description = translator.CustomizeInLudusavi(),
+                            MenuSection = translator.Ludusavi(),
+                            Action = args =>
+                            {
+                                if (!this.app.OpenCustomGame(renamed ?? title))
+                                {
+                                    interactor.NotifyError(translator.UnableToRunLudusavi(), OperationTiming.Free);
+                                }
+                            }
+                        }
+                    );
+                }
             }
 
             foreach (var entry in Tags.CONFLICTS)

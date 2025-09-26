@@ -130,3 +130,4 @@ look-up-as-other-title = Look up with another title
 look-up-as-normal-title = Look up with default title
 
 open-backup-directory = Open backup directory
+customize-in-ludusavi = Customize in Ludusavi

@@ -75,6 +75,17 @@ namespace LudusaviPlaynite
             return (p.ExitCode, stdout);
         }
 
+        public static void RunCommandGui(string command, string args)
+        {
+            var p = new Process();
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            p.StartInfo.CreateNoWindow = false;
+            p.StartInfo.FileName = command;
+            p.StartInfo.Arguments = args;
+            p.Start();
+        }
+
         public static bool IsOnSteam(Game game)
         {
             return game.Source?.Name == "Steam"

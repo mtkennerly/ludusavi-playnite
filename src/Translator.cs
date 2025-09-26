@@ -690,5 +690,10 @@ namespace LudusaviPlaynite
         {
             return Translate("open-backup-directory");
         }
+
+        public string CustomizeInLudusavi()
+        {
+            return Translate("customize-in-ludusavi");
+        }
     }
 }

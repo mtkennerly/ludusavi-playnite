@@ -64,6 +64,23 @@ namespace LudusaviPlaynite.Cli
             }
         }
 
+        private bool InvokeDirectGui(Invocation invocation, bool standalone = false)
+        {
+            var fullArgs = invocation.Render(settings, version);
+            logger.Debug(string.Format("Running Ludusavi: {0}", fullArgs));
+
+            try
+            {
+                Etc.RunCommandGui(settings.ExecutablePath.Trim(), fullArgs);
+                return true;
+            }
+            catch (Exception e)
+            {
+                logger.Debug(e, "Ludusavi could not be executed");
+                return false;
+            }
+        }
+
         public (int, Output.Response?) Invoke(Invocation invocation)
         {
             var (code, stdout) = InvokeDirect(invocation);
@@ -218,6 +235,20 @@ namespace LudusaviPlaynite.Cli
 
             return null;
         }
+
+        public bool OpenCustomGame(string name)
+        {
+            if (!this.version.supportsGuiCommand())
+            {
+                return false;
+            }
+
+            var invocation = new Cli.Invocation(Mode.Gui);
+            invocation.Raw();
+            invocation.CustomGame(name);
+
+            return InvokeDirectGui(invocation, true);
+        }
     }
 
     public class LudusaviVersion
@@ -274,6 +305,11 @@ namespace LudusaviPlaynite.Cli
         {
             return this.inner >= new Version(0, 18, 0);
         }
+
+        public bool supportsGuiCommand()
+        {
+            return this.inner >= new Version(0, 30, 0);
+        }
     }
 
     public class Invocation
@@ -286,6 +322,8 @@ namespace LudusaviPlaynite.Cli
         private string backup;
         private bool findBackup;
         private bool normalized;
+        private string customGame;
+        private bool raw;
 
         public Invocation(Mode mode)
         {
@@ -349,6 +387,18 @@ namespace LudusaviPlaynite.Cli
             return this;
         }
 
+        public Invocation CustomGame(string name)
+        {
+            this.customGame = name;
+            return this;
+        }
+
+        public Invocation Raw()
+        {
+            this.raw = true;
+            return this;
+        }
+
         private string Quote(string text)
         {
             return string.Format("\"{0}\"", text);
@@ -391,9 +441,15 @@ namespace LudusaviPlaynite.Cli
                     parts.Add("manifest");
                     parts.Add("show");
                     break;
+                case Mode.Gui:
+                    parts.Add("gui");
+                    break;
             }
 
-            parts.Add("--api");
+            if (!this.raw)
+            {
+                parts.Add("--api");
+            }
 
             if (this.path != null && this.path != "")
             {
@@ -469,6 +525,12 @@ namespace LudusaviPlaynite.Cli
                     parts.Add("--differential-limit");
                     parts.Add(settings.DifferentialBackupLimit.ToString());
                 }
+            }
+
+            if (this.customGame != null)
+            {
+                parts.Add("--custom-game");
+                parts.Add(Quote(this.customGame));
             }
 
             if (this.games.Count > 0)

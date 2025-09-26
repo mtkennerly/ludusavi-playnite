@@ -21,6 +21,7 @@ namespace LudusaviPlaynite
         Find,
         Restore,
         ManifestShow,
+        Gui,
     }
 
     public enum Choice
