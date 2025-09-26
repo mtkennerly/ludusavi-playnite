@@ -20,7 +20,7 @@ needs-custom-entry =
 back-up-specific-game =
     .confirm = Fazer backup dos dados salvos para { $game }?
     .on-success = Backup dos saves de { $game } ({ $processed-size })
-    .on-unchanged = Nothing new to back up for { $game }
+    .on-unchanged = Nada de novo para salvar no { $game }
     .on-empty = Não foram encontrados dados salvos para o backup de { $game }
     .on-failure = Foi realizado backup de saves para { $game } ({ $processed-size } de { $total-size }), mas alguns saves falharam
 # Defers to `back-up-specific-game.*`.
@@ -33,15 +33,15 @@ back-up-all-games = Fazer backup de dados salvos para todos os jogos
     .confirm = Fazer backup de dados para todos os jogos que Ludusavi pode encontrar?
     .on-success = Backup de saves para { $processed-games } jogos ({ $processed-size }); clique para lista completa
     .on-failure = Foi realizado backup de saves para { $processed-games } de { $total-games } jogos ({ $processed-size } de { $total-size }), mas alguns falharam; clique para lista completa
-back-up-during-play-on-success = Triggered { $total-backups } backups while playing { $game }
-back-up-during-play-on-failure = Triggered { $total-backups } backups while playing { $game }, of which { $failed-backups } failed
+back-up-during-play-on-success = { $total-backups } backups feitos enquanto jogava { $game }
+back-up-during-play-on-failure = { $total-backups } backups feitos enquanto jogava { $game }, { $failed-backups } falharam
 
 ## Restore
 
 restore-specific-game =
     .confirm = Restaurar dados salvos para { $game }?
     .on-success = Restaurar saves de { $game } ({ $processed-size })
-    .on-unchanged = Nothing new to restore for { $game }
+    .on-unchanged = Nada de novo para salvar no { $game }
     .on-empty = Não foram encontrados dados salvos para restaurar { $game }
     .on-failure = Salvamentos restaurados para { $game } ({ $processed-size } de { $total-size }), mas alguns salvos falharam
 # Defers to `restore-specific-game.*`.
@@ -75,45 +75,45 @@ remove-tag-for-selected-games = Tag: "{ $tag }" - Remover para os jogos selecion
 operation-still-pending = Ludusavi ainda está trabalhando em um pedido anterior. Por favor, tente novamente quando você ver a notificação de que acabou.
 no-game-played-yet = Você não jogou nada ainda nesta sessão.
 unable-to-run-ludusavi = Não foi possível executar Ludusavi.
-cannot-open-folder = Cannot open folder.
-unable-to-synchronize-with-cloud = Unable to synchronize with cloud.
-cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open Ludusavi and perform an upload or download to resolve this.
+cannot-open-folder = Impossível abrir pasta.
+unable-to-synchronize-with-cloud = Não foi possível sincronizar com a nuvem.
+cloud-synchronize-conflict = Seus backups locais e da nuvem estão em conflito. Abra Ludusavi e execute um upload ou download para resolver isso.
 
 ## Settings
 
 config-executable-path = Nome ou caminho completo do executável Ludusavi:
 config-backup-path = Substituir o caminho completo para o diretório para armazenar os backups:
-config-override-backup-format = Override backup format.
-config-override-backup-compression = Override backup compression.
-config-override-backup-retention = Override backup retention.
-config-full-backup-limit = Max full backups per game:
-config-differential-backup-limit = Max differential backups per full backup:
+config-override-backup-format = Substituir formato de backup.
+config-override-backup-compression = Sobrepor a compressão de backup.
+config-override-backup-retention = Sobrescrever a retenção de backup.
+config-full-backup-limit = Máximo de backups completos por jogo:
+config-differential-backup-limit = Máximo de backups diferenciais por backup completo:
 config-do-backup-on-game-stopped = Fazer backup de dados para um jogo depois de jogá-lo
 config-do-restore-on-game-starting = Também restaurar dados para um jogo antes de jogá-lo
 config-ask-backup-on-game-stopped = Perguntar primeiro em vez de fazer automaticamente
 config-only-backup-on-game-stopped-if-pc = Só fazer isso para jogos de PC
-config-retry-unrecognized-game-with-normalization = If not found, retry by normalizing the title
+config-retry-unrecognized-game-with-normalization = Se não for encontrado, tente novamente normalizando o título
 config-add-suffix-for-non-pc-game-names = Procure por jogos não-PC adicionando esse sufixo para seus nomes (requer uma entrada personalizada):
 config-retry-non-pc-games-without-suffix = Se não for encontrado com o sufixo, tente novamente sem ele
 config-do-platform-backup-on-non-pc-game-stopped = Fazer backup de dados salvos com o nome da plataforma após jogar jogos não-PC (requer entrada personalizada)
 config-do-platform-restore-on-non-pc-game-starting = Também restaurar dados salvos pelo nome da plataforma antes de jogar jogos não-PC
 config-ask-platform-backup-on-non-pc-game-stopped = Perguntar primeiro em vez de fazer automaticamente
-config-do-backup-during-play = Back up games on an interval during play, if they would also be backed up after play without asking
+config-do-backup-during-play = Faça backup de jogos em um intervalo de tempo durante a partida, se eles também terão backup depois da partida sem perguntar
 config-ignore-benign-notifications = Mostrar apenas notificações de falha
-config-tag-games-with-backups = Automatically tag games with backups as "{ $tag }"
-config-tag-games-with-unknown-save-data = Automatically tag games with unknown save data as "{ $tag }"
-config-check-app-update = Check for Ludusavi updates automatically
-config-ask-when-multiple-games-are-running = Require confirmation when multiple games are running
-label-minutes = Minutes:
+config-tag-games-with-backups = Marcar automaticamente jogos com backups como "{ $tag }"
+config-tag-games-with-unknown-save-data = Marcar automaticamente jogos com saves desconhecidos como "{ $tag }"
+config-check-app-update = Verificar por atualizações do Ludusavi automaticamente
+config-ask-when-multiple-games-are-running = Exigir confirmação quando vários jogos estiverem rodando
+label-minutes = Minutos:
 option-simple = Simples
 option-none = Nenhum
 
 ## Miscellaneous
 
-initial-setup-required = Ludusavi does not seem to be installed. Please download it and then follow the plugin setup instructions.
-upgrade-prompt = Install Ludusavi { $version } or newer for the best experience. Click to view the latest release.
-upgrade-available = Ludusavi { $version } is now available. Click to view the release notes.
-unrecognized-game = Ludusavi does not recognize { $game }
-look-up-as-other-title = Look up with another title
-look-up-as-normal-title = Look up with default title
-open-backup-directory = Open backup directory
+initial-setup-required = Ludusavi parece não estar instalado. Por favor baixe-o e, em seguida, siga as instruções de configuração do plugin.
+upgrade-prompt = Instale Ludusavi { $version } ou mais recente para obter a melhor experiência. Clique para ver a última versão.
+upgrade-available = Ludusavi { $version } está disponível. Clique para ver as notas de lançamento.
+unrecognized-game = { $game } não foi reconhecido pelo Ludusavi.
+look-up-as-other-title = Procurar com outro título
+look-up-as-normal-title = Procurar com título original
+open-backup-directory = Abrir o diretório de backup

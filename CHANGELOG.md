@@ -3,6 +3,8 @@
 * Added:
   * The context menu now indicates when a backup is locked.
     ([Contributed by darklinkpower](https://github.com/mtkennerly/ludusavi-playnite/pull/96))
+  * Updated translations, including a new translation for Turkish.
+    (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
 
 ## v0.17.1 (2025-05-07)
 
