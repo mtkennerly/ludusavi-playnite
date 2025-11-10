@@ -1,4 +1,4 @@
-## Unreleased
+## v0.18.0 (2025-11-10)
 
 * Added:
   * The context menu now indicates when a backup is locked.
