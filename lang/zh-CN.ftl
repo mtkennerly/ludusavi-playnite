@@ -68,8 +68,8 @@ operation-still-pending = Ludusavi 仍在处理前一个请求。请在看到它
 no-game-played-yet = 您还未在此次会话中游玩任何游戏。
 unable-to-run-ludusavi = 无法运行 Ludusavi。
 cannot-open-folder = 无法打开目录.
-unable-to-synchronize-with-cloud = Unable to synchronize with cloud.
-cloud-synchronize-conflict = Your local and cloud backups are in conflict. Open Ludusavi and perform an upload or download to resolve this.
+unable-to-synchronize-with-cloud = 无法与云端同步。
+cloud-synchronize-conflict = 您的本地备份与云备份存在冲突。请打开Ludusavi并执行上传或下载操作以解决此问题。
 
 ## Settings
 
@@ -79,7 +79,7 @@ config-override-backup-format = 修改备份文件格式
 config-override-backup-compression = 修改备份文件的压缩方式
 config-override-backup-retention = 修改备份文件选项:
 config-full-backup-limit = 单个游戏的最大完整备份数量:
-config-differential-backup-limit = Max differential backups per full backup:
+config-differential-backup-limit = 每次完整备份最多允许的差异备份数：
 config-do-backup-on-game-stopped = 在游戏结束后备份其存档数据
 config-do-restore-on-game-starting = 在游戏开始前恢复其存档数据
 config-ask-backup-on-game-stopped = 在游戏结束后选择是否备份其存档数据
@@ -93,19 +93,19 @@ config-ask-platform-backup-on-non-pc-game-stopped = 在非PC游戏结束时选�
 config-do-backup-during-play = 在游戏过程中每隔一段时间备份游戏，如果游戏结束后也无需询问即可备份
 config-ignore-benign-notifications = 仅在失败时显示通知
 config-tag-games-with-backups = 自动给游戏存档备份打上标签 "{ $tag }"
-config-tag-games-with-unknown-save-data = Automatically tag games with unknown save data as "{ $tag }"
-config-check-app-update = Check for Ludusavi updates automatically
-config-ask-when-multiple-games-are-running = Require confirmation when multiple games are running
+config-tag-games-with-unknown-save-data = 自动将带有未知存档数据的游戏标记为"{ $tag }"
+config-check-app-update = 自动检查更新
+config-ask-when-multiple-games-are-running = 当多个游戏同时运行时需要确认
 label-minutes = 分钟:
 option-simple = 简单
 option-none = 默认
 
 ## Miscellaneous
 
-initial-setup-required = Ludusavi does not seem to be installed. Please download it and then follow the plugin setup instructions.
+initial-setup-required = Ludusavi 似乎未安装。请下载该插件后，按说明进行安装配置。
 upgrade-prompt = 安装 Ludusavi { $version } 或者更新的版本已获得更好的体验. 点击查看最新版本.
-upgrade-available = Ludusavi { $version } is now available. Click to view the release notes.
+upgrade-available = Ludusavi { $version } 现已发布。点击查看版本说明。
 unrecognized-game = Ludusavi 不能识别 { $game }
 look-up-as-other-title = 以其他名称查找
 look-up-as-normal-title = 以默认名称查找
-open-backup-directory = Open backup directory
+open-backup-directory = 打开备份目录

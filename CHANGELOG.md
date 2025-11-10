@@ -7,6 +7,7 @@
     This requires Ludusavi v0.30.0 or newer.
   * The context menu now lets you (un)lock a backup and edit its comment.
     This requires Ludusavi v0.30.0 or newer.
+* Changed:
   * Updated translations, including a new translation for Turkish.
     (Thanks to contributors on the [Crowdin project](https://crowdin.com/project/ludusavi-playnite))
 
