@@ -572,7 +572,7 @@ namespace LudusaviPlaynite
                 case RefreshContext.EditedConfig:
                     app.RefreshVersion();
                     app.RefreshTitles(PlayniteApi.Database.Games.ToList());
-                    app.RefreshBackups();
+                    RefreshBackups();
                     break;
                 case RefreshContext.ConfiguredTitle:
                     app.RefreshTitles(PlayniteApi.Database.Games.ToList());

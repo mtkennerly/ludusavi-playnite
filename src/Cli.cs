@@ -129,6 +129,9 @@ namespace LudusaviPlaynite.Cli
                 return false;
             }
 
+            this.backups.Clear();
+            this.backupPaths.Clear();
+
             var (code, response) = Invoke(new Invocation(Mode.Backups).PathIf(settings.BackupPath, settings.OverrideBackupPath));
             if (response?.Games != null)
             {

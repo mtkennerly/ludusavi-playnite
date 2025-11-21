@@ -1,3 +1,10 @@
+## Unreleased
+
+* Fixed:
+  * After editing the plugin settings to change the backup folder,
+    backups from the previous folder were still listed for each game
+    until you restarted Playnite.
+
 ## v0.18.0 (2025-11-10)
 
 * Added:
