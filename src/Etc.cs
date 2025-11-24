@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Text;
 
@@ -66,8 +67,10 @@ namespace LudusaviPlaynite
             p.StartInfo.StandardOutputEncoding = System.Text.Encoding.UTF8;
             p.Start();
 
-            p.StandardInput.WriteLine(stdin);
-            p.StandardInput.Close();
+            // Ensure we write UTF-8 data without any BOM.
+            StreamWriter writer = new StreamWriter(p.StandardInput.BaseStream, new UTF8Encoding(false));
+            writer.WriteLine(stdin);
+            writer.Close();
 
             var stdout = p.StandardOutput.ReadToEnd();
             p.WaitForExit();

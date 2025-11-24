@@ -4,6 +4,8 @@
   * After editing the plugin settings to change the backup folder,
     backups from the previous folder were still listed for each game
     until you restarted Playnite.
+  * Because of an encoding issue, depending on your system's regional settings,
+    backups were not always listed for games whose titles contained extended characters.
 
 ## v0.18.0 (2025-11-10)
 
