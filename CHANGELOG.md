@@ -1,4 +1,4 @@
-## Unreleased
+## v0.18.1 (2025-11-25)
 
 * Fixed:
   * After editing the plugin settings to change the backup folder,
