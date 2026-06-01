@@ -122,11 +122,12 @@ namespace LudusaviPlaynite.Api
             this.input.requests.Add(request);
         }
 
-        public void EditBackup(string game, bool? locked, string comment)
+        public void EditBackup(string game, string backup, bool? locked, string comment)
         {
             var inner = new Requests.EditBackup
             {
                 game = game,
+                backup = backup,
                 locked = locked,
                 comment = comment,
             };
@@ -189,6 +190,7 @@ namespace LudusaviPlaynite.Api
         public struct EditBackup
         {
             public string game;
+            public string backup;
             public bool? locked;
             public string comment;
         }

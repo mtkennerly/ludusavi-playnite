@@ -172,7 +172,7 @@ namespace LudusaviPlaynite
                                 Action = args =>
                                 {
                                     var title = GetTitle(game);
-                                    this.app.EditBackup(title, !backup.Locked, null);
+                                    this.app.EditBackup(title, backup.Name, !backup.Locked, null);
                                     this.RefreshBackups();
                                 }
                             }
@@ -188,7 +188,7 @@ namespace LudusaviPlaynite
                                     if (comment != null)
                                     {
                                         var title = GetTitle(game);
-                                        this.app.EditBackup(title, null, comment);
+                                        this.app.EditBackup(title, backup.Name, null, comment);
                                         this.RefreshBackups();
                                     }
                                 }

@@ -1,3 +1,8 @@
+## Unreleased
+
+* Fixed:
+  * The lock/comment actions in the context menu affected a game's latest backup rather than the selected backup.
+
 ## v0.18.1 (2025-11-25)
 
 * Fixed:

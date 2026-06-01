@@ -239,7 +239,7 @@ namespace LudusaviPlaynite.Cli
             return null;
         }
 
-        public bool EditBackup(string game, bool? locked, string comment)
+        public bool EditBackup(string game, string backup, bool? locked, string comment)
         {
             if (!(this.version.supportsEditBackup()))
             {
@@ -247,7 +247,7 @@ namespace LudusaviPlaynite.Cli
             }
 
             var runner = new Api.Runner(logger, this.settings);
-            runner.EditBackup(game, locked, comment);
+            runner.EditBackup(game, backup, locked, comment);
 
             var (code, output) = runner.Invoke();
 
