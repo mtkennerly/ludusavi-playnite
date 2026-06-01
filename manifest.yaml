@@ -1,5 +1,12 @@
 AddonId: mtkennerly.ludusavi
 Packages:
+  - Version: 0.18.2
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2026-05-31
+    PackageUrl: https://github.com/mtkennerly/ludusavi-playnite/releases/download/v0.18.2/ludusavi-playnite-v0.18.2.pext
+    Changelog:
+      - >-
+        Fixed: The lock/comment actions in the context menu affected a game's latest backup rather than the selected backup.
   - Version: 0.18.1
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2025-11-25
